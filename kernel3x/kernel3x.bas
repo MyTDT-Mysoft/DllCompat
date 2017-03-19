@@ -2,7 +2,7 @@
 
 #include "windows.bi"
 #include "win\winnls.bi"
-#include "MyTDT\detour.bas"
+#include "..\MyTDT\detour.bas"
 
 dim shared as any ptr pInitMutex
 pInitMutex = CreateMutex(NULL,FALSE,NULL)
