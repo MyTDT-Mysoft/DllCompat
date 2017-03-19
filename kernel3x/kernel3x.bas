@@ -1,4 +1,4 @@
-#define fbc -gen gcc -r -Wl "kernel3x.dll.def" -dll
+#define fbc -Wl "kernel3x.dll.def" -dll
 
 #include "windows.bi"
 #include "win\winnls.bi"
