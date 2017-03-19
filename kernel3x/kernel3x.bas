@@ -2,16 +2,18 @@
 
 #include "windows.bi"
 #include "win\winnls.bi"
-
 #include "MyTDT\detour.bas"
 
 dim shared as any ptr pInitMutex
 pInitMutex = CreateMutex(NULL,FALSE,NULL)
 
 extern "windows"
-declare function GetLocaleInfoW (byval as LCID, byval as LCTYPE, byval as LPWSTR, byval as integer) as integer
+  #ifndef GetLocaleInfoW
+  declare function GetLocaleInfoW (byval as LCID, byval as LCTYPE, byval as LPWSTR, byval as integer) as integer
+  #endif
 end extern
 
+#ifndef _OSVERSIONINFOEXA
 type _OSVERSIONINFOEXA
 	dwOSVersionInfoSize as DWORD
 	dwMajorVersion as DWORD
@@ -25,7 +27,9 @@ type _OSVERSIONINFOEXA
 	wProductType as UBYTE
 	wReserved as UBYTE
 end type
+#endif
 
+#ifndef _OSVERSIONINFOEXW
 type _OSVERSIONINFOEXW
 	dwOSVersionInfoSize as DWORD
 	dwMajorVersion as DWORD
@@ -39,6 +43,7 @@ type _OSVERSIONINFOEXW
 	wProductType as UBYTE
 	wReserved as UBYTE
 end type
+#endif
 
 extern "windows-ms"
   function InitOnceExecuteOnce (pInit as any ptr ptr,pFN as any ptr,pParm as any ptr,pContext as any ptr) as bool export    
@@ -117,6 +122,7 @@ extern "windows-ms"
     end if    
     SetEvent(*pCondVar)
   end sub
+  #undef InterlockedCompareExchange64
   function InterlockedCompareExchange64 naked cdecl (pDestination as longint ptr,Exchange as longint,Comparand as longint) as longlong export
     #define pDestination_ esp+12
     #define Exchange_ esp+16
@@ -207,6 +213,7 @@ extern "windows-ms"
   UndefAll()
   #define P1 pBuffer       as SYSTEM_LOGICAL_PROCESSOR_INFORMATION ptr
   #define P2 pReturnLength as DWORD ptr
+  #undef GetLogicalProcessorInformation
   function GetLogicalProcessorInformation alias "GetLogicalProcessorInformation" (P1,P2) as integer export
     if pBuffer=null then 
       if pReturnLength then

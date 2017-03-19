@@ -1,5 +1,5 @@
 #define fbc -dll
-'-Wl "kernel3x.dll.def"
+'-Wl "powrporx.dll.def"
 
 #include "windows.bi"
 
