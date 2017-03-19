@@ -1,4 +1,4 @@
-#define fbc -Wl "vcruntime140.dll.def" -dll -x "vcruntime140.dll"
+#define fbc -Wl "vcruntime140.dll.def" -dll
 
 '#define MyDebug
 

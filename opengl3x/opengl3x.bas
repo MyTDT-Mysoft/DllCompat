@@ -1,4 +1,4 @@
-#define fbc -Wl "opengl3x.dll.def" -dll -x opengl3x.dll
+#define fbc -Wl "opengl3x.dll.def" -dll
 
 #include "windows.bi"
 #include "gl\gl.bi"

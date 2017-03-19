@@ -1,4 +1,4 @@
-#define fbc -Wl "shell3x.dll.def" -dll -x shell3x.dll
+#define fbc -Wl "shell3x.dll.def" -dll
 
 #include "windows.bi"
 #include "win/ole2.bi"

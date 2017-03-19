@@ -1,4 +1,4 @@
-#define fbc -Wl "advapi3x.dll.def" -dll -x advapi3x.dll
+#define fbc -Wl "advapi3x.dll.def" -dll
 
 #include "windows.bi"
 #include "crt.bi"

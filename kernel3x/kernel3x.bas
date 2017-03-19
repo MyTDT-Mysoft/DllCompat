@@ -1,5 +1,4 @@
-#define fbc -gen gcc -r -Wl "kernel3x.dll.def" -dll -x "E:\progs\edicao\Mischief-Free\kernel3x.dll"
-'H:\FromData\Emu\gba4\kernel33.dll
+#define fbc -gen gcc -r -Wl "kernel3x.dll.def" -dll
 
 #include "windows.bi"
 #include "win\winnls.bi"

@@ -1,4 +1,4 @@
-#define fbc -Wl "msvcrx.dll.def" -dll -x h:\tv\msvcrz.dll
+#define fbc -Wl "msvcrx.dll.def" -dll
 
 #include "windows.bi"
 

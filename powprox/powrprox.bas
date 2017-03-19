@@ -1,4 +1,4 @@
-#define fbc -dll -x "powrprox.dll"
+#define fbc -dll
 '-Wl "kernel3x.dll.def"
 
 #include "windows.bi"
