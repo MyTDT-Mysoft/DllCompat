@@ -248,8 +248,8 @@ extern "windows-ms"
     SetLastError(1): return 0
   end function
   #endif
-  
-  function _GetThreadId alias "GetThreadId"(Thread as HANDLE) as DWORD
+
+  function _GetThreadId alias "GetThreadId"(Thread as HANDLE) as DWORD export
     return GetThreadId(Thread)
   end function
   
