@@ -1,0 +1,23 @@
+  dwmapi.dll
+DwmDefWindowProc                   ;qt5widgets.dll
+DwmExtendFrameIntoClientArea       ;qt5widgets.dll
+DwmIsCompositionEnabled            ;qt5widgets.dll
+
+  uxtheme.dll
+DrawThemeTextEx                    ;qt5widgets.dll
+GetThemeTransitionDuration         ;qt5widgets.dll
+SetWindowThemeAttribute            ;qt5widgets.dll
+
+  kernel32.dll
+CancelIoEx                         ;qt5core.dll
+GetFileInformationByHandleEx       ;qt5core.dll
+GetTickCount64                     ;qt5core.dll {test}
+GetUserPreferredUILanguages        ;qt5core.dll
+
+  shell32.dll
+SHGetKnownFolderPath               ;qt5core.dll {test}
+
+
+
+
+

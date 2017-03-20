@@ -249,6 +249,10 @@ extern "windows-ms"
   end function
   #endif
   
+  function _GetThreadId alias "GetThreadId"(Thread as HANDLE) as DWORD
+    return GetThreadId(Thread)
+  end function
+  
 end extern
 
 dim shared as any ptr OrgProc
