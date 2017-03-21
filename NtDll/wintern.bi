@@ -29,7 +29,7 @@ end enum
 '// dynamically to it because we might as well.
 var hNTDLL = GetModuleHandle("ntdll.dll")
 
-dim fnNtQueryInformationThreadFunc as function ( _
+dim shared fnNtQueryInformationThreadFunc as function ( _
     ThreadHandle as HANDLE, _
     ThreadInformationClass as THREADINFOCLASS, _
     ThreadInformation as any ptr, _

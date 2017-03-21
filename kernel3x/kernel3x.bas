@@ -233,8 +233,6 @@ extern "windows-ms"
       return 1
     end if
   end function
-    
-
   
   function _VerifyVersionInfoW alias "VerifyVersionInfoW" (lpVerW as _OSVERSIONINFOEXW ptr,dwType as dword,dwCond as dword) as integer export
     return true 'hehe
@@ -251,14 +249,19 @@ extern "windows-ms"
   #endif
 
   function _GetThreadId alias "GetThreadId"(Thread as HANDLE) as DWORD export
+            
+    'trying to validate the thread handle and give a useful return code
+    dim as DWORD dwResu = any
+    if GetExitCodeThread(Thread,@dwResu)=0 then return 0    
     
-    if GetExitCodeThread()=0 then return 0    
-    dim as THREAD_BASIC_INFO tInfo
-    var iResu = fnNtQueryInformationThreadFunc( GetCurrentThread , _
+    'get thread ClientID from nt function, (succeeded with GetCurrentThreadID)
+    dim as THREAD_BASIC_INFO tInfo = any
+    dim as NTSTATUS ntResu = any
+    ntResu = fnNtQueryInformationThreadFunc( GetCurrentThread , _
     ThreadBasicInformation , @tInfo , sizeof(tInfo), null )
     
-    if iResu then return 0
-    return tInfo.ClientId.UniqueThread
+    if ntResu then return 0 'NTSTATUS with error
+    return cast(DWORD, tInfo.ClientId.UniqueThread)
     
   end function
   
