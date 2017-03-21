@@ -3,6 +3,7 @@
 #include "windows.bi"
 #include "win\winnls.bi"
 #include "..\MyTDT\detour.bas"
+#include "..\NtDll\wintern.bi"
 
 dim shared as any ptr pInitMutex
 pInitMutex = CreateMutex(NULL,FALSE,NULL)
@@ -250,7 +251,15 @@ extern "windows-ms"
   #endif
 
   function _GetThreadId alias "GetThreadId"(Thread as HANDLE) as DWORD export
-    return GetThreadId(Thread)
+    
+    if GetExitCodeThread()=0 then return 0    
+    dim as THREAD_BASIC_INFO tInfo
+    var iResu = fnNtQueryInformationThreadFunc( GetCurrentThread , _
+    ThreadBasicInformation , @tInfo , sizeof(tInfo), null )
+    
+    if iResu then return 0
+    return tInfo.ClientId.UniqueThread
+    
   end function
   
 end extern
