@@ -1,4 +1,4 @@
-#define fbc -Wl "kernel3x.dll.def" -dll
+#define fbc -Wl "kernel3x.dll.def" -dll -x c:\winxp\system32\kernel3x.dll
 
 #include "windows.bi"
 #include "win\winnls.bi"
@@ -211,7 +211,7 @@ extern "windows-ms"
     end type
   #endif
 
-  UndefAll()
+  UndefAllParams()
   #define P1 pBuffer       as SYSTEM_LOGICAL_PROCESSOR_INFORMATION ptr
   #define P2 pReturnLength as DWORD ptr
   #undef GetLogicalProcessorInformation
@@ -252,7 +252,11 @@ extern "windows-ms"
             
     'trying to validate the thread handle and give a useful return code
     dim as DWORD dwResu = any
-    if GetExitCodeThread(Thread,@dwResu)=0 then return 0    
+    if GetExitCodeThread(Thread,@dwResu)=0 then 
+      var iErr = GetLastError()
+      messagebox(null,"GetThreadId ERROR = " & hex$(iErr),null,MB_SYSTEMMODAL or MB_ICONERROR)
+      return 0    
+    end if
     
     'get thread ClientID from nt function, (succeeded with GetCurrentThreadID)
     dim as THREAD_BASIC_INFO tInfo = any
@@ -260,12 +264,19 @@ extern "windows-ms"
     ntResu = fnNtQueryInformationThreadFunc( GetCurrentThread , _
     ThreadBasicInformation , @tInfo , sizeof(tInfo), null )
     
-    if ntResu then return 0 'NTSTATUS with error
+    if ntResu then 
+      messagebox(null,"GetThreadId NTSTATUS = " & hex$(ntResu),null,MB_SYSTEMMODAL or MB_ICONERROR)
+      return 0 'NTSTATUS with error
+    else
+      messagebox(null,"GetThreadId TID = " & tInfo.ClientId.UniqueThread,null,MB_SYSTEMMODAL or MB_ICONERROR)
+    end if
     return cast(DWORD, tInfo.ClientId.UniqueThread)
     
   end function
   
 end extern
+
+#if 0
 
 dim shared as any ptr OrgProc
 dim shared as hwnd SplashWnd
@@ -312,7 +323,7 @@ function MyProc( hwnd as hwnd , msg as integer , wparam as wparam , lparam as lp
   return CallWindowProc( OrgProc , hwnd , msg , wparam , lparam )
 end function
 
-UndefAll()
+UndefAllParams()
 #define P1 dwExStyle as DWORD
 #define P2 lpClassName as any ptr 'W/A
 #define P3 lpWindowName as any ptr 'W/A
@@ -335,21 +346,29 @@ end function
 dim shared pfCreateWindowExA as function (P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12) as hwnd
 function CreateWindowExA_Detour(P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12) as hwnd
   'OutputDebugString("CreateWindowExA_Detour")
-  var iSkip = 0
-  if (dwStyle and WS_CHILD)=0 andalso cuint(lpClassName) > &hFFFF then     
-    if *cptr(zstring ptr,lpClassName)="MischiefSplashScreen" then
-      iSkip = 1: dwStyle or= WS_VISIBLE: x=0:y=0      
-      SetThreadPriority(GetCurrentThread,THREAD_PRIORITY_TIME_CRITICAL)
+  
+  #if 0
+    if (dwStyle and WS_CHILD)=0 andalso cuint(lpClassName) > &hFFFF then     
+      if *cptr(zstring ptr,lpClassName)="MischiefSplashScreen" then
+        iSkip = 1: dwStyle or= WS_VISIBLE: x=0:y=0      
+        SetThreadPriority(GetCurrentThread,THREAD_PRIORITY_TIME_CRITICAL)
+      end if
     end if
-  end if
+  #endif
+  
   'dwExStyle or= WS_EX_LAYERED
   var hResu = pfCreateWindowExA( dwExStyle , lpClassName , lpWindowName , _
   dwStyle , x , y , nWidth , nHeight , hWndParent , hMenu , hInstance , lpParam )
-  if hResu andalso iSkip then
-    *cptr(long ptr,@OrgProc) = SetWindowLong(hResu,GWL_WNDPROC,clng(@MyProc))    
-    SetTimer( hResu , WM_USER+99 , 1 , null )    
-    SplashWnd = hResu
-  end if
+  
+  #if 0
+    var iSkip = 0
+    if hResu andalso iSkip then
+      *cptr(long ptr,@OrgProc) = SetWindowLong(hResu,GWL_WNDPROC,clng(@MyProc))    
+      SetTimer( hResu , WM_USER+99 , 1 , null )    
+      SplashWnd = hResu
+    end if
+  #endif
+  
   return hResu
 end function
 
@@ -364,7 +383,7 @@ end function
 
 'SetDetourLibrary("gdi32")
 'CreateDetour(ChoosePixelFormat)
-#if 0
+
 SetDetourLibrary("user32")
 CreateDetour(CreateWindowExA)
 CreateDetour(CreateWindowExW)

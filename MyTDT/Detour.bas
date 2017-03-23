@@ -1,7 +1,7 @@
 #include once "windows.bi"
 #include once "crt.bi"
 
-#macro UndefAll()
+#macro UndefAllParams()
   #undef P1
   #undef P2
   #undef P3
