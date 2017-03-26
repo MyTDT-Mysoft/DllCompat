@@ -2,6 +2,8 @@
 
 #include once "crt/long.bi"
 
+#inclib "credui"
+
 extern "Windows"
 
 #define _WINCRED_H_
