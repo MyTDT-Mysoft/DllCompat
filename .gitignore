@@ -1,0 +1,6 @@
+*.o
+*.s
+*.exe
+*.dll.a
+
+ZZZZZZZZZZZZZZZZ.bat
