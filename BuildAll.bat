@@ -2,33 +2,39 @@
 setlocal
 
 set fbc=f:\fb15\fbc.exe
-set opt=-dll
 
-call :Compile advapi3x
-call :Compile kernel3x
-call :Compile msvcrx
-call :Compile opengl3x
-call :Compile powrprox
-call :Compile shell3x
-call :Compile vcruntime140
-call :Compile ws2_3x
+IF NOT EXIST bin\ mkdir bin\
+del bin\* /Q
 
-echo Done.
-pause >nul
+rem call :compile credux
+call :compile advapi3x
+call :compile kernel3x
+call :compile msvcrx
+call :compile opengl3x
+call :compile powrprox
+call :compile shell3x
+call :compile vcruntime140
+call :compile ws2_3x
+
+:donecomp
+echo Copying DLLs to windir
+copy bin\*x.dll %windir% /Y
+:cleanup
+echo Cleaning compile residue
+del bin\*.dll.a /Q
+del bin\*.o /Q
+del bin\*.s /Q
 endlocal
 goto :eof
 
-
-:Compile
-echo compiling %1
-cd %1 
-%fbc% %opt% %1.bas -Wl "%1.dll.def"
-set err=%errorlevel%
-cd ..
-if %err% gtr 0 goto :Failed
-goto :eof
-
-:Failed
+:failed
 echo Compilation Failed...
 pause >nul
-exit
+goto :cleanup
+
+:compile
+echo compiling %1
+%fbc% -dll %1\%1.bas -Wl "%1\%1.dll.def" -x bin\%1.dll
+set err=%errorlevel%
+if %err% gtr 0 goto :Failed
+goto :eof
