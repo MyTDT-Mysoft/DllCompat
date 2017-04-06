@@ -1,4 +1,4 @@
-#define fbc -Wl "ws2_3x.dll.def" -dll
+#define fbc -dll -Wl "ws2_3x.dll.def" -x ..\bin\ws2_3x.dll
 
 #include "win/winsock2.bi"
 #Include "win/ws2tcpip.bi"

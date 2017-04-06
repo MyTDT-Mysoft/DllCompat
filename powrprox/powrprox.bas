@@ -1,4 +1,4 @@
-#define fbc -dll
+#define fbc -dll -x ..\bin\powrporx.dll
 '-Wl "powrporx.dll.def"
 
 #include "windows.bi"

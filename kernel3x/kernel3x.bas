@@ -1,4 +1,4 @@
-#define fbc -Wl "kernel3x.dll.def" -dll -x c:\winxp\system32\kernel3x.dll
+#define fbc -dll -Wl "kernel3x.dll.def" -x ..\bin\kernel3x.dll
 
 #include "windows.bi"
 #include "win\winnls.bi"
