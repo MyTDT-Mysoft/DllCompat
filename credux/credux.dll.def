@@ -1,0 +1,19 @@
+LIBRARY Credux.dll
+EXPORTS
+CredUICmdLinePromptForCredentialsA = Credui.CredUICmdLinePromptForCredentialsA
+CredUICmdLinePromptForCredentialsW = Credui.CredUICmdLinePromptForCredentialsW
+CredUIConfirmCredentialsA = Credui.CredUIConfirmCredentialsA
+CredUIConfirmCredentialsW = Credui.CredUIConfirmCredentialsW
+CredUIInitControls = Credui.CredUIInitControls
+CredUIParseUserNameA = Credui.CredUIParseUserNameA
+CredUIParseUserNameW = Credui.CredUIParseUserNameW
+CredUIPromptForCredentialsA = Credui.CredUIPromptForCredentialsA
+CredUIPromptForCredentialsW = Credui.CredUIPromptForCredentialsW
+CredUIReadSSOCredA = Credui.CredUIReadSSOCredA
+CredUIReadSSOCredW = Credui.CredUIReadSSOCredW
+CredUIStoreSSOCredA = Credui.CredUIStoreSSOCredA
+CredUIStoreSSOCredW = Credui.CredUIStoreSSOCredW
+DllCanUnloadNow = Credui.DllCanUnloadNow
+DllGetClassObject = Credui.DllGetClassObject
+DllRegisterServer = Credui.DllRegisterServer
+DllUnregisterServer = Credui.DllUnregisterServer
