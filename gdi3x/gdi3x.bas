@@ -17,12 +17,14 @@ type D3DKMT_DESTROYDCFROMMEMORY as any ptr
 
 extern "windows-ms"
 
+'https://msdn.microsoft.com/en-us/library/windows/hardware/ff546826%28v=vs.85%29.aspx
 #undef D3DKMTCreateDCFromMemory
 function D3DKMTCreateDCFromMemory( pData as D3DKMT_CREATEDCFROMMEMORY ptr ) as NTSTATUS export
   UnimplementedFunction()
   return STATUS_NOT_SUPPORTED
 end function
 
+'https://msdn.microsoft.com/en-us/library/windows/hardware/ff546908%28v=vs.85%29.aspx
 #undef D3DKMTDestroyDCFromMemory
 function D3DKMTDestroyDCFromMemory( pData as D3DKMT_DESTROYDCFROMMEMORY ptr ) as NTSTATUS export
   UnimplementedFunction()
