@@ -8,6 +8,7 @@ del bin\* /Q
 
 rem call :compile credux
 call :compile advapi3x
+call :compile gdi3x
 call :compile kernel3x
 call :compile msvcrx
 call :compile opengl3x
