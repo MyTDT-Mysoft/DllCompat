@@ -1,5 +1,10 @@
 #define fbc -dll -Wl "kernel3x.dll.def" -x ..\bin\kernel3x.dll
 
+#define DebugFailedCalls
+
+#define DebugBox(_MSG) Messagebox(null,_MSG,__FUNCTION__ ":" & __LINE__,MB_SYSTEMMODAL or MB_ICONERROR)
+#define NotifyBox(_MSG) Messagebox(null,_MSG,__FUNCTION__ ":" & __LINE__,MB_SYSTEMMODAL or MB_ICONWARNING)
+
 #include "windows.bi"
 #include "win\winnls.bi"
 #include "..\MyTDT\detour.bas"
@@ -7,6 +12,10 @@
 
 dim shared as any ptr pInitMutex
 pInitMutex = CreateMutex(NULL,FALSE,NULL)
+
+'includes TLS static dependencies optiona library
+#inclib "TlsDeps"
+extern StaticDependencyListTLS alias "StaticDependencyListTLS" as any ptr
 
 extern "windows"
   #ifndef GetLocaleInfoW
@@ -47,6 +56,12 @@ end type
 #endif
 
 extern "windows-ms"
+  
+  'just to force it to load TLS dependencies library
+  sub StaticDependencyListTLS_Dummy() 
+    var Dummy = @StaticDependencyListTLS
+  end sub
+  
   function InitOnceExecuteOnce (pInit as any ptr ptr,pFN as any ptr,pParm as any ptr,pContext as any ptr) as bool export    
     if pInit=0 or pFN=0 then 
       messagebox(null,"Bad Parameters","InitOnceExecuteOnce",MB_SYSTEMMODAL)
@@ -123,6 +138,7 @@ extern "windows-ms"
     end if    
     SetEvent(*pCondVar)
   end sub
+  
   #undef InterlockedCompareExchange64
   function InterlockedCompareExchange64 naked cdecl (pDestination as longint ptr,Exchange as longint,Comparand as longint) as longlong export
     #define pDestination_ esp+12
@@ -142,9 +158,11 @@ extern "windows-ms"
       ret
     end asm        
   end function
+  
   function InitializeCriticalSectionEx(lpCriticalSection as LPCRITICAL_SECTION,dwSpinCount as dword,Flags as dword) as bool export
     return InitializeCriticalSectionAndSpinCount(lpCriticalSection,dwSpinCount)    
   end function
+  
   function GetSystemDefaultLocaleName(lpwLocaleName as wstring ptr,cchLocaleName as integer) as integer export
     if lpwLocaleName=null or cchLocaleName <= 1 then
       SetLastError(ERROR_INSUFFICIENT_BUFFER): return 0
@@ -162,7 +180,7 @@ extern "windows-ms"
     end if
     return iPos
   end function
-    
+
   function _GetVersionExW alias "GetVersionExW" (pVerW as _OSVERSIONINFOEXW ptr) as integer export
     if pVerW = 0 then SetLastError(ERROR_INVALID_PARAMETER): return false
     if pVerW->dwOSVersionInfoSize < offsetof(_OSVERSIONINFOEXW,wServicePackMajor) then
@@ -232,7 +250,13 @@ extern "windows-ms"
       pBuffer->ProcessorCore.Flags = 0
       return 1
     end if
+  end function  
+  'SYSTEM_LOGICAL_PROCESSOR_INFORMATION
+  #if 0
+  function _GetLogicalProcessorInformation alias "GetLogicalProcessorInformation" (pBuffer as any ptr,ReturnLength as DWORD ptr) as bool export
+    SetLastError(1): return 0
   end function
+  #endif
   
   function _VerifyVersionInfoW alias "VerifyVersionInfoW" (lpVerW as _OSVERSIONINFOEXW ptr,dwType as dword,dwCond as dword) as integer export
     return true 'hehe
@@ -240,13 +264,6 @@ extern "windows-ms"
   function _VerifyVersionInfoA alias "VerifyVersionInfoA" (lpVerA as _OSVERSIONINFOEXA ptr,dwType as dword,dwCond as dword) as integer export
     return true 'hehe
   end function  
-  
-  'SYSTEM_LOGICAL_PROCESSOR_INFORMATION
-  #if 0
-  function _GetLogicalProcessorInformation alias "GetLogicalProcessorInformation" (pBuffer as any ptr,ReturnLength as DWORD ptr) as bool export
-    SetLastError(1): return 0
-  end function
-  #endif
 
   function _GetThreadId alias "GetThreadId"(Thread as HANDLE) as DWORD export
             
@@ -261,7 +278,7 @@ extern "windows-ms"
     'get thread ClientID from nt function, (succeeded with GetCurrentThreadID)
     dim as THREAD_BASIC_INFO tInfo = any
     dim as NTSTATUS ntResu = any
-    ntResu = fnNtQueryInformationThreadFunc( GetCurrentThread , _
+    ntResu = NtQueryInformationThread( GetCurrentThread , _
     ThreadBasicInformation , @tInfo , sizeof(tInfo), null )
     
     if ntResu then 
@@ -274,117 +291,248 @@ extern "windows-ms"
     
   end function
   
+  UndefAllParams()
+  #define P1 hFile as HANDLE
+  #define P2 lpszFilePath as LPWSTR
+  #define P3 cchFilePath as DWORD
+  #define P4 dwFlags as DWORD
+  function GetFinalPathNameByHandleW(P1,P2,P3,P4) as dword export
+    DebugBox("Yay!")
+    'cchFilePath is in TCHARS (i.e. wchars for this one)... and doesnt include the space for NULL
+    var iFilePathSz = (cchFilePath+1)*sizeof(wstring*1)
+    
+    'basic flags check
+    const cAllVolumeOptions =  VOLUME_NAME_GUID or VOLUME_NAME_NT or VOLUME_NAME_NONE
+    var iBadFlags = (dwFlags and (not (FILE_NAME_OPENED or cAllVolumeOptions)))
+    if hFile=null orelse lpszFilePath=null orelse iBadFlags then
+      #ifdef DebugFailedCalls
+        if iBadFlags then
+          DebugBox("Bad flags were used... 0x" & iBadFlags)
+        elseif lpszFilePath=null then
+          DebugBox("null lpszFilePath")
+        elseif hFile=null then
+          DebugBox("null hFile")
+        end if
+      #endif
+      SetLastError( ERROR_INVALID_PARAMETER )
+      return 0
+    end if
+    
+    'basic handle check
+    var iType = GetFileType( hFile )
+    if iType = 0 then 
+      #ifdef DebugFailedCalls
+        var iTempErr = GetLastError()
+        DebugBox("bad file type? (not a file?)")
+        SetLastError(iTempErr)
+      #endif
+      return 0 
+    end if
+    
+    'this may not be implemented correctly... so warning when used
+    if (dwFlags and FILE_NAME_OPENED) then
+      NotifyBox("flag FILE_NAME_OPENED used...")
+    end if
+    
+    'expecting a DOS volume? [\\?\Drive:\Path\File.Ext]
+    if (dwFlags and cAllVolumeOptions)=0 then 'VOLUME_NAME_DOS
+      '// Get the file size.
+      dim as DWORD dwFileSizeHi = 0
+      dim as DWORD dwFileSizeLo = GetFileSize(hFile, @dwFileSizeHi)
+      if dwFileSizeLo = 0 andalso dwFileSizeHi = 0 then
+        #ifdef DebugFailedCalls
+          DebugBox("Filesize=0 so can't map to get name...")
+        #endif
+        SetLastError( ERROR_FILE_NOT_FOUND )
+        return 0
+      end if
+      NotifyBox("flag VOLUME_NAME_DOS used...")
+    end if
+    
+    'expecting a GUID volume? [\\?\Volume{GUID}\Path\File.Ext]
+    if (dwFlags and VOLUME_NAME_GUID) then
+      NotifyBox("flag VOLUME_NAME_GUID used...")
+      return 0
+    end if
+    
+    'expecting a NT volume? [\Device\HarddiskVolume?\Path\File.Ext]
+    if (dwFlags and VOLUME_NAME_NT) then            
+      var iTempSz = cchFilePath + sizeof(OBJECT_NAME_INFORMATION) 
+      var pTemp = cptr(POBJECT_NAME_INFORMATION, allocate(iTempSz))      
+      
+      if pTemp = 0 then
+        #ifdef DebugFailedCalls
+          DebugBox("out of memory allocating buffer...")
+        #endif
+        SetLastError( ERROR_NOT_ENOUGH_MEMORY )
+        return 0
+      end if      
+      
+      var iResu = NtQueryObject(hFile, ObjectNameInformation, pTemp , iTempSz , @iTempSz )
+      if iResu <> STATUS_SUCCESS then
+        #ifdef DebugFailedCalls
+          DebugBox("NtQueryInformationFile Error 0x" & hex$(iResu))
+        #endif
+        SetLastError(ERROR_PATH_NOT_FOUND) 'need better error handling?
+      end if
+      
+      NotifyBox("flag VOLUME_NAME_NT used")
+      
+    end if
+    
+    'expecting no volume?  [\Path\File.Ext]
+    if (dwFlags and VOLUME_NAME_NONE) then
+      var iTempSz = ((cchFilePath+1)*sizeof(wstring*1)) + sizeof(FILE_NAME_INFORMATION) 
+      var pTemp = cptr(PFILE_NAME_INFORMATION, allocate(iTempSz))      
+      dim as IO_STATUS_BLOCK tStatBlock
+      
+      if pTemp = 0 then
+        #ifdef DebugFailedCalls
+          DebugBox("out of memory allocating buffer...")
+        #endif
+        SetLastError( ERROR_NOT_ENOUGH_MEMORY )
+        return 0
+      end if
+      
+      var iResu = NtQueryInformationFile( hFile , @tStatBlock ,  pTemp , iTempSz , FileNameInformation )
+      if iResu <> STATUS_SUCCESS then
+        #ifdef DebugFailedCalls
+          DebugBox("NtQueryInformationFile Error 0x" & hex$(iResu))
+        #endif
+        SetLastError(ERROR_PATH_NOT_FOUND) 'need better error handling?
+        return 0
+      end if
+      
+      var iSz = pTemp->FileNameLength       
+      if (iSz+sizeof(wstring*1)) > iFilePathSz then        
+        memcpy( lpszFilePath , @(pTemp->FileName) , iFilePathSz ) 'copy what fits
+        lpszFilePath[cchFilePath] = 0 'set the null char
+        #ifdef DebugFailedCalls
+          DebugBox("NtQueryInformationFile ERROR_INSUFFICIENT_BUFFER" & hex$(iResu))
+        #endif
+        SetLastError( ERROR_INSUFFICIENT_BUFFER )
+        return iSz
+      end if      
+      
+      memcpy( lpszFilePath , @(pTemp->FileName) , (iSz+sizeof(wstring*1)) )
+      lpszFilePath[ iSz\sizeof(wstring*1) ] = 0 'set the last null char
+      SetLastError( ERROR_SUCCESS )      
+      return iSz\(sizeof(wstring*1))
+      
+
+    end if
+  end function
+  
 end extern
 
 #if 0
-
-dim shared as any ptr OrgProc
-dim shared as hwnd SplashWnd
-function MyProc( hwnd as hwnd , msg as integer , wparam as wparam , lparam as lparam ) as lresult
-  'OutputDebugString("msg=0x"+hex$(msg,8))
+  dim shared as any ptr OrgProc
+  dim shared as hwnd SplashWnd
+  function MyProc( hwnd as hwnd , msg as integer , wparam as wparam , lparam as lparam ) as lresult
+    'OutputDebugString("msg=0x"+hex$(msg,8))
+    
+    static as integer N = 1
+    
+    select case msg 
+    case WM_TIMER
+      dim as rect tTemp    
+      GetWindowRect( SplashWnd , @tTemp )    
+      if tTemp.left<>0 and tTemp.Top <> 0 then      
+        select case N              
+        case 1        
+          dim as point mypt = type(683,406)
+          ClientToScreen( SplashWnd , @mypt )        
+          SetCursorPos( mypt.x , mypt.y )    
+          if GetForegroundWindow()<> SplashWnd then 
+            SetForegroundWindow( SplashWnd )
+          end if
+          N = 2
+        case 2
+          mouse_event( MOUSEEVENTF_LEFTDOWN , 0 , 0 , 0 , 0 )
+          N = 3
+        case 3
+          mouse_event( MOUSEEVENTF_LEFTUP , 0 , 0 , 0 , 0 )
+          N = 1                        
+          OutputDebugString(!"Clicking!\r\n")
+          exit function      
+        case else
+          N += 1
+          if N > 10 then N = 1
+        end select
+      end if  
+    case WM_LBUTTONUP
+      function = CallWindowProc( OrgProc , hwnd , msg , wparam , lparam )    
+      N = 4 : OutputDebugString(!"Button up!\r\n")
+      exit function
+    case WM_DESTROY    
+      KillTimer( SplashWnd , WM_USER+99 )
+    end select
+    
+    return CallWindowProc( OrgProc , hwnd , msg , wparam , lparam )
+  end function
   
-  static as integer N = 1
-  
-  select case msg 
-  case WM_TIMER
-    dim as rect tTemp    
-    GetWindowRect( SplashWnd , @tTemp )    
-    if tTemp.left<>0 and tTemp.Top <> 0 then      
-      select case N              
-      case 1        
-        dim as point mypt = type(683,406)
-        ClientToScreen( SplashWnd , @mypt )        
-        SetCursorPos( mypt.x , mypt.y )    
-        if GetForegroundWindow()<> SplashWnd then 
-          SetForegroundWindow( SplashWnd )
+  UndefAllParams()
+  #define P1 dwExStyle as DWORD
+  #define P2 lpClassName as any ptr 'W/A
+  #define P3 lpWindowName as any ptr 'W/A
+  #define P4 dwStyle as DWORD
+  #define P5 x as integer
+  #define P6 y as integer
+  #define P7 nWidth as integer
+  #define P8 nHeight as integer
+  #define P9 hWndParent as hwnd
+  #define P10 hMenu as HMENU
+  #define P11 hInstance as HINSTANCE
+  #define P12 lpParam as any ptr
+  dim shared pfCreateWindowExW as function (P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12) as hwnd
+  function CreateWindowExW_Detour(P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12) as hwnd
+    'OutputDebugString("CreateWindowExW_Detour")
+    if (dwStyle and WS_CHILD)=0 then dwExStyle or= (WS_EX_COMPOSITED or WS_EX_LAYERED) 
+    return pfCreateWindowExW( dwExStyle , lpClassName , lpWindowName , _
+    dwStyle , x , y , nWidth , nHeight , hWndParent , hMenu , hInstance , lpParam )
+  end function
+  dim shared pfCreateWindowExA as function (P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12) as hwnd
+  function CreateWindowExA_Detour(P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12) as hwnd
+    'OutputDebugString("CreateWindowExA_Detour")
+    
+    #if 0
+      if (dwStyle and WS_CHILD)=0 andalso cuint(lpClassName) > &hFFFF then     
+        if *cptr(zstring ptr,lpClassName)="MischiefSplashScreen" then
+          iSkip = 1: dwStyle or= WS_VISIBLE: x=0:y=0      
+          SetThreadPriority(GetCurrentThread,THREAD_PRIORITY_TIME_CRITICAL)
         end if
-        N = 2
-      case 2
-        mouse_event( MOUSEEVENTF_LEFTDOWN , 0 , 0 , 0 , 0 )
-        N = 3
-      case 3
-        mouse_event( MOUSEEVENTF_LEFTUP , 0 , 0 , 0 , 0 )
-        N = 1                        
-        OutputDebugString(!"Clicking!\r\n")
-        exit function      
-      case else
-        N += 1
-        if N > 10 then N = 1
-      end select
-    end if  
-  case WM_LBUTTONUP
-    function = CallWindowProc( OrgProc , hwnd , msg , wparam , lparam )    
-    N = 4 : OutputDebugString(!"Button up!\r\n")
-    exit function
-  case WM_DESTROY    
-    KillTimer( SplashWnd , WM_USER+99 )
-  end select
-  
-  return CallWindowProc( OrgProc , hwnd , msg , wparam , lparam )
-end function
-
-UndefAllParams()
-#define P1 dwExStyle as DWORD
-#define P2 lpClassName as any ptr 'W/A
-#define P3 lpWindowName as any ptr 'W/A
-#define P4 dwStyle as DWORD
-#define P5 x as integer
-#define P6 y as integer
-#define P7 nWidth as integer
-#define P8 nHeight as integer
-#define P9 hWndParent as hwnd
-#define P10 hMenu as HMENU
-#define P11 hInstance as HINSTANCE
-#define P12 lpParam as any ptr
-dim shared pfCreateWindowExW as function (P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12) as hwnd
-function CreateWindowExW_Detour(P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12) as hwnd
-  'OutputDebugString("CreateWindowExW_Detour")
-  if (dwStyle and WS_CHILD)=0 then dwExStyle or= (WS_EX_COMPOSITED or WS_EX_LAYERED) 
-  return pfCreateWindowExW( dwExStyle , lpClassName , lpWindowName , _
-  dwStyle , x , y , nWidth , nHeight , hWndParent , hMenu , hInstance , lpParam )
-end function
-dim shared pfCreateWindowExA as function (P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12) as hwnd
-function CreateWindowExA_Detour(P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12) as hwnd
-  'OutputDebugString("CreateWindowExA_Detour")
-  
-  #if 0
-    if (dwStyle and WS_CHILD)=0 andalso cuint(lpClassName) > &hFFFF then     
-      if *cptr(zstring ptr,lpClassName)="MischiefSplashScreen" then
-        iSkip = 1: dwStyle or= WS_VISIBLE: x=0:y=0      
-        SetThreadPriority(GetCurrentThread,THREAD_PRIORITY_TIME_CRITICAL)
       end if
-    end if
-  #endif
+    #endif
+    
+    'dwExStyle or= WS_EX_LAYERED
+    var hResu = pfCreateWindowExA( dwExStyle , lpClassName , lpWindowName , _
+    dwStyle , x , y , nWidth , nHeight , hWndParent , hMenu , hInstance , lpParam )
+    
+    #if 0
+      var iSkip = 0
+      if hResu andalso iSkip then
+        *cptr(long ptr,@OrgProc) = SetWindowLong(hResu,GWL_WNDPROC,clng(@MyProc))    
+        SetTimer( hResu , WM_USER+99 , 1 , null )    
+        SplashWnd = hResu
+      end if
+    #endif
+    
+    return hResu
+  end function
   
-  'dwExStyle or= WS_EX_LAYERED
-  var hResu = pfCreateWindowExA( dwExStyle , lpClassName , lpWindowName , _
-  dwStyle , x , y , nWidth , nHeight , hWndParent , hMenu , hInstance , lpParam )
+  dim shared pfChoosePixelFormat as function (hdc as hdc, ppfd as PIXELFORMATDESCRIPTOR ptr) as integer
+  function ChoosePixelFormat_Detour(hdc as hdc, ppfd as PIXELFORMATDESCRIPTOR ptr) as integer
+    OutputDebugString(!"ChoosePixelFormat_Detour\r\n")  
+    'ppfd->dwFlags or= (PFD_SUPPORT_OPENGL or PFD_DRAW_TO_BITMAP)
+    'ppfd->dwFlags and= (not (PFD_DRAW_TO_WINDOW))
+    'ppfd->iLayerType = PFD_MAIN_PLANE
+    return pfChoosePixelFormat(hdc,ppfd)
+  end function
   
-  #if 0
-    var iSkip = 0
-    if hResu andalso iSkip then
-      *cptr(long ptr,@OrgProc) = SetWindowLong(hResu,GWL_WNDPROC,clng(@MyProc))    
-      SetTimer( hResu , WM_USER+99 , 1 , null )    
-      SplashWnd = hResu
-    end if
-  #endif
+  'SetDetourLibrary("gdi32")
+  'CreateDetour(ChoosePixelFormat)
   
-  return hResu
-end function
-
-dim shared pfChoosePixelFormat as function (hdc as hdc, ppfd as PIXELFORMATDESCRIPTOR ptr) as integer
-function ChoosePixelFormat_Detour(hdc as hdc, ppfd as PIXELFORMATDESCRIPTOR ptr) as integer
-  OutputDebugString(!"ChoosePixelFormat_Detour\r\n")  
-  'ppfd->dwFlags or= (PFD_SUPPORT_OPENGL or PFD_DRAW_TO_BITMAP)
-  'ppfd->dwFlags and= (not (PFD_DRAW_TO_WINDOW))
-  'ppfd->iLayerType = PFD_MAIN_PLANE
-  return pfChoosePixelFormat(hdc,ppfd)
-end function
-
-'SetDetourLibrary("gdi32")
-'CreateDetour(ChoosePixelFormat)
-
-SetDetourLibrary("user32")
-CreateDetour(CreateWindowExA)
-CreateDetour(CreateWindowExW)
+  SetDetourLibrary("user32")
+  CreateDetour(CreateWindowExA)
+  CreateDetour(CreateWindowExW)
 #endif

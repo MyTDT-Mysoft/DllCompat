@@ -17,7 +17,10 @@ GetUserPreferredUILanguages        ;qt5core.dll
   shell32.dll
 SHGetKnownFolderPath               ;qt5core.dll {test}
 
-
+	https://msdn.microsoft.com/en-us/library/ms648408%28v=vs.85%29.aspx
+  gdi3x.dll
+D3DKMTCreateDCFromMemory           ;wined3d.dll
+D3DKMTDestroyDCFromMemory          ;wined3d.dll
 
 
 
