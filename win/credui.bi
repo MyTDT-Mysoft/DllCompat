@@ -1,4 +1,3 @@
-#include "..\MyTDT\detour.bas"
 #include "wincred.bi"
 
 enum

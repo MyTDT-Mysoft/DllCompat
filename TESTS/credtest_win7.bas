@@ -2,6 +2,7 @@
 #include "win\combaseapi.bi"
 #include "win\winerror.bi"
 
+#include "..\MyTDT\detour.bas"
 #include "..\win\wincred.bi"
 #include "..\win\credui.bi"
 
