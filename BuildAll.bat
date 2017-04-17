@@ -35,7 +35,15 @@ goto :cleanup
 
 :compile
 echo compiling %1
-%fbc% -dll %1\%1.bas -Wl "%1\%1.dll.def" -x bin\%1.dll
+rem %fbc% -dll %1\%1.bas -Wl "%1\%1.dll.def" -x bin\%1.dll
+rem set err=%errorlevel%
+
+echo %cd%
+pushd .\%1
+%fbc% -dll %1.bas -Wl "%1.dll.def" -x ..\bin\%1.dll
 set err=%errorlevel%
+popd
+echo %cd%
+
 if %err% gtr 0 goto :Failed
 goto :eof
