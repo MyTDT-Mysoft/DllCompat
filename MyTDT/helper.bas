@@ -8,7 +8,7 @@
 sub hexdump(mem as any ptr, lenny as UInteger, elemsize as UInteger)
   'Courtesy of Grapus
   'http://grapsus.net/blog/post/Hexadecimal-dump-in-C
-  #define HEXDUMP_COLS 17
+  #define HEXDUMP_COLS 16
   dim as UByte ptr chmem = cast(UByte ptr, mem)
   dim as UInteger i, j
   lenny *= elemsize
