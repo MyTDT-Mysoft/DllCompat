@@ -1,14 +1,16 @@
 #define fbc -dll -Wl "credux.dll.def" -x ..\bin\credux.dll
 
 #include "windows.bi"
+#include "win\Objbase.bi"
 
-#include "..\win\credux.bi"
-#include "..\win\wincred.bi"
 #include "..\MyTDT\detour.bas"
+'#include "..\MyTDT\helper.bas"
+#include "..\win\credui.bi"
+#include "..\win\wincred.bi"
 
 
 
-function TreatCredFlags(inflags as DWORD, outflags as DWORD ptr) as DWORD
+function TreatPromptFlags(inflags as DWORD, outflags as DWORD ptr) as DWORD
   *outflags = &H00
   'flag mapping
   if inflags and CREDUIWIN_GENERIC then
@@ -38,11 +40,10 @@ function TreatCredFlags(inflags as DWORD, outflags as DWORD ptr) as DWORD
   if inflags and CREDUIWIN_PACK_32_WOW then
     'irrelevant, winXP x86
   endif
-  
   'mutual exclusivity checks
-  'TODO: check what happens if we set such flags simultaneously, an replicate
-  'CREDUIWIN_GENERIC !! SECURE_PROMPT
-  'CREDUIWIN_AUTHPACKAGE_ONLY !! CREDUIWIN_IN_CRED_ONLY
+  'TODO: check what happens if we set such flags simultaneously, and replicate
+  'CREDUIWIN_GENERIC or CREDUIWIN_SECURE_PROMPT 'works and probably ignores secure prompt
+  'CREDUIWIN_AUTHPACKAGE_ONLY or CREDUIWIN_IN_CRED_ONLY 'inconclusive
   return ERROR_SUCCESS
 end function
 
@@ -57,23 +58,19 @@ extern "windows-ms"
   #define P7 pulOutAuthBufferSize as ULONG ptr
   #define P8 pfSave as BOOL ptr
   #define P9 dwFlags as DWORD
+  #undef CredUIPromptForWindowsCredentialsW
   function CredUIPromptForWindowsCredentialsW(P1, P2, P3, P4, P5, P6, P7, P8, P9) as DWORD export
-    var retVal
     dim as DWORD newFlags
     dim as wstring*(CREDUI_MAX_USERNAME_LENGTH+1)      usernameBuf
     dim as wstring*(CREDUI_MAX_PASSWORD_LENGTH+1)      passwordBuf
     dim as wstring*(CREDUI_MAX_DOMAIN_TARGET_LENGTH+1) domainBuf
-    var maxUserName = CREDUI_MAX_USERNAME_LENGTH
-    var maxPassword = CREDUI_MAX_PASSWORD_LENGTH
-    var maxDomain   = CREDUI_MAX_DOMAIN_TARGET_LENGTH
-    
-    SecureZeroMemory(usernameBuf, CREDUI_MAX_USERNAME_LENGTH)
-    SecureZeroMemory(passwordBuf, CREDUI_MAX_PASSWORD_LENGTH)
-    SecureZeroMemory(domainBuf  , CREDUI_MAX_DOMAIN_TARGET_LENGTH)
+    SecureZeroMemory(@usernameBuf, 2*CREDUI_MAX_USERNAME_LENGTH+2)
+    SecureZeroMemory(@passwordBuf, 2*CREDUI_MAX_PASSWORD_LENGTH+2)
+    SecureZeroMemory(@domainBuf  , 2*CREDUI_MAX_DOMAIN_TARGET_LENGTH+2)
     
     'TODO: deal with pulling user and pass from pvInAuthBuffer
     'dwFlags of these two fucntions are NOT the same
-    var retErr = treatcredflags(dwFlags, @newFlags)
+    var retErr = TreatPromptFlags(dwFlags, @newFlags)
     if retErr <> ERROR_SUCCESS then
       'TODO: return proper error according to flag
       return ERROR_OUT_OF_PAPER
@@ -94,10 +91,24 @@ extern "windows-ms"
     P9  save as WINBOOL ptr,
     P10 dwFlags as DWORD
     '/
-    retVal = CredUIPromptForCredentialsW(pUiInfo, @domainBuf, NULL, dwAuthError, @usernameBuf, P6, @pszPassword, P8, pfSave, newFlags)
-    SecureZeroMemory(usernameBuf, CREDUI_MAX_USERNAME_LENGTH)
-    SecureZeroMemory(passwordBuf, CREDUI_MAX_PASSWORD_LENGTH)
-    SecureZeroMemory(domainBuf  , CREDUI_MAX_DOMAIN_TARGET_LENGTH)
+    var retVal = CredUIPromptForCredentialsW(pUiInfo, @wstr("justworkdamnit"), NULL, dwAuthError, @usernameBuf, _
+                                             CREDUI_MAX_USERNAME_LENGTH+1, @passwordBuf, _
+                                             CREDUI_MAX_PASSWORD_LENGTH+1, pfSave, newFlags)
+    var userlen = 2*wcslen(@usernameBuf) + 2
+    var passlen = 2*wcslen(@passwordBuf) + 2
+    var domainlen = 2*wcslen(@domainBuf) + 2
+    
+    
+    *pulOutAuthBufferSize = userlen + passlen + domainlen
+    *ppvOutAuthBuffer = CoTaskMemAlloc(*pulOutAuthBufferSize)
+    memcpy(*ppvOutAuthBuffer,                 @usernameBuf, userlen)
+    memcpy(*ppvOutAuthBuffer+userlen,         @passwordBuf, passlen)
+    memcpy(*ppvOutAuthBuffer+userlen+passlen, @domainBuf, domainlen)
+    
+    
+    SecureZeroMemory(@usernameBuf, 2*CREDUI_MAX_USERNAME_LENGTH+2)
+    SecureZeroMemory(@passwordBuf, 2*CREDUI_MAX_PASSWORD_LENGTH+2)
+    SecureZeroMemory(@domainBuf  , 2*CREDUI_MAX_DOMAIN_TARGET_LENGTH+2)
     return retVal
   end function
   
@@ -111,9 +122,24 @@ extern "windows-ms"
   #define P7 pcchMaxDomainname as DWORD ptr
   #define P8 pszPassword as LPWSTR
   #define P9 pcchMaxPassword as DWORD ptr
+  #undef CredUnPackAuthenticationBufferW
   function CredUnPackAuthenticationBufferW (P1, P2, P3, P4, P5, P6, P7, P8, P9) as BOOL export
+    dim as UInteger usernameOff, passwordOff, domainOff
     'TODO: treat flags
-    return FALSE
+    'TODO: behaviour for insufficient output buffer sizes
+    'TODO: behaviour for incorrect input buffer size
+    usernameOff        = 0
+    *pcchMaxUserName   = wcslen(pAuthBuffer + usernameOff) + 1
+    passwordOff        = *pcchMaxUserName * 2
+    *pcchMaxPassword   = wcslen(pAuthBuffer + passwordOff) + 1
+    domainOff          = passwordOff + *pcchMaxPassword * 2
+    *pcchMaxDomainname = wcslen(pAuthBuffer + *pcchMaxUserName + *pcchMaxPassword) + 1
+    
+    memcpy(pszUserName,   (pAuthBuffer + usernameOff), *pcchMaxUserName * 2)
+    memcpy(pszPassword,   (pAuthBuffer + passwordOff), *pcchMaxPassword * 2)
+    memcpy(pszDomainName, (pAuthBuffer + domainOff), *pcchMaxDomainname * 2)
+    
+    return TRUE
   end function
 end extern
 

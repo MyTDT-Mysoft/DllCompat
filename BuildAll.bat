@@ -6,7 +6,7 @@ set fbc=f:\fb15\fbc.exe
 IF NOT EXIST bin\ mkdir bin\
 del bin\* /Q
 
-rem call :compile credux
+call :compile credux
 call :compile advapi3x
 call :compile gdi3x
 call :compile kernel3x

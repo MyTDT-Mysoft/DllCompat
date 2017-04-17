@@ -2,6 +2,8 @@
 #include "win\combaseapi.bi"
 #include "win\winerror.bi"
 
+#include "..\MyTDT\detour.bas"
+#include "..\MyTDT\helper.bas"
 #include "..\win\wincred.bi"
 #include "..\win\credui.bi"
 
@@ -16,7 +18,7 @@ with credui
   .hbmBanner      = NULL '320x60
 end With
 dim as uint authPackage = 0
-dim as any ptr outCredBuffer
+dim as any ptr outCredBuffer = 0
 dim as uint outCredSize
 dim as bool save = false
 dim as wstring*(CREDUI_MAX_USERNAME_LENGTH+1) usernameBuf
@@ -36,7 +38,7 @@ promptresult = CredUIPromptForWindowsCredentialsW(@credui, 0, @authPackage, NULL
 'CredUIPromptForWindowsCredentials does not and returns error value directly
 'ANSI version of CredUIPromptForWindowsCredentials does not seem to work and always returns error code 31.
 if promptresult = ERROR_SUCCESS then
-  fwrite(outCredBuffer, outCredSize, 1, stdout)
+  hexdump(outCredBuffer, outCredSize, 1)
   print ""
   unpackresult = CredUnPackAuthenticationBufferW(0, outCredBuffer, outCredSize, @usernameBuf, @maxUserName, @domainBuf, @maxDomain, @passwordBuf, @maxPassword)
   if unpackresult Then
