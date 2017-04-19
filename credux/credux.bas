@@ -61,12 +61,10 @@ extern "windows-ms"
   #undef CredUIPromptForWindowsCredentialsW
   function CredUIPromptForWindowsCredentialsW(P1, P2, P3, P4, P5, P6, P7, P8, P9) as DWORD export
     dim as DWORD newFlags
+    'FreeBasic apparently zeroes things for me
     dim as wstring*(CREDUI_MAX_USERNAME_LENGTH+1)      usernameBuf
     dim as wstring*(CREDUI_MAX_PASSWORD_LENGTH+1)      passwordBuf
     dim as wstring*(CREDUI_MAX_DOMAIN_TARGET_LENGTH+1) domainBuf
-    SecureZeroMemory(@usernameBuf, 2*CREDUI_MAX_USERNAME_LENGTH+2)
-    SecureZeroMemory(@passwordBuf, 2*CREDUI_MAX_PASSWORD_LENGTH+2)
-    SecureZeroMemory(@domainBuf  , 2*CREDUI_MAX_DOMAIN_TARGET_LENGTH+2)
     
     'TODO: deal with pulling user and pass from pvInAuthBuffer
     'dwFlags of these two fucntions are NOT the same
@@ -75,9 +73,6 @@ extern "windows-ms"
       'TODO: return proper error according to flag
       return ERROR_OUT_OF_PAPER
     endif
-    
-    
-    
     
     /'
     P1  pUiInfo as PCREDUI_INFOW,
@@ -101,10 +96,13 @@ extern "windows-ms"
     
     *pulOutAuthBufferSize = userlen + passlen + domainlen
     *ppvOutAuthBuffer = CoTaskMemAlloc(*pulOutAuthBufferSize)
-    memcpy(*ppvOutAuthBuffer,                 @usernameBuf, userlen)
-    memcpy(*ppvOutAuthBuffer+userlen,         @passwordBuf, passlen)
-    memcpy(*ppvOutAuthBuffer+userlen+passlen, @domainBuf, domainlen)
-    
+    if *ppvOutAuthBuffer then
+      memcpy(*ppvOutAuthBuffer,                 @usernameBuf, userlen)
+      memcpy(*ppvOutAuthBuffer+userlen,         @passwordBuf, passlen)
+      memcpy(*ppvOutAuthBuffer+userlen+passlen, @domainBuf, domainlen)
+    else
+      retVal = ERROR_NOT_ENOUGH_MEMORY
+    endif
     
     SecureZeroMemory(@usernameBuf, 2*CREDUI_MAX_USERNAME_LENGTH+2)
     SecureZeroMemory(@passwordBuf, 2*CREDUI_MAX_PASSWORD_LENGTH+2)
