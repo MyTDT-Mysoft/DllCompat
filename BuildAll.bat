@@ -14,6 +14,7 @@ call :compile msvcrx
 call :compile opengl3x
 call :compile powrprox
 call :compile shell3x
+rem call :compile user3x
 call :compile vcruntime140
 call :compile ws2_3x
 
