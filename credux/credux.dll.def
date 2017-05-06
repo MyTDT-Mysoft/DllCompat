@@ -1,19 +1,19 @@
-LIBRARY Credux.dll
+LIBRARY credux.dll
 EXPORTS
-CredUICmdLinePromptForCredentialsA = Credui.CredUICmdLinePromptForCredentialsA
-CredUICmdLinePromptForCredentialsW = Credui.CredUICmdLinePromptForCredentialsW
-CredUIConfirmCredentialsA = Credui.CredUIConfirmCredentialsA
-CredUIConfirmCredentialsW = Credui.CredUIConfirmCredentialsW
-CredUIInitControls = Credui.CredUIInitControls
-CredUIParseUserNameA = Credui.CredUIParseUserNameA
-CredUIParseUserNameW = Credui.CredUIParseUserNameW
-CredUIPromptForCredentialsA = Credui.CredUIPromptForCredentialsA
-CredUIPromptForCredentialsW = Credui.CredUIPromptForCredentialsW
-CredUIReadSSOCredA = Credui.CredUIReadSSOCredA
-CredUIReadSSOCredW = Credui.CredUIReadSSOCredW
-CredUIStoreSSOCredA = Credui.CredUIStoreSSOCredA
-CredUIStoreSSOCredW = Credui.CredUIStoreSSOCredW
-DllCanUnloadNow = Credui.DllCanUnloadNow
-DllGetClassObject = Credui.DllGetClassObject
-DllRegisterServer = Credui.DllRegisterServer
-DllUnregisterServer = Credui.DllUnregisterServer
+CredUICmdLinePromptForCredentialsA = credui.CredUICmdLinePromptForCredentialsA @1
+CredUICmdLinePromptForCredentialsW = credui.CredUICmdLinePromptForCredentialsW @2
+CredUIConfirmCredentialsA = credui.CredUIConfirmCredentialsA @3
+CredUIConfirmCredentialsW = credui.CredUIConfirmCredentialsW @4
+CredUIInitControls = credui.CredUIInitControls @5
+CredUIParseUserNameA = credui.CredUIParseUserNameA @6
+CredUIParseUserNameW = credui.CredUIParseUserNameW @7
+CredUIPromptForCredentialsA = credui.CredUIPromptForCredentialsA @8
+CredUIPromptForCredentialsW = credui.CredUIPromptForCredentialsW @9
+CredUIReadSSOCredA = credui.CredUIReadSSOCredA @10
+CredUIReadSSOCredW = credui.CredUIReadSSOCredW @11
+CredUIStoreSSOCredA = credui.CredUIStoreSSOCredA @12
+CredUIStoreSSOCredW = credui.CredUIStoreSSOCredW @13
+DllCanUnloadNow = credui.DllCanUnloadNow @14
+DllGetClassObject = credui.DllGetClassObject @15
+DllRegisterServer = credui.DllRegisterServer @16
+DllUnregisterServer = credui.DllUnregisterServer @17
