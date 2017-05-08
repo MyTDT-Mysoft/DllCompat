@@ -117,3 +117,5 @@ sendto = ws2_32.sendto @20
 setsockopt = ws2_32.setsockopt @21
 shutdown = ws2_32.shutdown @22
 socket = ws2_32.socket @23
+
+inet_ntop

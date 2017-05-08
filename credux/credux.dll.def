@@ -17,3 +17,6 @@ DllCanUnloadNow = credui.DllCanUnloadNow @14
 DllGetClassObject = credui.DllGetClassObject @15
 DllRegisterServer = credui.DllRegisterServer @16
 DllUnregisterServer = credui.DllUnregisterServer @17
+
+CredUIPromptForWindowsCredentialsW
+CredUnPackAuthenticationBufferW

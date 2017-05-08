@@ -610,3 +610,6 @@ bInitSystemAndFontsDirectoriesW = gdi32.bInitSystemAndFontsDirectoriesW @607
 bMakePathNameW = gdi32.bMakePathNameW @608
 cGetTTFFromFOT = gdi32.cGetTTFFromFOT @609
 gdiPlaySpoolStream = gdi32.gdiPlaySpoolStream @610
+
+D3DKMTCreateDCFromMemory
+D3DKMTDestroyDCFromMemory

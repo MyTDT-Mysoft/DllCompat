@@ -368,3 +368,6 @@ wglUseFontBitmapsA = opengl32.wglUseFontBitmapsA @365
 wglUseFontBitmapsW = opengl32.wglUseFontBitmapsW @366
 wglUseFontOutlinesA = opengl32.wglUseFontOutlinesA @367
 wglUseFontOutlinesW = opengl32.wglUseFontOutlinesW @368
+
+glGetString
+wglGetProcAddress

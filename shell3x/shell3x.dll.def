@@ -309,3 +309,5 @@ StrStrW = shell32.StrStrW @395
 WOWShellExecute = shell32.WOWShellExecute @396
 Win32DeleteFile = shell32.Win32DeleteFile @164
 WriteCabinetState = shell32.WriteCabinetState @652
+
+SHGetKnownFolderPath

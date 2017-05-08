@@ -677,3 +677,6 @@ WmiSetSingleItemA = advapi32.WmiSetSingleItemA @674
 WmiSetSingleItemW = advapi32.WmiSetSingleItemW @675
 Wow64Win32ApiEntry = advapi32.Wow64Win32ApiEntry @676
 WriteEncryptedFileRaw = advapi32.WriteEncryptedFileRaw @677
+
+RegGetValueA
+RegGetValueW

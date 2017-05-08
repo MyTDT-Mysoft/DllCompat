@@ -732,3 +732,7 @@ wsprintfA = user32.wsprintfA @729
 wsprintfW = user32.wsprintfW @730
 wvsprintfA = user32.wvsprintfA @731
 wvsprintfW = user32.wvsprintfW @732
+
+CloseTouchInputHandle
+GetTouchInputInfo
+RegisterTouchWindow

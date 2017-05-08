@@ -956,3 +956,18 @@ lstrlenA = kernel32.lstrlenA @953
 lstrlenW = kernel32.lstrlenW @954
 
 GetLogicalProcessorInformation @369
+
+InitOnceExecuteOnce
+InitializeConditionVariable
+SleepConditionVariableCS
+WakeAllConditionVariable
+WakeConditionVariable
+InterlockedCompareExchange64
+InitializeCriticalSectionEx
+GetSystemDefaultLocaleName
+GetVersionExW
+GetVersionExA
+VerifyVersionInfoW
+VerifyVersionInfoA
+GetThreadId
+GetFinalPathNameByHandleW
