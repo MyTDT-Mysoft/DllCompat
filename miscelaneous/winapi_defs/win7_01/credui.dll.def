@@ -1,0 +1,32 @@
+LIBRARY credui.dll
+EXPORTS
+    CredPackAuthenticationBufferA    @1
+    CredPackAuthenticationBufferW    @2
+    CredUICmdLinePromptForCredentialsA    @3
+    CredUICmdLinePromptForCredentialsW    @4
+    CredUIConfirmCredentialsA    @5
+    CredUIConfirmCredentialsW    @6
+    CredUIInitControls    @7
+    CredUIParseUserNameA    @8
+    CredUIParseUserNameW    @9
+    CredUIPromptForCredentialsA    @10
+    CredUIPromptForCredentialsW    @11
+    CredUIPromptForWindowsCredentialsA    @12
+    CredUIPromptForWindowsCredentialsW    @13
+    CredUIPromptForWindowsCredentialsWorker    @14
+    CredUIReadSSOCredA    @15
+    CredUIReadSSOCredW    @16
+    CredUIStoreSSOCredA    @17
+    CredUIStoreSSOCredW    @18
+    CredUnPackAuthenticationBufferA    @19
+    CredUnPackAuthenticationBufferW    @20
+    DllCanUnloadNow    @21
+    DllGetClassObject    @22
+    DllRegisterServer    @23
+    DllUnregisterServer    @24
+    SspiGetCredUIContext    @25
+    SspiIsPromptingNeeded    @26
+    SspiPromptForCredentialsA    @27
+    SspiPromptForCredentialsW    @28
+    SspiUnmarshalCredUIContext    @29
+    SspiUpdateCredentials    @30

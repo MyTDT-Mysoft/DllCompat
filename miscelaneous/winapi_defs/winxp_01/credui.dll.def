@@ -1,0 +1,19 @@
+LIBRARY credui.dll
+EXPORTS
+    CredUICmdLinePromptForCredentialsA    @1
+    CredUICmdLinePromptForCredentialsW    @2
+    CredUIConfirmCredentialsA    @3
+    CredUIConfirmCredentialsW    @4
+    CredUIInitControls    @5
+    CredUIParseUserNameA    @6
+    CredUIParseUserNameW    @7
+    CredUIPromptForCredentialsA    @8
+    CredUIPromptForCredentialsW    @9
+    CredUIReadSSOCredA    @10
+    CredUIReadSSOCredW    @11
+    CredUIStoreSSOCredA    @12
+    CredUIStoreSSOCredW    @13
+    DllCanUnloadNow    @14
+    DllGetClassObject    @15
+    DllRegisterServer    @16
+    DllUnregisterServer    @17
