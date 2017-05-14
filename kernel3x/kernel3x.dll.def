@@ -957,6 +957,7 @@ lstrlenW = kernel32.lstrlenW @954
 
 GetLogicalProcessorInformation @369
 
+K32GetModuleInformation = psapi.GetModuleInformation
 InitOnceExecuteOnce
 InitializeConditionVariable
 SleepConditionVariableCS
