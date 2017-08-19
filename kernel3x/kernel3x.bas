@@ -9,6 +9,7 @@
 #include "win\winnls.bi"
 #include "..\MyTDT\detour.bas"
 #include "..\NtDll\wintern.bi"
+#include "..\MyTDT\helper.bas"
 
 dim shared as any ptr pInitMutex
 pInitMutex = CreateMutex(NULL,FALSE,NULL)
@@ -421,6 +422,23 @@ extern "windows-ms"
       
 
     end if
+  end function
+  
+  function GetTickCount64() as ulongint export
+    dim as ulongint ulFreq = any, ulCounter = any 
+    QueryPerformanceFrequency( cptr(LARGE_INTEGER ptr,@ulFreq ) )
+    QueryPerformanceCounter( cptr(LARGE_INTEGER ptr,@ulCounter ) )
+    return ulCounter\(ulFreq\1000)
+  end function
+  
+  function GetNumaNodeProcessorMaskEx( Node as ushort , ProcessorMask as GROUP_AFFINITY ptr ) as integer export
+    MacroStubFunction()
+    return 0
+  end function
+  
+  function SetThreadGroupAffinity(hThread as HANDLE, GroupAffinity as GROUP_AFFINITY ptr , PGROUP_AFFINITY as GROUP_AFFINITY ptr) as integer export
+    MacroStubFunction()
+    return 0    
   end function
   
 end extern

@@ -1,9 +1,26 @@
 #include "crt\stdio.bi"
 #include "crt\ctype.bi"
 
+' **************************************************************************
+' ******* this is for functions that you implemented but couldnt test ******
+' ******* or functions that you didnt implemented because they were ********
+' ******** not called under normal circunstances, but were imported ********
+' ******* they use messagebox() to show that they must be implemented ******
+' **************************************************************************
+
 #macro UnimplementedFunction()
   messagebox(null, __FUNCTION__ " called. but not implemented", "DllCompat", MB_SYSTEMMODAL or MB_ICONINFORMATION)
 #endmacro
+
+' **************************************************************************
+' ****** this is for functions that are not implemented because their ******
+' ****** implementation uses stuff that is not normally on hardware ********
+' ********** like actual multi-processors or outdated mediums **************
+' **************************************************************************
+
+#define MacroStubFunction() OutputDebugString( __FUNCTION__ " was called but it's a stub... " )
+
+  
 
 sub hexdump(mem as any ptr, lenny as UInteger, elemsize as UInteger)
   'Courtesy of Grapus
