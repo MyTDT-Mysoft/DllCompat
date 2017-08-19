@@ -18,9 +18,21 @@
 ' ********** like actual multi-processors or outdated mediums **************
 ' **************************************************************************
 
-#define MacroStubFunction() OutputDebugString( __FUNCTION__ " was called but it's a stub... " )
+#define MacroStubFunction() OutputDebugString( __FUNCTION__ !" was called but it's a stub... \r\n" )
 
-  
+' **************************************************************************
+' **************************************************************************
+
+#macro TRACE( _STRING , _PARMS... )
+  scope
+    dim as zstring*4096 zDebug
+    sprintf(zDebug, __FUNCTION__ ":%i - " & _STRING & !"\r\n" , __LINE__ , _PARMS )
+    OutputDebugString( zDebug )
+  end scope
+#endmacro
+
+' **************************************************************************
+' **************************************************************************  
 
 sub hexdump(mem as any ptr, lenny as UInteger, elemsize as UInteger)
   'Courtesy of Grapus
