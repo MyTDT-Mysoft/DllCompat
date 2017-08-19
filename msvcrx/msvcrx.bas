@@ -112,3 +112,6 @@ function _ftol2_sse naked cdecl alias "_ftol2_sse" (fNum as double) as long expo
     ret
   end asm
 end function
+
+common shared as long _ADJUST_FDIV
+_ADJUST_FDIV = 0

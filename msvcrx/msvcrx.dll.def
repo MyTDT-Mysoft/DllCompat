@@ -1979,3 +1979,5 @@ _ftime = msvcr120._ftime32
 _wstati64 = msvcr120._wstat32i64
 mktime = msvcr120._mktime32
 gmtime = msvcr120._gmtime32
+
+_adjust_fdiv = _ADJUST_FDIV
