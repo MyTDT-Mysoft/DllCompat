@@ -1,0 +1,66 @@
+States:
+    Implementation: full, partial, dummy, TODO
+    Other: testme, fixme
+
+advapi3x
+    RegGetValueA
+    RegGetValueW
+credux
+    CredUIPromptForWindowsCredentialsW              partial
+    CredUnPackAuthenticationBufferW                 partial
+gdi3x
+    D3DKMTCreateDCFromMemory
+    D3DKMTDestroyDCFromMemory
+kernel3x
+    _GetThreadId
+    _GetVersionExW
+    _GetVersionExA
+    _VerifyVersionInfoW
+    _VerifyVersionInfoA
+    CancelIoEx                                      TODO
+    GetFileInformationByHandleEx                    TODO
+    GetFinalPathNameByHandleW
+    GetLogicalProcessorInformation
+    GetNumaNodeProcessorMaskEx                      dummy
+    GetSystemDefaultLocaleName
+    GetTickCount64                                              testme
+    GetUserPreferredUILanguages                     TODO
+    InitializeConditionVariable
+    InitializeCriticalSectionEx
+    InitOnceExecuteOnce
+    InterlockedCompareExchange64
+    SetThreadGroupAffinity                          dummy
+    SleepConditionVariableCS
+    WakeAllConditionVariable
+    WakeConditionVariable
+msvcrx
+    _adjust_fdiv                                    full
+    _time
+    _ftol2
+    _ftol2_sse
+opengl3x
+    _glGetString
+    _wglGetProcAddress
+powrprox
+    PowerGetActiveScheme                            dummy
+    PowerSetActiveScheme                            dummy
+shell3x
+    SHGetKnownFolderPath                                        testme
+user3x
+    CloseTouchInputHandle                           dummy
+    GetTouchInputInfo                               dummy
+    RegisterTouchWindow                             dummy
+ws2_3x
+    inet_ntop
+    inet_pton                                       TODO
+
+
+;vcruntime140
+;uxtheme
+    DrawThemeTextEx                                 TODO
+    GetThemeTransitionDuration                      TODO
+    SetWindowThemeAttribute                         TODO
+;dwmapi.dll
+    DwmDefWindowProc                                TODO
+    DwmExtendFrameIntoClientArea                    TODO
+    DwmIsCompositionEnabled                         TODO
