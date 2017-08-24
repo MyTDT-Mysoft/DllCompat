@@ -8,7 +8,7 @@
 #include "windows.bi"
 #include "win\winnls.bi"
 #include "shared\detour.bas"
-#include "includes\wintern.bi"
+#include "includes\win\wintern.bi"
 #include "shared\helper.bas"
 
 dim shared as any ptr pInitMutex

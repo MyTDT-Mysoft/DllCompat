@@ -3,7 +3,6 @@
 
 #include "windows.bi"
 #include "shared\helper.bas"
-'#include "shared\detour.bas"
 
 #ifndef HGESTUREINFO
   type HGESTUREINFO as HANDLE
