@@ -1,25 +1,6 @@
 #include once "windows.bi"
 #include once "crt.bi"
 
-#macro UndefAllParams()
-  #undef P1
-  #undef P2
-  #undef P3
-  #undef P4
-  #undef P5
-  #undef P6
-  #undef P7
-  #undef P8
-  #undef P9
-  #undef P10
-  #undef P11
-  #undef P12
-  #undef P13
-  #undef P14
-  #undef P15
-  #undef P16
-#endmacro
-
 #define SetDetourLibrary(zDll_) DetourFunction(zDll_,0,0)
 #macro CreateDetour(zFunc_)
   pf##zFunc_ = DetourFunction(0,#zFunc_,@##zFunc_##_Detour)
