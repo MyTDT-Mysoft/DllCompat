@@ -1,11 +1,11 @@
-#define fbc -dll -Wl "gdi3x.dll.def" -x ..\bin\gdi3x.dll
+#define fbc -dll -Wl "gdi3x.dll.def" -x ..\..\..\bin\dll\gdi3x.dll -i ..\..\
 
 '#define CaveManDebug OutputDebugString
 #define CaveManDebug rem
 
 #include "windows.bi"
 #include "win\ddk\ddk_ntstatus.bi"
-#include "..\MyTDT\Helper.bas"
+#include "shared\helper.bas"
 #include "crt\limits.bi"
 #include "GdiDib.bas"
 

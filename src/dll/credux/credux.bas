@@ -1,12 +1,11 @@
-#define fbc -dll -Wl "credux.dll.def" -x ..\bin\credux.dll
+#define fbc -dll -Wl "credux.dll.def" -x ..\..\..\bin\dll\credux.dll -i ..\..\
 
 #include "windows.bi"
 #include "win\Objbase.bi"
 
-#include "..\MyTDT\detour.bas"
-'#include "..\MyTDT\helper.bas"
-#include "..\win\credui.bi"
-#include "..\win\wincred.bi"
+#include "shared\helper.bas"
+#include "includes\credui.bi"
+#include "includes\wincred.bi"
 
 
 

@@ -1,4 +1,4 @@
-#define fbc -dll -Wl "kernel3x.dll.def" -x ..\bin\kernel3x.dll
+#define fbc -dll -Wl "kernel3x.dll.def" -x ..\..\..\bin\dll\kernel3x.dll -i ..\..\
 
 #define DebugFailedCalls
 
@@ -7,9 +7,9 @@
 
 #include "windows.bi"
 #include "win\winnls.bi"
-#include "..\MyTDT\detour.bas"
-#include "..\NtDll\wintern.bi"
-#include "..\MyTDT\helper.bas"
+#include "shared\detour.bas"
+#include "includes\wintern.bi"
+#include "shared\helper.bas"
 
 dim shared as any ptr pInitMutex
 pInitMutex = CreateMutex(NULL,FALSE,NULL)

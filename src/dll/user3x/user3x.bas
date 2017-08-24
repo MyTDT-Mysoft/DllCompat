@@ -1,9 +1,9 @@
-#define fbc -dll -Wl "user3x.dll.def" -x ..\bin\user3x.dll
+#define fbc -dll -Wl "user3x.dll.def" -x ..\..\bin\dll\user3x.dll -i ..\..\
 #include "user3x.bi"
 
 #include "windows.bi"
-#include "..\MyTDT\helper.bas"
-'#include "..\MyTDT\detour.bas"
+#include "shared\helper.bas"
+'#include "shared\detour.bas"
 
 #ifndef HGESTUREINFO
   type HGESTUREINFO as HANDLE

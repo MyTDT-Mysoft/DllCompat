@@ -1,8 +1,8 @@
-#define fbc -dll -Wl "advapi3x.dll.def" -x ..\bin\advapi3x.dll
+#define fbc -dll -Wl "advapi3x.dll.def" -x ..\..\bin\dll\advapi3x.dll -i ..\..\
 
 #include "windows.bi"
 #include "crt.bi"
-#include "..\MyTDT\detour.bas"
+#include "shared\helper.bas"
 
 #define DebugFailedCalls
 #define DebugBox(_MSG) Messagebox(null,_MSG,__FUNCTION__ ":" & __LINE__,MB_SYSTEMMODAL or MB_ICONERROR)

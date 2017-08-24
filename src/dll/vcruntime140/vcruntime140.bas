@@ -1,9 +1,9 @@
-#define fbc -dll -Wl "vcruntime140.dll.def" -x ..\bin\vcruntime140.dll
+#define fbc -dll -Wl "vcruntime140.dll.def" -x ..\..\bin\dll\vcruntime140.dll -i ..\..\
 
 '#define MyDebug
 
 #include "windows.bi"
-#include "..\MyTDT\detour.bas"
+#include "shared\helper.bas"
 
 #ifdef MyDebug
 Messagebox(null,"Python Program Started","Block Wallpaper",MB_SYSTEMMODAL or MB_ICONINFORMATION)
