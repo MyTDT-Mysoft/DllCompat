@@ -1,5 +1,5 @@
 #include "windows.bi"
-#include "..\win\wincred.bi"
+#include "includes\win\wincred.bi"
 
 dim as CREDUI_INFOW tCredUi
 

@@ -2,10 +2,9 @@
 #include "win\combaseapi.bi"
 #include "win\winerror.bi"
 
-#include "..\MyTDT\detour.bas"
-#include "..\MyTDT\helper.bas"
-#include "..\win\wincred.bi"
-#include "..\win\credui.bi"
+#include "shared\helper.bas"
+#include "includes\win\wincred.bi"
+#include "includes\win\credui.bi"
 
 #inclib "ole32"
 

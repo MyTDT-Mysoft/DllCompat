@@ -1,5 +1,5 @@
 #include "windows.bi"
-#include "..\NtDll\wintern.bi"
+#include "includes\win\wintern.bi"
 
 '#include "inc\win\ddk\winddk.bi"
 
