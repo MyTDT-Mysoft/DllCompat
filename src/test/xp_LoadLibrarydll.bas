@@ -1,4 +1,4 @@
-#define fbc -s gui res\LoadLibrary_dlltest.rc
+#define fbc -s gui res\xp_LoadLibrarydll.rc
 #include "windows.bi"
 
 var sAPP = "DllTest v0.1 By Mysoft"
