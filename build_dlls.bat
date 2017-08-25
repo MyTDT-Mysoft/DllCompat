@@ -18,8 +18,10 @@ shift /1
 if not "%~1" EQU "" goto :comploop
 
 :donecomp
-echo Copying DLLs to windir
-copy %binpath%\*x.dll %windir% /Y
+echo Generating TlsDeps.dll
+copy %srcpath%\kernel3x\TlsDeps\TlsDeps_Empty.dll %binpath%\TlsDeps.dll /Y
+echo Copying DLLs to windir (NO!) 
+rem copy %binpath%\*x.dll %windir% /Y
 :cleanup
 echo Cleaning compile residue
 del %binpath%\*.dll.a /Q
