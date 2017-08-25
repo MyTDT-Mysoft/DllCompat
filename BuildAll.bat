@@ -1,33 +1,30 @@
 @echo off
 setlocal
 
-set fbc=f:\fb15\fbc.exe
-set type=dll
+set params=advapi3x credux gdi3x kernel3x msvcrx opengl3x powrprox shell3x user3x vcruntime140 ws2_3x
+set settfile=compile.ini
+set binpath=bin\dll
+set srcpath=src\dll
 
-IF NOT EXIST bin\%type% mkdir bin\%type%
-del bin\%type%\* /Q
+for /f "delims== tokens=1,2" %%G in (%settfile%) do set %%G=%%H
+IF NOT EXIST %binpath% mkdir %binpath%
+del %binpath%\* /Q
+call :comploop %params%
+goto :eof
 
-::goto :donecomp
-call :compile advapi3x
-call :compile credux
-call :compile gdi3x
-call :compile kernel3x
-call :compile msvcrx
-call :compile opengl3x
-call :compile powrprox
-call :compile shell3x
-call :compile user3x
-call :compile vcruntime140
-call :compile ws2_3x
+:comploop
+call :compile %1
+shift /1
+if not "%~1" EQU "" goto :comploop
 
 :donecomp
 echo Copying DLLs to windir
-copy bin\%type%\*x.dll %windir% /Y
+copy %binpath%\*x.dll %windir% /Y
 :cleanup
 echo Cleaning compile residue
-del bin\%type%\*.dll.a /Q
-del bin\%type%\*.o /Q
-del bin\%type%\*.s /Q
+del %binpath%\*.dll.a /Q
+del %binpath%\*.o /Q
+del %binpath%\*.s /Q
 endlocal
 pause
 goto :eof
@@ -39,9 +36,11 @@ goto :cleanup
 
 :compile
 echo compiling %1
-pushd .\src\%type%\%1
-%fbc% -dll %1.bas -Wl "%1.dll.def" -x ..\..\..\bin\%type%\%1.dll -i ..\..\..\src
+pushd .\%srcpath%\%1
+%dllc_fbcpath% -dll %1.bas -Wl "%1.dll.def" -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src
 set err=%errorlevel%
 popd
 if %err% gtr 0 goto :Failed
 goto :eof
+
+:eof
