@@ -1,6 +1,6 @@
 *.o
 *.s
-*.exe
+bin/test/*.exe
 *.dll.a
 
 ZZZZZZZZZZZZZZZZ.bat
