@@ -2,10 +2,12 @@
 setlocal
 
 set fbc=f:\fb15\fbc.exe
+set type=dll
 
-IF NOT EXIST bin\ mkdir bin\
-del bin\* /Q
+IF NOT EXIST bin\%type% mkdir bin\%type%
+del bin\%type%\* /Q
 
+::goto :donecomp
 call :compile advapi3x
 call :compile credux
 call :compile gdi3x
@@ -20,31 +22,26 @@ call :compile ws2_3x
 
 :donecomp
 echo Copying DLLs to windir
-copy bin\*x.dll %windir% /Y
+copy bin\%type%\*x.dll %windir% /Y
 :cleanup
 echo Cleaning compile residue
-del bin\*.dll.a /Q
-del bin\*.o /Q
-del bin\*.s /Q
+del bin\%type%\*.dll.a /Q
+del bin\%type%\*.o /Q
+del bin\%type%\*.s /Q
 endlocal
+pause
 goto :eof
 
 :failed
 echo Compilation Failed...
-pause >nul
+rem pause >nul
 goto :cleanup
 
 :compile
 echo compiling %1
-rem %fbc% -dll %1\%1.bas -Wl "%1\%1.dll.def" -x bin\%1.dll
-rem set err=%errorlevel%
-
-echo %cd%
-pushd .\%1
-%fbc% -dll %1.bas -Wl "%1.dll.def" -x ..\bin\%1.dll
+pushd .\src\%type%\%1
+%fbc% -dll %1.bas -Wl "%1.dll.def" -x ..\..\..\bin\%type%\%1.dll -i ..\..\..\src
 set err=%errorlevel%
 popd
-echo %cd%
-
 if %err% gtr 0 goto :Failed
 goto :eof
