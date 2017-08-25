@@ -8,3 +8,4 @@ LF
 encoding
 
 test test test
+more testing
