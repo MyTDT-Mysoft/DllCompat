@@ -1,5 +1,6 @@
 #define fbc -dll -Wl "credux.dll.def" -x ..\..\..\bin\dll\credux.dll -i ..\..\
 
+#include "crt.bi"
 #include "windows.bi"
 #include "win\Objbase.bi"
 
