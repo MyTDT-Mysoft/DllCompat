@@ -3,7 +3,7 @@
 '#define MyDebug
 
 #include "windows.bi"
-#include "shared\helper.bas"
+#include "shared\detour.bas"
 
 #ifdef MyDebug
 Messagebox(null,"Python Program Started","Block Wallpaper",MB_SYSTEMMODAL or MB_ICONINFORMATION)
