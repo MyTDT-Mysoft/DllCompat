@@ -1,0 +1,8 @@
+Shim engine usage example
+https://gist.github.com/ithurricane/0a4aa5fa7cd9614537b1
+
+Alex Ionescu - Secrets of the Application Compatilibity Database (SDB)
+http://www.alex-ionescu.com/?p=39
+http://www.alex-ionescu.com/?p=40
+http://www.alex-ionescu.com/?p=41
+http://www.alex-ionescu.com/?p=43
