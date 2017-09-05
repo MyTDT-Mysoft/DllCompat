@@ -1,3 +1,6 @@
+PE/COFF file format specs.
+http://www.csn.ul.ie/%7Ecaolan/publink/winresdump/winresdump/doc/pefile.html
+
 Shim engine usage example
 https://gist.github.com/ithurricane/0a4aa5fa7cd9614537b1
 
