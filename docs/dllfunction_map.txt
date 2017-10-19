@@ -18,6 +18,10 @@ kernel3x
     _VerifyVersionInfoW
     _VerifyVersionInfoA
     CancelIoEx                                      TODO
+    FlsAlloc                                        dummy
+    FlsFree                                         dummy
+    FlsGetValue                                     dummy
+    FlsSetValue                                     dummy
     GetFileInformationByHandleEx                    TODO
     GetFinalPathNameByHandleW
     GetLogicalProcessorInformation
@@ -29,7 +33,10 @@ kernel3x
     InitializeCriticalSectionEx
     InitOnceExecuteOnce
     InterlockedCompareExchange64
+    LCMapStringEx                                   dummy
+    SetFileInformationByHandle                      dummy
     SetThreadGroupAffinity                          dummy
+    SetThreadStackGuarantee                         dummy
     SleepConditionVariableCS
     WakeAllConditionVariable
     WakeConditionVariable

@@ -441,6 +441,65 @@ extern "windows-ms"
     return 0    
   end function
   
+  'daily fiber intake
+  function FlsFree(dwFlsIndex as DWORD) as WINBOOL
+    UnimplementedFunction()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return 0
+  end function
+  
+  function FlsGetValue(dwFlsIndex as DWORD) as PVOID
+    UnimplementedFunction()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return 0
+  end function
+  
+  function FlsSetValue(dwFlsIndex as DWORD, lpFlsData as PVOID) as WINBOOL
+    UnimplementedFunction()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return 0
+  end function
+  
+  function FlsAlloc(lpCallback as PFLS_CALLBACK_FUNCTION) as DWORD
+    UnimplementedFunction()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return 0
+  end function
+  
+  UndefAllParams()
+  #define P1 hFile as HANDLE
+  #define P2 FileInformationClass as integer 'FILE_INFO_BY_HANDLE_CLASS
+  #define P3 lpFileInformation as LPVOID
+  #define P4 dwBufferSize as DWORD
+  function SetFileInformationByHandle(P1, P2, P3, P4) as WINBOOL
+    UnimplementedFunction()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return 0
+  end function
+  
+  #undef SetThreadStackGuarantee
+  function SetThreadStackGuarantee(StackSizeInBytes as ULONG ptr) as WINBOOL
+    UnimplementedFunction()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return 0
+  end function
+  
+  UndefAllParams()
+  #define P1 lpLocaleName as LPCWSTR
+  #define P2 dwMapFlags as DWORD
+  #define P3 lpSrcStr as LPCWSTR
+  #define P4 cchSrc as integer
+  #define P5 lpDestStr as LPWSTR
+  #define P6 cchDest as integer
+  #define P7 lpVersionInformation as LPNLSVERSIONINFO
+  #define P8 lpReserved as LPVOID
+  #define P9 sortHandle as LPARAM
+  function LCMapStringEx() as integer
+    UnimplementedFunction()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return 0
+  end function
+  
 end extern
 
 #if 0
