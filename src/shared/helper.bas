@@ -1,6 +1,11 @@
 #include "crt\stdio.bi"
 #include "crt\ctype.bi"
 
+#undef BOOL
+#undef WINBOOL
+type BOOL as integer
+type WINBOOL as integer
+
 #macro UndefAllParams()
   #undef P1
   #undef P2

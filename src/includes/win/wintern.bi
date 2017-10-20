@@ -3,6 +3,18 @@
 
 #inclib "ntdll"
 
+type FIBER
+  as PVOID FiberData
+  as _EXCEPTION_REGISTRATION_RECORD ExceptionList
+  as PVOID StackBase
+  as PVOID StackLimit
+  as PVOID DeallocationStack
+  as CONTEXT FiberContext
+  'win2k3
+  as ULONG GuaranteedStackBytes
+  as PVOID FlsData
+end type
+
 type UNICODE_STRING
   as USHORT      Length
   as USHORT      MaximumLength
