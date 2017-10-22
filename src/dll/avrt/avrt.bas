@@ -1,7 +1,6 @@
 #define fbc -dll -Wl "avrt.dll.def" -x ..\..\..\bin\dll\avrt.dll -i ..\..\
 
 #include "windows.bi"
-#include "win\winnls.bi"
 #include "shared\helper.bas"
 #include "includes\win\avrt.bi"
 #include "includes\win\extraerrs.bi"
@@ -13,7 +12,7 @@ extern "windows-ms"
   function AvQuerySystemResponsiveness(AvrtHandle as HANDLE, SystemResponsivenessValue as PULONG) as BOOL
     UnimplementedFunction()
     SetLastError(ERROR_OUT_OF_PAPER)
-    return 0
+    return FALSE
   end function
   
   UndefAllParams()
@@ -30,7 +29,7 @@ extern "windows-ms"
   function AvRtCreateThreadOrderingGroup(P1, P2, P3, P4) as BOOL
     UnimplementedFunction()
     SetLastError(ERROR_OUT_OF_PAPER)
-    return 0
+    return FALSE
   end function
   
   UndefAllParams()
@@ -42,7 +41,7 @@ extern "windows-ms"
   function AvRtCreateThreadOrderingGroupExA(P1, P2, P3, P4, P5) as BOOL
     UnimplementedFunction()
     SetLastError(ERROR_OUT_OF_PAPER)
-    return 0
+    return FALSE
   end function
   
   UndefAllParams()
@@ -54,7 +53,7 @@ extern "windows-ms"
   function AvRtCreateThreadOrderingGroupExW(P1, P2, P3, P4, P5) as BOOL
     UnimplementedFunction()
     SetLastError(ERROR_OUT_OF_PAPER)
-    return 0
+    return FALSE
   end function
   
   UndefAllParams()
@@ -62,7 +61,7 @@ extern "windows-ms"
   function AvRtDeleteThreadOrderingGroup(P1) as BOOL
     UnimplementedFunction()
     SetLastError(ERROR_OUT_OF_PAPER)
-    return 0
+    return FALSE
   end function
   
   UndefAllParams()
@@ -72,7 +71,7 @@ extern "windows-ms"
   function AvRtJoinThreadOrderingGroup(P1, P2, P3) as BOOL
     UnimplementedFunction()
     SetLastError(ERROR_OUT_OF_PAPER)
-    return 0
+    return FALSE
   end function
   
   UndefAllParams()
@@ -80,7 +79,7 @@ extern "windows-ms"
   function AvRtLeaveThreadOrderingGroup(P1) as BOOL
     UnimplementedFunction()
     SetLastError(ERROR_OUT_OF_PAPER)
-    return 0
+    return FALSE
   end function
   
   UndefAllParams()
@@ -88,7 +87,7 @@ extern "windows-ms"
   function AvRtWaitOnThreadOrderingGroup(P1) as BOOL
     UnimplementedFunction()
     SetLastError(ERROR_OUT_OF_PAPER)
-    return 0
+    return FALSE
   end function
   
   UndefAllParams()
@@ -150,6 +149,6 @@ extern "windows-ms"
   #define P1 AvrtHandle as HANDLE
   #define P2 Priority as AVRT_PRIORITY
   function AvSetMmThreadPriority(P1, P2) as BOOL
-    return 1
+    return FALSE
   end function
 end extern
