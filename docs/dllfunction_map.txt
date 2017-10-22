@@ -5,6 +5,21 @@ States:
 advapi3x
     RegGetValueA
     RegGetValueW
+avrt
+    AvQuerySystemResponsiveness                     dummy
+    AvRevertMmThreadCharacteristics                 dummy
+    AvRtCreateThreadOrderingGroup                   dummy
+    AvRtCreateThreadOrderingGroupExA                dummy
+    AvRtCreateThreadOrderingGroupExW                dummy
+    AvRtDeleteThreadOrderingGroup                   dummy
+    AvRtJoinThreadOrderingGroup                     dummy
+    AvRtLeaveThreadOrderingGroup                    dummy
+    AvRtWaitOnThreadOrderingGroup                   dummy
+    AvSetMmMaxThreadCharacteristicsA                dummy
+    AvSetMmMaxThreadCharacteristicsW                dummy
+    AvSetMmThreadCharacteristicsA                   dummy
+    AvSetMmThreadCharacteristicsW                   dummy
+    AvSetMmThreadPriority                           dummy
 credux
     CredUIPromptForWindowsCredentialsW              partial
     CredUnPackAuthenticationBufferW                 partial
