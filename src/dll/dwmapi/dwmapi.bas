@@ -1,8 +1,10 @@
 #define fbc -dll -Wl "dwmapi.dll.def" -x ..\..\..\bin\dll\dwmapi.dll -i ..\..\
 
 #include "windows.bi"
+#include "win\uxtheme.bi"
 #include "shared\helper.bas"
 #include "includes\win\dwmapi.bi"
+#include "includes\win\extraerrs.bi"
 
 extern "windows-ms"
   UndefAllParams()
@@ -131,7 +133,7 @@ extern "windows-ms"
   
   UndefAllParams()
   #define P1 hwnd as HWND
-  #define P2 cRefreshes as INT
+  #define P2 cRefreshes as integer
   #define P3 fRelative as BOOL
   function DwmModifyPreviousDxFrameDuration(P1, P2, P3) as HRESULT
     return S_OK
@@ -156,7 +158,7 @@ extern "windows-ms"
   
   UndefAllParams()
   #define P1 hwnd as HWND
-  #define P2 cRefreshes as INT
+  #define P2 cRefreshes as integer
   function DwmSetDxFrameDuration(P1, P2) as HRESULT
     return S_OK
   end function

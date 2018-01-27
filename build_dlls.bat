@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set params=advapi3x avrt credux gdi3x kernel3x msvcrx opengl3x powrprox shell3x user3x vcruntime140 ws2_3x
+set params=advapi3x avrt credux dwmapi gdi3x kernel3x msvcrx opengl3x powrprox shell3x user3x vcruntime140 ws2_3x
 rem set params=dwmapi
 set settfile=compile.ini
 set binpath=bin\dll
