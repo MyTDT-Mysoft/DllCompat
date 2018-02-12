@@ -30,16 +30,27 @@ extern "windows-ms"
     return FALSE
   end function
   
-  function GetGestureInfo ( hGestureInfo as HGESTUREINFO , pGestureInfo as PGESTUREINFO ) as BOOL export
+  function GetGestureInfo (hGestureInfo as HGESTUREINFO, pGestureInfo as PGESTUREINFO) as BOOL export
     MacroStubFunction()
     SetLastError(E_NOTIMPL)
     return false
   end function
   
-  function CloseGestureInfoHandle( hGestureInfo as HGESTUREINFO ) as BOOL export
+  function CloseGestureInfoHandle(hGestureInfo as HGESTUREINFO) as BOOL export
     MacroStubFunction()
     SetLastError(0)
     return true
   end function
-    
+  
+  function ChangeWindowMessageFilter(message as UINT, dwFlag as DWORD) as BOOL export
+    MacroStubFunction()
+    SetLastError(0)
+    return true
+  end function
+  
+  function ChangeWindowMessageFilterEx(hWnd as HWND, message as UINT, action as DWORD, pChangeFilterStruct as PCHANGEFILTERSTRUCT) as BOOL export
+    MacroStubFunction()
+    SetLastError(0)
+    return true
+  end function
 end extern

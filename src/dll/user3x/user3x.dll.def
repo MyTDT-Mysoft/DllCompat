@@ -736,3 +736,5 @@ wvsprintfW = user32.wvsprintfW @732
 CloseTouchInputHandle
 GetTouchInputInfo
 RegisterTouchWindow
+ChangeWindowMessageFilter
+ChangeWindowMessageFilterEx

@@ -1,6 +1,5 @@
 #include "windows.bi"
 
-#ifndef _TOUCHINPUT
 type _TOUCHINPUT
   x as LONG
   y as LONG
@@ -15,4 +14,10 @@ type _TOUCHINPUT
 end type
 type TOUCHINPUT as _TOUCHINPUT
 type PTOUCHINPUT as _TOUCHINPUT ptr
-#endif
+
+type tagCHANGEFILTERSTRUCT
+  cbSize as DWORD
+  ExtStatus as DWORD
+end type
+type CHANGEFILTERSTRUCT as tagCHANGEFILTERSTRUCT
+type PCHANGEFILTERSTRUCT as tagCHANGEFILTERSTRUCT ptr
