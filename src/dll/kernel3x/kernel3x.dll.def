@@ -368,16 +368,11 @@ GetLocaleInfoW = kernel32.GetLocaleInfoW @365
 GetLogicalDriveStringsA = kernel32.GetLogicalDriveStringsA @366
 GetLogicalDriveStringsW = kernel32.GetLogicalDriveStringsW @367
 GetLogicalDrives = kernel32.GetLogicalDrives @368
-;GetLogicalProcessorInformation = kernel32.GetLogicalProcessorInformation @369
 GetLongPathNameA = kernel32.GetLongPathNameA @370
 GetLongPathNameW = kernel32.GetLongPathNameW @371
 GetMailslotInfo = kernel32.GetMailslotInfo @372
 GetModuleFileNameA = kernel32.GetModuleFileNameA @373
 GetModuleFileNameW = kernel32.GetModuleFileNameW @374
-GetModuleHandleA = kernel32.GetModuleHandleA @375
-GetModuleHandleExA = kernel32.GetModuleHandleExA @376
-GetModuleHandleExW = kernel32.GetModuleHandleExW @377
-GetModuleHandleW = kernel32.GetModuleHandleW @378
 GetNamedPipeHandleStateA = kernel32.GetNamedPipeHandleStateA @379
 GetNamedPipeHandleStateW = kernel32.GetNamedPipeHandleStateW @380
 GetNamedPipeInfo = kernel32.GetNamedPipeInfo @381
@@ -580,10 +575,6 @@ LZRead = kernel32.LZRead @577
 LZSeek = kernel32.LZSeek @578
 LZStart = kernel32.LZStart @579
 LeaveCriticalSection = kernel32.LeaveCriticalSection @580
-LoadLibraryA = kernel32.LoadLibraryA @581
-LoadLibraryExA = kernel32.LoadLibraryExA @582
-LoadLibraryExW = kernel32.LoadLibraryExW @583
-LoadLibraryW = kernel32.LoadLibraryW @584
 LoadModule = kernel32.LoadModule @585
 LoadResource = kernel32.LoadResource @586
 LocalAlloc = kernel32.LocalAlloc @587
@@ -954,6 +945,15 @@ lstrcpynW = kernel32.lstrcpynW @951
 lstrlen = kernel32.lstrlen @952
 lstrlenA = kernel32.lstrlenA @953
 lstrlenW = kernel32.lstrlenW @954
+
+GetModuleHandleA @375
+GetModuleHandleW @378
+GetModuleHandleExA @376
+GetModuleHandleExW @377
+LoadLibraryA @581
+LoadLibraryW @584
+LoadLibraryExA @582
+LoadLibraryExW @583
 
 GetLogicalProcessorInformation @369
 

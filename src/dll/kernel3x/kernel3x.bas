@@ -11,6 +11,8 @@
 #include "includes\win\wintern.bi"
 #include "shared\helper.bas"
 
+#include "dynload.bas"
+
 dim shared as any ptr pInitMutex
 pInitMutex = CreateMutex(NULL,FALSE,NULL)
 
