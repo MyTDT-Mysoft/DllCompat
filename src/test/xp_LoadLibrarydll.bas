@@ -14,7 +14,7 @@ if LoadLibrary(sDLL)=0 then
   messagebox(null,!"Failed to load '"+sDLL+"'", _
   sAPP,MB_SYSTEMMODAL or MB_ICONERROR)
 else
-  messagebox(null,!"Library loaded sucessfully", _
+  messagebox(null,!"'"+sDLL+"' loaded sucessfully", _
   sAPP,MB_SYSTEMMODAL or MB_ICONINFORMATION)
 end if
 
