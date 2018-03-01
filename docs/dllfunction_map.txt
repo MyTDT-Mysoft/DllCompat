@@ -23,10 +23,37 @@ avrt
 credux
     CredUIPromptForWindowsCredentialsW              partial
     CredUnPackAuthenticationBufferW                 partial
+dwmapi
+    DwmAttachMilContent                             dummy
+    DwmDefWindowProc                                dummy
+    DwmDetachMilContent                             dummy
+    DwmEnableBlurBehindWindow                       dummy
+    DwmEnableComposition                            dummy
+    DwmEnableMMCSS                                  dummy
+    DwmExtendFrameIntoClientArea                    dummy
+    DwmFlush                                        dummy
+    DwmGetColorizationColor                         dummy
+    DwmGetCompositionTimingInfo                     dummy
+    DwmGetGraphicsStreamClient                      dummy
+    DwmGetGraphicsStreamTransformHint               dummy    
+    DwmGetTransportAttributes                       dummy
+    DwmGetWindowAttribute                           dummy
+    DwmInvalidateIconicBitmaps                      dummy
+    DwmIsCompositionEnabled                         dummy
+    DwmModifyPreviousDxFrameDuration                dummy    
+    DwmQueryThumbnailSourceSize                     dummy
+    DwmRegisterThumbnail                            dummy
+    DwmSetDxFrameDuration                           dummy
+    DwmSetIconicLivePreviewBitmap                   dummy
+    DwmSetIconicThumbnail                           dummy
+    DwmSetPresentParameters                         dummy
+    DwmSetWindowAttribute                           dummy
+    DwmUnregisterThumbnail                          dummy
+    DwmUpdateThumbnailProperties                    dummy    
 gdi3x
     D3DKMTCreateDCFromMemory
     D3DKMTDestroyDCFromMemory
-iphlpapi
+;iphlpapx
     ConvertInterfaceIndexToLuid                     TODO
     ConvertInterfaceLuidToIndex                     TODO
     ConvertInterfaceLuidToNameA                     TODO
@@ -79,17 +106,13 @@ user3x
     CloseTouchInputHandle                           dummy
     GetTouchInputInfo                               dummy
     RegisterTouchWindow                             dummy
+;uxthemx
+    DrawThemeTextEx                                 TODO
+    GetThemeTransitionDuration                      TODO
+    SetWindowThemeAttribute                         TODO
 ws2_3x
     inet_ntop
     inet_pton                                       TODO
 
 
 ;vcruntime140
-;uxtheme
-    DrawThemeTextEx                                 TODO
-    GetThemeTransitionDuration                      TODO
-    SetWindowThemeAttribute                         TODO
-;dwmapi.dll
-    DwmDefWindowProc                                TODO
-    DwmExtendFrameIntoClientArea                    TODO
-    DwmIsCompositionEnabled                         TODO
