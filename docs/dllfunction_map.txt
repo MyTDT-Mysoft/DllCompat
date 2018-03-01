@@ -43,7 +43,7 @@ kernel3x
     GetNumaNodeProcessorMaskEx                      dummy
     GetSystemDefaultLocaleName
     GetTickCount64                                              testme
-    GetUserPreferredUILanguages                     TODO
+    GetUserPreferredUILanguages                     dummy
     InitializeConditionVariable
     InitializeCriticalSectionEx
     InitOnceExecuteOnce
