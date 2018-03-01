@@ -709,7 +709,7 @@ extern "windows-ms"
   #define P7 lpVersionInformation as LPNLSVERSIONINFO
   #define P8 lpReserved as LPVOID
   #define P9 sortHandle as LPARAM
-  function LCMapStringEx(P1,P2,P3,P4,P5,P6,P7,P8,P9) as integer
+  function LCMapStringEx(P1,P2,P3,P4,P5,P6,P7,P8,P9) as integer export
     select case lpLocaleName
     case NULL      
       TRACE("User Default Locale")
@@ -721,6 +721,16 @@ extern "windows-ms"
     return 0
   end function
   
+  UndefAllParams()
+  #define P1 flags as DWORD
+  #define P2 numlangs as PULONG
+  #define P3 langbuffer as PZZWSTR
+  #define P4 bufferlen as PULONG
+  function GetUserPreferredUILanguages(P1, P2, P3, P4) as BOOL export
+    UnimplementedFunction()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return 0
+  end function
 end extern
 
 #if 0

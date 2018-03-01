@@ -984,3 +984,4 @@ FlsAlloc
 SetFileInformationByHandle
 SetThreadStackGuarantee
 LCMapStringEx
+GetUserPreferredUILanguages
