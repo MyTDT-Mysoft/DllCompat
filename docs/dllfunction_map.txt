@@ -26,6 +26,13 @@ credux
 gdi3x
     D3DKMTCreateDCFromMemory
     D3DKMTDestroyDCFromMemory
+iphlpapi
+    ConvertInterfaceIndexToLuid                     TODO
+    ConvertInterfaceLuidToIndex                     TODO
+    ConvertInterfaceLuidToNameA                     TODO
+    ConvertInterfaceLuidToNameW                     TODO
+    ConvertInterfaceNameToLuidA                     TODO
+    ConvertInterfaceNameToLuidW                     TODO
 kernel3x
     _GetThreadId
     _GetVersionExW
