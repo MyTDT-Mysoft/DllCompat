@@ -1,10 +1,10 @@
-#define DLOAD_DLLNUM 10
+#define DLOAD_DLLNUM 11
 #define DLOAD_MAXLEN 24
 #define DLOAD_DLLNAMES _
-"advapi32.dll", "credui.dll",  "gdi32.dll", _
-"kernel32.dll", "msvcrt.dll",  "opengl32.dll", _
-"powrprof.dll", "shell32.dll", "user32.dll", _
-"ws2_32.dll"
+"advapi32", "credui",   "iphlpapi" _
+"gdi32",    "kernel32", "msvcrt", _
+"opengl32", "powrprof", "shell32", _
+"user32",   "ws2_32"
 
 static shared as zstring*DLOAD_MAXLEN dll_Anames(DLOAD_DLLNUM) = {DLOAD_DLLNAMES}
 static shared as wstring*DLOAD_MAXLEN dll_Wnames(DLOAD_DLLNUM) = {DLOAD_DLLNAMES}

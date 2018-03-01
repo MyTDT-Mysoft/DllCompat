@@ -53,7 +53,7 @@ dwmapi
 gdi3x
     D3DKMTCreateDCFromMemory
     D3DKMTDestroyDCFromMemory
-;iphlpapx
+iphlpapx
     ConvertInterfaceIndexToLuid                     TODO
     ConvertInterfaceLuidToIndex                     TODO
     ConvertInterfaceLuidToNameA                     TODO
