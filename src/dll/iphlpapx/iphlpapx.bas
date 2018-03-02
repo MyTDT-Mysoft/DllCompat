@@ -3,7 +3,9 @@
 #include "windows.bi"
 #include "win\iphlpapi.bi"
 '#include "win\netioapi.bi" 'needed NETIO_STATUS definition not available to pre-v6 winNT. Jerks.
+#include "win\ifdef.bi"
 #include "shared\helper.bas"
+#include "includes\win\ifdef_fix.bi"
 
 type NETIO_STATUS as DWORD
 
@@ -12,14 +14,43 @@ extern "windows-ms"
   #define P1 InterfaceIndex as NET_IFINDEX
   #define P2 InterfaceLuid as PNET_LUID
   function ConvertInterfaceIndexToLuid(P1, P2) as NETIO_STATUS export
-    return 0
+    dim row as MIB_IFROW
+
+    if InterfaceLuid=0 then
+      return ERROR_INVALID_PARAMETER
+    end if
+    memset(InterfaceLuid, 0, sizeof(*InterfaceLuid))
+
+    row.dwIndex = InterfaceIndex
+    if GetIfEntry(@row)=0 then
+      return ERROR_FILE_NOT_FOUND
+    end if
+
+    InterfaceLuid->Info.Reserved     = 0
+    InterfaceLuid->Info.NetLuidIndex = InterfaceIndex
+    InterfaceLuid->Info.IfType       = row.dwType
+    return NO_ERROR
   end function
   
   UndefAllParams()
   #define P1 InterfaceLuid as const NET_LUID ptr
   #define P2 InterfaceIndex as PNET_IFINDEX
   function ConvertInterfaceLuidToIndex(P1, P2) as NETIO_STATUS export
-    return 0
+    dim ret as DWORD
+    dim row as MIB_IFROW
+
+    if InterfaceLuid=0 orelse InterfaceIndex=0 then
+      return ERROR_INVALID_PARAMETER
+    end if
+
+    row.dwIndex = InterfaceLuid->Info.NetLuidIndex
+    ret = GetIfEntry(@row)
+    if ret then
+      return ret
+    end if
+    
+    *InterfaceIndex = InterfaceLuid->Info.NetLuidIndex
+    return NO_ERROR
   end function
   
   UndefAllParams()
