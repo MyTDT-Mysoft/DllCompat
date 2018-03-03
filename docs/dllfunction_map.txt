@@ -54,12 +54,12 @@ gdi3x
     D3DKMTCreateDCFromMemory
     D3DKMTDestroyDCFromMemory
 iphlpapx
-    ConvertInterfaceIndexToLuid                     TODO
-    ConvertInterfaceLuidToIndex                     TODO
-    ConvertInterfaceLuidToNameA                     TODO
-    ConvertInterfaceLuidToNameW                     TODO
-    ConvertInterfaceNameToLuidA                     TODO
-    ConvertInterfaceNameToLuidW                     TODO
+    ConvertInterfaceIndexToLuid                     full        testme
+    ConvertInterfaceLuidToIndex                     full        testme
+    ConvertInterfaceLuidToNameA                     dummy       fixme
+    ConvertInterfaceLuidToNameW                     full        testme
+    ConvertInterfaceNameToLuidA                     dummy       fixme
+    ConvertInterfaceNameToLuidW                     dummy       fixme
 kernel3x
     _GetThreadId
     _GetVersionExW
