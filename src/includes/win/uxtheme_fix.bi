@@ -2,6 +2,21 @@
 '#include once "commctrl.bi"
 
 #undef HTHEME
+#undef DTT_TEXTCOLOR
+#undef DTT_BORDERCOLOR
+#undef DTT_SHADOWCOLOR
+#undef DTT_SHADOWTYPE
+#undef DTT_SHADOWOFFSET
+#undef DTT_BORDERSIZE
+#undef DTT_FONTPROP
+#undef DTT_COLORPROP
+#undef DTT_STATEID
+#undef DTT_CALCRECT
+#undef DTT_APPLYOVERLAY
+#undef DTT_GLOWSIZE
+#undef DTT_CALLBACK
+#undef DTT_COMPOSITED
+#undef DTT_VALIDBITS
 #undef DTT_CALLBACK_PROC
 #undef WINDOWTHEMEATTRIBUTETYPE
 #undef _DTTOPTS
@@ -10,6 +25,21 @@
 
 type HTHEME as HANDLE
 
+const DTT_TEXTCOLOR = culng(1u shl 0)
+const DTT_BORDERCOLOR = culng(1u shl 1)
+const DTT_SHADOWCOLOR = culng(1u shl 2)
+const DTT_SHADOWTYPE = culng(1u shl 3)
+const DTT_SHADOWOFFSET = culng(1u shl 4)
+const DTT_BORDERSIZE = culng(1u shl 5)
+const DTT_FONTPROP = culng(1u shl 6)
+const DTT_COLORPROP = culng(1u shl 7)
+const DTT_STATEID = culng(1u shl 8)
+const DTT_CALCRECT = culng(1u shl 9)
+const DTT_APPLYOVERLAY = culng(1u shl 10)
+const DTT_GLOWSIZE = culng(1u shl 11)
+const DTT_CALLBACK = culng(1u shl 12)
+const DTT_COMPOSITED = culng(1u shl 13)
+const DTT_VALIDBITS = culng(culng(culng(culng(culng(culng(culng(culng(culng(culng(culng(culng(DTT_TEXTCOLOR or DTT_BORDERCOLOR) or DTT_SHADOWCOLOR) or DTT_SHADOWTYPE) or DTT_SHADOWOFFSET) or DTT_BORDERSIZE) or DTT_FONTPROP) or DTT_COLORPROP) or DTT_STATEID) or DTT_CALCRECT) or DTT_APPLYOVERLAY) or DTT_GLOWSIZE) or DTT_COMPOSITED)
 type DTT_CALLBACK_PROC as function(byval hdc as HDC, byval pszText as LPWSTR, byval cchText as long, byval prc as LPRECT, byval dwFlags as UINT, byval lParam as LPARAM) as long
 
 type WINDOWTHEMEATTRIBUTETYPE as long
