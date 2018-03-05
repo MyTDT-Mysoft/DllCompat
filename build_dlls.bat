@@ -2,7 +2,7 @@
 setlocal
 
 set params=advapi3x avrt credux dwmapi gdi3x kernel3x msvcrx opengl3x powrprox shell3x user3x vcruntime140 ws2_3x
-rem set params=iphlpapx
+rem set params=iphlpapx uxthemx
 set settfile=compile.ini
 set binpath=bin\dll
 set srcpath=src\dll

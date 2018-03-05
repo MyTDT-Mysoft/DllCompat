@@ -106,10 +106,10 @@ user3x
     CloseTouchInputHandle                           dummy
     GetTouchInputInfo                               dummy
     RegisterTouchWindow                             dummy
-;uxthemx
-    DrawThemeTextEx                                 TODO
-    GetThemeTransitionDuration                      TODO
-    SetWindowThemeAttribute                         TODO
+uxthemx
+    DrawThemeTextEx                                 dummy       fixme
+    GetThemeTransitionDuration                      dummy       fixme
+    SetWindowThemeAttribute                         dummy       fixme
 ws2_3x
     inet_ntop
     inet_pton                                       TODO

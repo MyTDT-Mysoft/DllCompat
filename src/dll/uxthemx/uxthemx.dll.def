@@ -1,0 +1,54 @@
+LIBRARY UxThemx.dll
+EXPORTS
+CloseThemeData = uxtheme.CloseThemeData @5
+DrawThemeBackground = uxtheme.DrawThemeBackground @6
+DrawThemeBackgroundEx = uxtheme.DrawThemeBackgroundEx @47
+DrawThemeEdge = uxtheme.DrawThemeEdge @12
+DrawThemeIcon = uxtheme.DrawThemeIcon @37
+DrawThemeParentBackground = uxtheme.DrawThemeParentBackground @38
+DrawThemeText = uxtheme.DrawThemeText @39
+EnableThemeDialogTexture = uxtheme.EnableThemeDialogTexture @40
+EnableTheming = uxtheme.EnableTheming @41
+GetCurrentThemeName = uxtheme.GetCurrentThemeName @42
+GetThemeAppProperties = uxtheme.GetThemeAppProperties @49
+GetThemeBackgroundContentRect = uxtheme.GetThemeBackgroundContentRect @50
+GetThemeBackgroundExtent = uxtheme.GetThemeBackgroundExtent @51
+GetThemeBackgroundRegion = uxtheme.GetThemeBackgroundRegion @52
+GetThemeBool = uxtheme.GetThemeBool @53
+GetThemeColor = uxtheme.GetThemeColor @54
+GetThemeDocumentationProperty = uxtheme.GetThemeDocumentationProperty @55
+GetThemeEnumValue = uxtheme.GetThemeEnumValue @56
+GetThemeFilename = uxtheme.GetThemeFilename @57
+GetThemeFont = uxtheme.GetThemeFont @58
+GetThemeInt = uxtheme.GetThemeInt @59
+GetThemeIntList = uxtheme.GetThemeIntList @67
+GetThemeMargins = uxtheme.GetThemeMargins @68
+GetThemeMetric = uxtheme.GetThemeMetric @69
+GetThemePartSize = uxtheme.GetThemePartSize @70
+GetThemePosition = uxtheme.GetThemePosition @71
+GetThemePropertyOrigin = uxtheme.GetThemePropertyOrigin @72
+GetThemeRect = uxtheme.GetThemeRect @74
+GetThemeString = uxtheme.GetThemeString @75
+GetThemeSysBool = uxtheme.GetThemeSysBool @76
+GetThemeSysColor = uxtheme.GetThemeSysColor @77
+GetThemeSysColorBrush = uxtheme.GetThemeSysColorBrush @78
+GetThemeSysFont = uxtheme.GetThemeSysFont @79
+GetThemeSysInt = uxtheme.GetThemeSysInt @80
+GetThemeSysSize = uxtheme.GetThemeSysSize @81
+GetThemeSysString = uxtheme.GetThemeSysString @82
+GetThemeTextExtent = uxtheme.GetThemeTextExtent @83
+GetThemeTextMetrics = uxtheme.GetThemeTextMetrics @84
+GetWindowTheme = uxtheme.GetWindowTheme @85
+HitTestThemeBackground = uxtheme.HitTestThemeBackground @86
+IsAppThemed = uxtheme.IsAppThemed @87
+IsThemeActive = uxtheme.IsThemeActive @88
+IsThemeBackgroundPartiallyTransparent = uxtheme.IsThemeBackgroundPartiallyTransparent @89
+IsThemeDialogTextureEnabled = uxtheme.IsThemeDialogTextureEnabled @90
+IsThemePartDefined = uxtheme.IsThemePartDefined @91
+OpenThemeData = uxtheme.OpenThemeData @92
+SetThemeAppProperties = uxtheme.SetThemeAppProperties @93
+SetWindowTheme = uxtheme.SetWindowTheme @94
+
+DrawThemeTextEx
+GetThemeTransitionDuration
+SetWindowThemeAttribute
