@@ -15,31 +15,31 @@ function TreatPromptFlags(inflags as DWORD, outflags as DWORD ptr) as DWORD
   'flag mapping
   if inflags and CREDUIWIN_GENERIC then
     *outflags or= CREDUI_FLAGS_GENERIC_CREDENTIALS
-  endif
+  end if
   if inflags and CREDUIWIN_CHECKBOX then
     *outflags or= CREDUI_FLAGS_SHOW_SAVE_CHECK_BOX
-  endif
+  end if
   if inflags and CREDUIWIN_AUTHPACKAGE_ONLY then
     'no idea
-  endif
+  end if
   if inflags and CREDUIWIN_IN_CRED_ONLY then
     'no idea
-  endif
+  end if
   if inflags and CREDUIWIN_ENUMERATE_ADMINS then
     *outflags or= CREDUI_FLAGS_REQUEST_ADMINISTRATOR
-  endif
+  end if
   if inflags and CREDUIWIN_ENUMERATE_CURRENT_USER then
     'no idea
-  endif
+  end if
   if inflags and CREDUIWIN_SECURE_PROMPT then
     'don't care, probably win7 thing
-  endif
+  end if
   if inflags and CREDUIWIN_PREPROMPTING then
     'no idea, probably don't care
-  endif
+  end if
   if inflags and CREDUIWIN_PACK_32_WOW then
     'irrelevant, winXP x86
-  endif
+  end if
   'mutual exclusivity checks
   'TODO: check what happens if we set such flags simultaneously, and replicate
   'CREDUIWIN_GENERIC or CREDUIWIN_SECURE_PROMPT 'works and probably ignores secure prompt
@@ -72,7 +72,7 @@ extern "windows-ms"
     if retErr <> ERROR_SUCCESS then
       'TODO: return proper error according to flag
       return ERROR_OUT_OF_PAPER
-    endif
+    end if
     
     /'
     P1  pUiInfo as PCREDUI_INFOW,
@@ -102,7 +102,7 @@ extern "windows-ms"
       memcpy(*ppvOutAuthBuffer+userlen+passlen, @domainBuf, domainlen)
     else
       retVal = ERROR_NOT_ENOUGH_MEMORY
-    endif
+    end if
     
     SecureZeroMemory(@usernameBuf, 2*CREDUI_MAX_USERNAME_LENGTH+2)
     SecureZeroMemory(@passwordBuf, 2*CREDUI_MAX_PASSWORD_LENGTH+2)
