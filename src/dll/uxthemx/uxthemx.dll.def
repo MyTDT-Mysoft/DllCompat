@@ -1,5 +1,7 @@
 LIBRARY UxThemx.dll
 EXPORTS
+;TODO: missing ordinal-only function mapping
+
 CloseThemeData = uxtheme.CloseThemeData @5
 DrawThemeBackground = uxtheme.DrawThemeBackground @6
 DrawThemeBackgroundEx = uxtheme.DrawThemeBackgroundEx @47
