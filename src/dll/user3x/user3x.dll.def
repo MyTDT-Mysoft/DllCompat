@@ -738,3 +738,4 @@ GetTouchInputInfo
 RegisterTouchWindow
 ChangeWindowMessageFilter
 ChangeWindowMessageFilterEx
+UpdateLayeredWindowIndirect
