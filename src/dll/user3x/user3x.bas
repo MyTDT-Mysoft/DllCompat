@@ -85,9 +85,16 @@ extern "windows-ms"
     dim ret as BOOL
     dim flags as DWORD
     
+    flags = pULWInfo->dwFlags
+    if flags and ULW_EX_NORESIZE then
+      'TODO:
+      '<gigaherz> wouldn't you want to check that before calling UpdateLayeredWindow?
+      '<gigaherz> doing some kind of GetWindowRect and checking the dimensions?
+    end if
+    
     'WINE says this flag is not valid for UpdateLayeredWindow
     'we clear it out
-    flags = pULWInfo->dwFlags and (not ULW_EX_NORESIZE)
+    flags = flags and (not ULW_EX_NORESIZE)
     ret   = UpdateLayeredWindow( _
       hwnd, _
       pULWInfo->hdcDst, _
