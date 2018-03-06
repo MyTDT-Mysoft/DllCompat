@@ -8,8 +8,9 @@
 #include "windows.bi"
 #include "win\winnls.bi"
 #include "shared\detour.bas"
-#include "includes\win\wintern.bi"
 #include "shared\helper.bas"
+#include "includes\win\wintern.bi"
+#include "includes\win\winbase_fix.bi"
 
 #include "dynload.bas"
 
@@ -730,6 +731,57 @@ extern "windows-ms"
     UnimplementedFunction()
     SetLastError(ERROR_OUT_OF_PAPER)
     return 0
+  end function
+  
+  UndefAllParams()
+  #define P1 hFile as HANDLE
+  #define P2 FileInformationClass as FILE_INFO_BY_HANDLE_CLASS
+  #define P3 lpFileInformation as LPVOID
+  #define P4 dwBufferSize as DWORD
+  function GetFileInformationByHandleEx(P1, P2, P3, P4) as BOOL export
+    dim status as NTSTATUS
+    dim io as IO_STATUS_BLOCK
+
+    select case as const FileInformationClass
+      case FileStreamInfo, _
+           FileCompressionInfo, _
+           FileAttributeTagInfo, _
+           FileRemoteProtocolInfo, _
+           FileFullDirectoryInfo, _
+           FileFullDirectoryRestartInfo, _
+           FileStorageInfo, _
+           FileAlignmentInfo, _
+           FileIdExtdDirectoryInfo, _
+           FileIdExtdDirectoryRestartInfo
+        'FIXME( "%p, %u, %p, %u\n", hFile, FileInformationClass, lpFileInformation, dwBufferSize );
+        SetLastError(ERROR_CALL_NOT_IMPLEMENTED)
+        return FALSE
+      case FileBasicInfo
+        status = NtQueryInformationFile(hFile, @io, lpFileInformation, dwBufferSize, FileBasicInformation)
+      case FileStandardInfo
+        status = NtQueryInformationFile(hFile, @io, lpFileInformation, dwBufferSize, FileStandardInformation)
+      case FileNameInfo
+        status = NtQueryInformationFile(hFile, @io, lpFileInformation, dwBufferSize, FileNameInformation)
+      case FileIdInfo
+        status = NtQueryInformationFile(hFile, @io, lpFileInformation, dwBufferSize, FileIdInformation)
+      case FileIdBothDirectoryRestartInfo, _
+           FileIdBothDirectoryInfo
+        status = NtQueryDirectoryFile(hFile, NULL, NULL, NULL, @io, lpFileInformation, dwBufferSize, FileIdBothDirectoryInformation, FALSE, NULL, (FileInformationClass = FileIdBothDirectoryRestartInfo))
+      case else
+           'FileRenameInfo, _
+           'FileDispositionInfo, _
+           'FileAllocationInfo, _
+           'FileIoPriorityHintInfo, _
+           'FileEndOfFileInfo, _
+        SetLastError(ERROR_INVALID_PARAMETER)
+        return FALSE
+    end select
+
+    if status <> STATUS_SUCCESS then
+      SetLastError(RtlNtStatusToDosError(status))
+      return FALSE
+    end if
+    return TRUE
   end function
 end extern
 

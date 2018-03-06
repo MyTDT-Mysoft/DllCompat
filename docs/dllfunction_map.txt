@@ -71,7 +71,7 @@ kernel3x
     FlsFree                                         dummy
     FlsGetValue                                     dummy
     FlsSetValue                                     dummy
-    GetFileInformationByHandleEx                    TODO
+    GetFileInformationByHandleEx                    partial     testme
     GetFinalPathNameByHandleW
     GetLogicalProcessorInformation
     GetNumaNodeProcessorMaskEx                      dummy

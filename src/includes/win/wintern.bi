@@ -46,17 +46,6 @@ enum THREADINFOCLASS
   ThreadBasicInformation
 end enum
 
-extern "windows"
-
-declare function NtQueryInformationThread( _
-  ThreadHandle as HANDLE, _
-  ThreadInformationClass as THREADINFOCLASS, _
-  ThreadInformation as any ptr, _
-  ThreadInformationLength as ulong, _                  
-  ReturnLength as ulong ptr ) as NTSTATUS
-
-'fnNtQueryInformationThreadFunc = cast(any ptr, GetProcAddress( hNTDLL , "NtQueryInformationThread" ) )
-
 'type NTSTATUS as ulong
 
 enum NTSTATUS_
@@ -146,14 +135,6 @@ type FILE_NAME_INFORMATION
 end type
 type PFILE_NAME_INFORMATION as FILE_NAME_INFORMATION ptr
 
-declare function NtQueryInformationFile( _
-  FileHandle as HANDLE, _
-  IoStatusBlock as PIO_STATUS_BLOCK, _
-  FileInformation as PVOID, _
-  Length as ULONG, _
-  FileInformationClass as FILE_INFORMATION_CLASS) as NTSTATUS
-'fnNtQueryInformationFile = cast(any ptr, GetProcAddress( hNTDLL , "NtQueryInformationFile" ) )
-
 enum OBJECT_INFORMATION_CLASS
   ObjectBasicInformation
   ObjectNameInformation
@@ -169,12 +150,51 @@ type OBJECT_NAME_INFORMATION
 end type
 type POBJECT_NAME_INFORMATION as OBJECT_NAME_INFORMATION ptr
 
-declare function NtQueryObject ( _
-  ObjectHandle           as handle, _
-  ObjectInformationClass as OBJECT_INFORMATION_CLASS, _
-  ObjectInformation      as PVOID, _
-  Length                 as ULONG, _
-  ResultLength           as PULONG ) as NTSTATUS
-'fnNtQueryObject = cast(any ptr, GetProcAddress( hNTDLL , "NtQueryObject" ) )
-
+type PIO_APC_ROUTINE as sub stdcall(byval as PVOID, byval as PIO_STATUS_BLOCK, byval as ULONG)
+    
+extern "windows"
+  declare function NtQueryDirectoryFile( _
+    FileHandle           as HANDLE, _
+    Event                as HANDLE, _
+    ApcRoutine           as PIO_APC_ROUTINE, _
+    ApcContext           as PVOID, _
+    IoStatusBlock        as PIO_STATUS_BLOCK, _
+    FileInformation      as PVOID, _
+    Length               as ULONG, _
+    FileInformationClass as FILE_INFORMATION_CLASS, _
+    ReturnSingleEntry    as BOOLEAN, _
+    FileMask             as PUNICODE_STRING, _
+    RestartScan          as BOOLEAN _
+    ) as NTSTATUS
+  
+  declare function NtQueryInformationFile( _
+    FileHandle           as HANDLE, _
+    IoStatusBlock        as PIO_STATUS_BLOCK, _
+    FileInformation      as PVOID, _
+    Length               as ULONG, _
+    FileInformationClass as FILE_INFORMATION_CLASS _
+    ) as NTSTATUS
+  'fnNtQueryInformationFile = cast(any ptr, GetProcAddress( hNTDLL , "NtQueryInformationFile" ) )
+  
+  declare function NtQueryInformationThread( _
+    ThreadHandle            as HANDLE, _
+    ThreadInformationClass  as THREADINFOCLASS, _
+    ThreadInformation       as any ptr, _
+    ThreadInformationLength as ulong, _                  
+    ReturnLength            as ulong ptr _
+    ) as NTSTATUS
+  'fnNtQueryInformationThreadFunc = cast(any ptr, GetProcAddress( hNTDLL , "NtQueryInformationThread" ) )
+  
+  declare function NtQueryObject( _
+    ObjectHandle           as handle, _
+    ObjectInformationClass as OBJECT_INFORMATION_CLASS, _
+    ObjectInformation      as PVOID, _
+    Length                 as ULONG, _
+    ResultLength           as PULONG _
+    ) as NTSTATUS
+  'fnNtQueryObject = cast(any ptr, GetProcAddress( hNTDLL , "NtQueryObject" ) )
+  
+  declare function RtlNtStatusToDosError ( _
+    Status as NTSTATUS _
+  ) as ULONG
 end extern

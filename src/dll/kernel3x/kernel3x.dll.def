@@ -985,3 +985,5 @@ SetFileInformationByHandle
 SetThreadStackGuarantee
 LCMapStringEx
 GetUserPreferredUILanguages
+
+GetFileInformationByHandleEx
