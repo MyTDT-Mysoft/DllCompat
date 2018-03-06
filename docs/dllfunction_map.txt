@@ -101,11 +101,17 @@ powrprox
     PowerGetActiveScheme                            dummy
     PowerSetActiveScheme                            dummy
 shell3x
+    SHCreateItemFromIDList                          TODO
+    SHCreateItemFromParsingName                     TODO
+    Shell_NotifyIconGetRect                         TODO
+    SHGetKnownFolderIDList                          TODO
     SHGetKnownFolderPath                                        testme
+    SHGetStockIconInfo                              TODO
 user3x
     CloseTouchInputHandle                           dummy
     GetTouchInputInfo                               dummy
     RegisterTouchWindow                             dummy
+    UpdateLayeredWindowIndirect                     TODO
 uxthemx
     DrawThemeTextEx                                 partial     testme
     GetThemeTransitionDuration                      dummy
