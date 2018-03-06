@@ -16,7 +16,7 @@ extern "windows-ms"
   #define P1 hTouchInput as HANDLE
   function CloseTouchInputHandle(P1) as BOOL export
     MacroStubFunction()
-    SetLastError(E_NOTIMPL)
+    SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
   
@@ -27,7 +27,7 @@ extern "windows-ms"
   #define P4 cbSize as Integer
   function GetTouchInputInfo(P1, P2, P3, P4) as BOOL export
     MacroStubFunction()
-    SetLastError(E_NOTIMPL)
+    SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
   
@@ -36,7 +36,7 @@ extern "windows-ms"
   #define P2 ulFlags as ULONG
   function RegisterTouchWindow(P1, P2) as BOOL export
     MacroStubFunction()
-    SetLastError(E_NOTIMPL)
+    SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
   
@@ -45,7 +45,7 @@ extern "windows-ms"
   #define P2 pGestureInfo as PGESTUREINFO
   function GetGestureInfo (P1, P2) as BOOL export
     MacroStubFunction()
-    SetLastError(E_NOTIMPL)
+    SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
   
