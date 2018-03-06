@@ -742,17 +742,18 @@ extern "windows-ms"
     dim status as NTSTATUS
     dim io as IO_STATUS_BLOCK
 
+    #define CASE_NOTIMPL _
+    FileStreamInfo, FileCompressionInfo, FileAttributeTagInfo, _
+    FileRemoteProtocolInfo, FileFullDirectoryInfo, FileFullDirectoryRestartInfo, _
+    FileStorageInfo, FileAlignmentInfo, FileIdExtdDirectoryInfo, _
+    FileIdExtdDirectoryRestartInfo
+    
+    #define CASE_BADPARAM _
+    FileRenameInfo, FileDispositionInfo, FileAllocationInfo, _
+    FileIoPriorityHintInfo, FileEndOfFileInfo, else
+    
     select case as const FileInformationClass
-      case FileStreamInfo, _
-           FileCompressionInfo, _
-           FileAttributeTagInfo, _
-           FileRemoteProtocolInfo, _
-           FileFullDirectoryInfo, _
-           FileFullDirectoryRestartInfo, _
-           FileStorageInfo, _
-           FileAlignmentInfo, _
-           FileIdExtdDirectoryInfo, _
-           FileIdExtdDirectoryRestartInfo
+      case CASE_NOTIMPL
         'FIXME( "%p, %u, %p, %u\n", hFile, FileInformationClass, lpFileInformation, dwBufferSize );
         SetLastError(ERROR_CALL_NOT_IMPLEMENTED)
         return FALSE
@@ -764,15 +765,9 @@ extern "windows-ms"
         status = NtQueryInformationFile(hFile, @io, lpFileInformation, dwBufferSize, FileNameInformation)
       case FileIdInfo
         status = NtQueryInformationFile(hFile, @io, lpFileInformation, dwBufferSize, FileIdInformation)
-      case FileIdBothDirectoryRestartInfo, _
-           FileIdBothDirectoryInfo
+      case FileIdBothDirectoryRestartInfo, FileIdBothDirectoryInfo
         status = NtQueryDirectoryFile(hFile, NULL, NULL, NULL, @io, lpFileInformation, dwBufferSize, FileIdBothDirectoryInformation, FALSE, NULL, (FileInformationClass = FileIdBothDirectoryRestartInfo))
-      case else
-           'FileRenameInfo, _
-           'FileDispositionInfo, _
-           'FileAllocationInfo, _
-           'FileIoPriorityHintInfo, _
-           'FileEndOfFileInfo, _
+      case else 'CASE_BADPARAM
         SetLastError(ERROR_INVALID_PARAMETER)
         return FALSE
     end select
