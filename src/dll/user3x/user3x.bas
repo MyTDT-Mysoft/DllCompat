@@ -85,6 +85,12 @@ extern "windows-ms"
     dim ret as BOOL
     dim flags as DWORD
     
+    if pULWInfo=0 orelse pULWInfo->cbSize <> sizeof(*pULWInfo) then
+      SetLastError(ERROR_INVALID_PARAMETER)
+      return FALSE
+    end if
+    
+    'TODO: UpdateLayeredWindow always redraws whole window. Handle partial redrawing.
     flags = pULWInfo->dwFlags
     if flags and ULW_EX_NORESIZE then
       'TODO:
@@ -92,8 +98,7 @@ extern "windows-ms"
       '<gigaherz> doing some kind of GetWindowRect and checking the dimensions?
     end if
     
-    'WINE says this flag is not valid for UpdateLayeredWindow
-    'we clear it out
+    'flag invalid for UpdateLayeredWindow, according to WINE. Clear it.
     flags = flags and (not ULW_EX_NORESIZE)
     ret   = UpdateLayeredWindow( _
       hwnd, _
