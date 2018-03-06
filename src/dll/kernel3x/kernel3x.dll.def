@@ -987,3 +987,4 @@ LCMapStringEx
 GetUserPreferredUILanguages
 
 GetFileInformationByHandleEx
+CancelIoEx

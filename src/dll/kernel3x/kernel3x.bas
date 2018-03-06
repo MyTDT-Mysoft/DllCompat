@@ -783,6 +783,15 @@ extern "windows-ms"
     end if
     return TRUE
   end function
+  
+  UndefAllParams()
+  #define P1 hFile as HANDLE
+  #define P2 lpOverlapped as LPOVERLAPPED
+  function CancelIoEx(P1, P2) as BOOL
+    UnimplementedFunction()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return FALSE
+  end function
 end extern
 
 #if 0
