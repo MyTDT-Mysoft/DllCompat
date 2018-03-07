@@ -30,14 +30,14 @@ extern "windows-ms"
     end if
 
     if (pOptions->dwFlags and not DTT_TEXTCOLOR) then
-        'FIXME("unsupported flags 0x%08x\n", pOptions->dwFlags)
+        DEBUG_MsgTrace("unsupported flags 0x%08x\n", pOptions->dwFlags)
     end if
     
     hr = GetThemeFont(hTheme, hdc, iPartId, iStateId, TMT_FONT, @logfont)
     if SUCCEEDED(hr) then
       hFont = CreateFontIndirectW(@logfont)
       if hFont=0 then
-        'TRACE("Failed to create font\n")
+        DEBUG_MsgTrace("Failed to create font\n")
       end if
     end if
     
@@ -73,6 +73,7 @@ extern "windows-ms"
   #define P5 iPropId as integer
   #define P6 pdwDuration as DWORD ptr
   function GetThemeTransitionDuration(P1, P2, P3, P4, P5, P6) as HRESULT export
+    DEBUG_MsgNotImpl()
     return E_NOTIMPL
   end function
   
@@ -82,6 +83,7 @@ extern "windows-ms"
   #define P3 pvAttribute as PVOID
   #define P4 cbAttribute as DWORD
   function SetWindowThemeAttribute(P1, P2, P3, P4) as HRESULT export
+    DEBUG_MsgNotImpl()
     return E_NOTIMPL
   end function
 end extern

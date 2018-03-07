@@ -13,6 +13,7 @@ extern "windows-ms"
     #define P2 riid as REFIID
     #define P3 ppv as any ptr ptr
   function SHCreateItemFromIDList(P1, P2, P3) as HRESULT export
+    DEBUG_MsgNotImpl()
     return E_INVALIDARG
   end function
   
@@ -22,6 +23,7 @@ extern "windows-ms"
   #define P3 riid as REFIID
   #define P4 ppv as any ptr ptr
   function SHCreateItemFromParsingName(P1, P2, P3, P4) as HRESULT export
+    DEBUG_MsgNotImpl()
     return E_INVALIDARG
   end function
   
@@ -29,6 +31,7 @@ extern "windows-ms"
   #define P1 identifier as const NOTIFYICONIDENTIFIER ptr
   #define P2 iconLocation as RECT ptr
   function Shell_NotifyIconGetRect(P1, P2) as HRESULT export
+    DEBUG_MsgNotImpl()
     return E_NOTIMPL
   end function
   
@@ -38,6 +41,7 @@ extern "windows-ms"
   #define P3 hToken as HANDLE
   #define P4 ppidl as PIDLIST_ABSOLUTE ptr
   function SHGetKnownFolderIDList(P1, P2, P3, P4) as HRESULT export
+    DEBUG_MsgNotImpl()
     return E_INVALIDARG
   end function
   
@@ -59,6 +63,7 @@ extern "windows-ms"
   #define P2 uFlags as UINT
   #define P3 psii as SHSTOCKICONINFO ptr
   function SHGetStockIconInfo(P1, P2, P3) as HRESULT export
+    DEBUG_MsgNotImpl()
     return E_INVALIDARG
   end function
 end extern

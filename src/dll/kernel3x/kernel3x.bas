@@ -728,6 +728,7 @@ extern "windows-ms"
   #define P3 langbuffer as PZZWSTR
   #define P4 bufferlen as PULONG
   function GetUserPreferredUILanguages(P1, P2, P3, P4) as BOOL export
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return 0
   end function
@@ -753,7 +754,7 @@ extern "windows-ms"
     
     select case as const FileInformationClass
       case CASE_NOTIMPL
-        'FIXME( "%p, %u, %p, %u\n", hFile, FileInformationClass, lpFileInformation, dwBufferSize );
+        DEBUG_MsgTrace("%p, %u, %p, %u\n", hFile, FileInformationClass, lpFileInformation, dwBufferSize )
         SetLastError(ERROR_CALL_NOT_IMPLEMENTED)
         return FALSE
       case FileBasicInfo

@@ -59,6 +59,7 @@ extern "windows-ms"
   #define P2 InterfaceName as PSTR
   #define P3 Length as SIZE_T
   function ConvertInterfaceLuidToNameA(P1, P2, P3) as NETIO_STATUS export
+    DEBUG_MsgNotImpl()
     'fixme: CP_UNIXCP
     /'
     dim ret as DWORD
@@ -113,6 +114,7 @@ extern "windows-ms"
   #define P1 InterfaceName as const CHAR ptr
   #define P2 InterfaceLuid as PNET_LUID
   function ConvertInterfaceNameToLuidA(P1, P2) as NETIO_STATUS export
+    DEBUG_MsgNotImpl()
     'fixme: getInterfaceIndexByName
     /'
     dim ret as DWORD
@@ -145,6 +147,7 @@ extern "windows-ms"
   #define P1 InterfaceName as const WCHAR ptr
   #define P2 InterfaceLuid as PNET_LUID
   function ConvertInterfaceNameToLuidW(P1, P2) as NETIO_STATUS export
+    DEBUG_MsgNotImpl()
     'fixme: CP_UNIXCP
     'fixme: getInterfaceIndexByName
     /'
