@@ -15,7 +15,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 hTouchInput as HANDLE
   function CloseTouchInputHandle(P1) as BOOL export
-    MacroStubFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -26,7 +26,7 @@ extern "windows-ms"
   #define P3 pInputs as PTOUCHINPUT
   #define P4 cbSize as Integer
   function GetTouchInputInfo(P1, P2, P3, P4) as BOOL export
-    MacroStubFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -35,7 +35,7 @@ extern "windows-ms"
   #define P1 hWnd as HWND
   #define P2 ulFlags as ULONG
   function RegisterTouchWindow(P1, P2) as BOOL export
-    MacroStubFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -44,7 +44,7 @@ extern "windows-ms"
   #define P1 hGestureInfo as HGESTUREINFO
   #define P2 pGestureInfo as PGESTUREINFO
   function GetGestureInfo (P1, P2) as BOOL export
-    MacroStubFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -52,7 +52,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 hGestureInfo as HGESTUREINFO
   function CloseGestureInfoHandle(P1) as BOOL export
-    MacroStubFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(0)
     return TRUE
   end function
@@ -61,7 +61,7 @@ extern "windows-ms"
   #define P1 message as UINT
   #define P2 dwFlag as DWORD
   function ChangeWindowMessageFilter(P1, P2) as BOOL export
-    MacroStubFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(0)
     return TRUE
   end function
@@ -72,7 +72,7 @@ extern "windows-ms"
   #define P3 action as DWORD
   #define P4 pChangeFilterStruct as PCHANGEFILTERSTRUCT
   function ChangeWindowMessageFilterEx(P1, P2, P3, P4) as BOOL export
-    MacroStubFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(0)
     return TRUE
   end function

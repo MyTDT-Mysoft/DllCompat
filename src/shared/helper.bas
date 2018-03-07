@@ -26,36 +26,30 @@ type WINBOOL as integer
 #endmacro
 
 ' **************************************************************************
-' ******* this is for functions that you implemented but couldnt test ******
-' ******* or functions that you didnt implemented because they were ********
-' ******** not called under normal circunstances, but were imported ********
-' ******* they use messagebox() to show that they must be implemented ******
-' **************************************************************************
+#define GlobalDebugEnabled
 
-#macro UnimplementedFunction()
-  messagebox(null, __FUNCTION__ " called. but not implemented", "DllCompat", MB_SYSTEMMODAL or MB_ICONINFORMATION)
+#macro DEBUG_AlertNotImpl()
+  #ifdef GlobalDebugEnabled
+    OutputDebugString("ALERT: " __FUNCTION__ !" STUB called.\r\n" )
+    messagebox(null, __FUNCTION__ !" STUB called.\r\n", "DllCompat", MB_SYSTEMMODAL or MB_ICONINFORMATION)
+  #endif
 #endmacro
 
-' **************************************************************************
-' ****** this is for functions that are not implemented because their ******
-' ****** implementation uses stuff that is not normally on hardware ********
-' ********** like actual multi-processors or outdated mediums **************
-' **************************************************************************
-
-#define MacroStubFunction() OutputDebugString( __FUNCTION__ !" was called but it's a stub... \r\n" )
-
-' **************************************************************************
-' **************************************************************************
-
-#macro TRACE( _STRING , _PARMS... )
-  scope
-    dim as zstring*4096 zDebug
-    sprintf(zDebug, __FUNCTION__ ":%i - " & _STRING & !"\r\n" , __LINE__ , _PARMS )
-    OutputDebugString( zDebug )
-  end scope
+#macro DEBUG_MsgNotImpl()
+  #ifdef GlobalDebugEnabled
+    OutputDebugString("MSG:   " __FUNCTION__ !" STUB called. \r\n" )
+  #endif
 #endmacro
 
-' **************************************************************************
+#macro DEBUG_MsgTrace( _STRING , _PARAMS... )
+  #ifdef GlobalDebugEnabled
+    scope
+      dim as zstring*4096 zTemp = any
+      sprintf( zTemp , "MSG:   %s(%i): " _STRING , __FUNCTION__  , __LINE__ , _PARAMS )  
+      OutputDebugString( zTemp )
+    end scope
+  #endif
+#endmacro
 ' **************************************************************************  
 
 sub hexdump(mem as any ptr, lenny as UInteger, elemsize as UInteger)

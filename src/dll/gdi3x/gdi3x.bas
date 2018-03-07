@@ -18,7 +18,7 @@ extern "windows-ms"
 #undef D3DKMTCreateDCFromMemory
 function D3DKMTCreateDCFromMemory( pDesc as D3DKMT_CREATEDCFROMMEMORY ptr ) as NTSTATUS export  
   
-  TRACE( "Function Called" )  
+  DEBUG_MsgTrace( "Function Called" )  
   
   type d3dddi_format_info
     as D3DDDIFORMAT format
@@ -51,7 +51,7 @@ function D3DKMTCreateDCFromMemory( pDesc as D3DKMT_CREATEDCFROMMEMORY ptr ) as N
     return STATUS_INVALID_PARAMETER
   end if
 
-  'TRACE("memory %p, format %#x, width %u, height %u, pitch %u, device dc %p, color table %p.\n",
+  'DEBUG_MsgTrace("memory %p, format %#x, width %u, height %u, pitch %u, device dc %p, color table %p.\n",
   '      desc->pMemory, desc->Format, desc->Width, desc->Height,
   '      desc->Pitch, desc->hDeviceDc, desc->pColorTable)
 
@@ -204,8 +204,8 @@ end function
 function D3DKMTDestroyDCFromMemory( pDesc as D3DKMT_DESTROYDCFROMMEMORY ptr ) as NTSTATUS export
   
   if (pDesc=null) then return STATUS_INVALID_PARAMETER
-  'TRACE("dc %p, bitmap %p.\n", desc->hDc, desc->hBitmap)
-  TRACE( "Function Called" )
+  'DEBUG_MsgTrace("dc %p, bitmap %p.\n", desc->hDc, desc->hBitmap)
+  DEBUG_MsgTrace( "Function Called" )
 
   var iChk = GetObjectType( pDesc->hDc ) <> OBJ_MEMDC 
   if iChk orelse GetObjectType( pDesc->hBitmap ) <> OBJ_BITMAP then 

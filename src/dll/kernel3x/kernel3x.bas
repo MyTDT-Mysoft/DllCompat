@@ -435,12 +435,12 @@ extern "windows-ms"
   end function
   
   function GetNumaNodeProcessorMaskEx( Node as ushort , ProcessorMask as GROUP_AFFINITY ptr ) as integer export
-    MacroStubFunction()
+    DEBUG_MsgNotImpl()
     return 0
   end function
   
   function SetThreadGroupAffinity(hThread as HANDLE, GroupAffinity as GROUP_AFFINITY ptr , PGROUP_AFFINITY as GROUP_AFFINITY ptr) as integer export
-    MacroStubFunction()
+    DEBUG_MsgNotImpl()
     return 0    
   end function
   
@@ -467,13 +467,13 @@ extern "windows-ms"
       pGlobalFiberData->iLastFreed = -1
     end if
     if pGlobalFiberData=0 orelse pGlobalFiberData->iThreadTLS=0 then
-      UnimplementedFunction()
+      DEBUG_AlertNotImpl()
     end if    
   end sub
   sub _AddFiberToArray( pFiber as FIBER ptr )
     if pGlobalFiberData = NULL then _InitGlobalFibers()      
     if pGlobalFiberData = NULL then 
-      TRACE("Fiber %08X got created... but global fiber state allocation failed :(",pFiber)
+      DEBUG_MsgTrace("Fiber %08X got created... but global fiber state allocation failed :(",pFiber)
       exit sub
     end if
     
@@ -482,13 +482,13 @@ extern "windows-ms"
         .iFiberAlloc += 16
         .pFiberArray = allocate(sizeof(PVOID)*.iFiberAlloc)
         if .pFiberArray=0 then
-          TRACE("Fiber %08X got created... but allocation for fiber array failed :(",pFiber)
+          DEBUG_MsgTrace("Fiber %08X got created... but allocation for fiber array failed :(",pFiber)
         end if
       elseif (.iFiberCount+1) >= .iFiberAlloc then          
         .iFiberAlloc += 16
         .pFiberArray = reallocate(.pFiberArray,sizeof(PVOID)*.iFiberAlloc)
         if .pFiberArray=0 then
-          TRACE("Fiber %08X got created... but reallocation for fiber array failed :(",pFiber)
+          DEBUG_MsgTrace("Fiber %08X got created... but reallocation for fiber array failed :(",pFiber)
         end if      
       end if      
       .pFiberArray[.iFiberCount] = pFiber
@@ -497,7 +497,7 @@ extern "windows-ms"
   end sub
   sub _RemoveFiberFromArray( pFiber as FIBER ptr )
     if pGlobalFiberData = NULL then 
-      TRACE("Fiber %08X is to be deleted... but global fiber is not allocated @_@",pFiber)
+      DEBUG_MsgTrace("Fiber %08X is to be deleted... but global fiber is not allocated @_@",pFiber)
       exit sub
     end if
     
@@ -506,7 +506,7 @@ extern "windows-ms"
       for I as integer = 0 to .iFiberCount-1
         if .pFiberArray[I] = pFiber then
           'Fiber found... so callback must be called 
-          TRACE("TODO: callback on all indexes for the fiber %08X...",pFiber)
+          DEBUG_MsgTrace("TODO: callback on all indexes for the fiber %08X...",pFiber)
           if I <> .iFiberCount-1 then
             swap .pFiberArray[I], .pFiberArray[.iFiberCount-1]
           end if
@@ -515,7 +515,7 @@ extern "windows-ms"
         end if
       next I
     end with
-    TRACE("Fiber is to be deleted... but not found on the fiber array @_@",pFiber)
+    DEBUG_MsgTrace("Fiber is to be deleted... but not found on the fiber array @_@",pFiber)
   end sub
   
   function fnIsThreadAFiber alias "IsThreadAFiber" () as FIBER ptr export
@@ -534,7 +534,7 @@ extern "windows-ms"
       SetLastError(ERROR_INVALID_PARAMETER)
       return 0
     end if
-    TRACE("FlsFree(%i)",.dwFlsIndex)
+    DEBUG_MsgTrace("FlsFree(%i)",.dwFlsIndex)
   end function
   
   function FlsGetValue(dwFlsIndex as DWORD) as PVOID export
@@ -544,13 +544,13 @@ extern "windows-ms"
     var pFiber = fnIsThreadAFiber()
     dim as PVOID ptr pSlotArray = 0
     if pFiber=0 then 'IF not in a fiber... then use a temp FLS from TLS
-      TRACE("Querying index %i but current thread is not a fiber!",dwFlsIndex)
+      DEBUG_MsgTrace("Querying index %i but current thread is not a fiber!",dwFlsIndex)
       pSlotArray = TlsGetValue( pGlobalFiberData->iThreadTLS )
       if PSlotArray = 0 then SetLastError(0):return 0
     else
       with pFiber->FiberContext
         if *cptr( DWORD ptr , @.ExtendedRegisters(512-8) ) <> &hF1BEDA7A then
-          TRACE("Index %i was queried from fiber %08X but magic doesnt match...",dwFlsIndex,pFiber)
+          DEBUG_MsgTrace("Index %i was queried from fiber %08X but magic doesnt match...",dwFlsIndex,pFiber)
           return 0
         end if
         pSlotArray = *cptr( PVOID ptr , @.ExtendedRegisters(512-4) )
@@ -568,7 +568,7 @@ extern "windows-ms"
     var pFiber = fnIsThreadAFiber()
     dim as PVOID ptr pSlotArray = 0
     if pFiber=0 then 'IF not in a fiber... then use a temp FLS from TLS
-      TRACE("Querying index %i but current thread is not a fiber!",dwFlsIndex)
+      DEBUG_MsgTrace("Querying index %i but current thread is not a fiber!",dwFlsIndex)
       pSlotArray = TlsGetValue( pGlobalFiberData->iThreadTLS )      
       if pSlotArray = 0 then 'if the temp FLS is not allocated... allocate it now
         PSlotArray = callocate( sizeof(PVOID)*(FlsMaxSlot+1) )
@@ -581,7 +581,7 @@ extern "windows-ms"
       with pFiber->FiberContext
         'Does the FLS magic is there? if not it's a bug!!!
         if *cptr( DWORD ptr , @.ExtendedRegisters(512-8) ) <> &hF1BEDA7A then
-          TRACE("Index %i was queried from fiber %08X but magic doesnt match...",dwFlsIndex,pFiber)
+          DEBUG_MsgTrace("Index %i was queried from fiber %08X but magic doesnt match...",dwFlsIndex,pFiber)
           return 0
         end if
         'Get FLS array for this fiber... 
@@ -675,7 +675,7 @@ extern "windows-ms"
   function fnConvertFiberToThread alias "ConvertFiberToThread" ( ) as BOOL export
     var pFiber = fnIsThreadAFiber()        
     if pFiber=0 then
-      TRACE("Conversion from fiber to thread... but this is not a fiber...")
+      DEBUG_MsgTrace("Conversion from fiber to thread... but this is not a fiber...")
     else
       _RemoveFiberFromArray( pFiber )
     end if    
@@ -688,14 +688,14 @@ extern "windows-ms"
   #define P3 lpFileInformation as LPVOID
   #define P4 dwBufferSize as DWORD
   function SetFileInformationByHandle(P1, P2, P3, P4) as BOOL
-    UnimplementedFunction()
+    DEBUG_AlertNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return 0
   end function
   
   #undef SetThreadStackGuarantee
   function SetThreadStackGuarantee(StackSizeInBytes as ULONG ptr) as BOOL
-    UnimplementedFunction()
+    DEBUG_AlertNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return 0
   end function
@@ -713,11 +713,11 @@ extern "windows-ms"
   function LCMapStringEx(P1,P2,P3,P4,P5,P6,P7,P8,P9) as integer export
     select case lpLocaleName
     case NULL      
-      TRACE("User Default Locale")
+      DEBUG_MsgTrace("User Default Locale")
     case else
-      TRACE("Locale:'%ls'",lpLocaleName)
+      DEBUG_MsgTrace("Locale:'%ls'",lpLocaleName)
     end select
-    'UnimplementedFunction()
+    'DEBUG_AlertNotImpl()
     'SetLastError(ERROR_OUT_OF_PAPER)
     return 0
   end function
@@ -782,7 +782,7 @@ extern "windows-ms"
   #define P1 hFile as HANDLE
   #define P2 lpOverlapped as LPOVERLAPPED
   function CancelIoEx(P1, P2) as BOOL
-    UnimplementedFunction()
+    DEBUG_AlertNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function

@@ -10,7 +10,7 @@ extern "windows-ms"
   #define P1 AvrtHandle as HANDLE
   #define P2 SystemResponsivenessValue as PULONG
   function AvQuerySystemResponsiveness(AvrtHandle as HANDLE, SystemResponsivenessValue as PULONG) as BOOL
-    UnimplementedFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -27,7 +27,7 @@ extern "windows-ms"
   #define P3 ThreadOrderingGuid as GUID ptr
   #define P4 Timeout as PLARGE_INTEGER
   function AvRtCreateThreadOrderingGroup(P1, P2, P3, P4) as BOOL
-    UnimplementedFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -39,7 +39,7 @@ extern "windows-ms"
   #define P4 Timeout as PLARGE_INTEGER
   #define P5 TaskName as LPCSTR
   function AvRtCreateThreadOrderingGroupExA(P1, P2, P3, P4, P5) as BOOL
-    UnimplementedFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -51,7 +51,7 @@ extern "windows-ms"
   #define P4 Timeout as PLARGE_INTEGER
   #define P5 TaskName as LPCWSTR
   function AvRtCreateThreadOrderingGroupExW(P1, P2, P3, P4, P5) as BOOL
-    UnimplementedFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -59,7 +59,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 Context as HANDLE
   function AvRtDeleteThreadOrderingGroup(P1) as BOOL
-    UnimplementedFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -69,7 +69,7 @@ extern "windows-ms"
   #define P2 ThreadOrderingGuid as GUID ptr
   #define P3 Before as BOOL
   function AvRtJoinThreadOrderingGroup(P1, P2, P3) as BOOL
-    UnimplementedFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -77,7 +77,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 Context as HANDLE
   function AvRtLeaveThreadOrderingGroup(P1) as BOOL
-    UnimplementedFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -85,7 +85,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 Context as HANDLE
   function AvRtWaitOnThreadOrderingGroup(P1) as BOOL
-    UnimplementedFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
@@ -95,7 +95,7 @@ extern "windows-ms"
   #define P2 SecondTask as LPCSTR
   #define P3 TaskIndex as LPDWORD
   function AvSetMmMaxThreadCharacteristicsA(P1, P2, P3) as HANDLE
-    UnimplementedFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return null
   end function
@@ -105,7 +105,7 @@ extern "windows-ms"
   #define P2 SecondTask as LPCWSTR
   #define P3 TaskIndex as LPDWORD
   function AvSetMmMaxThreadCharacteristicsW(P1, P2, P3) as HANDLE
-    UnimplementedFunction()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return null
   end function
