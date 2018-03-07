@@ -4,4 +4,4 @@ bin/test/*.exe
 *.dll.a
 */Thumbs.db
 
-ZZZZZZZZZZZZZZZZ.bat
+/check_EOL.bat
