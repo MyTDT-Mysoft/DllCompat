@@ -73,7 +73,7 @@ extern "windows-ms"
   #define P5 iPropId as integer
   #define P6 pdwDuration as DWORD ptr
   function GetThemeTransitionDuration(P1, P2, P3, P4, P5, P6) as HRESULT export
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -82,6 +82,6 @@ extern "windows-ms"
   #define P3 pvAttribute as PVOID
   #define P4 cbAttribute as DWORD
   function SetWindowThemeAttribute(P1, P2, P3, P4) as HRESULT export
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
 end extern

@@ -37,7 +37,7 @@ extern "windows-ms"
   #define P2 pBlurBehind as const DWM_BLURBEHIND ptr
   function DwmEnableBlurBehindWindow(P1, P2) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -57,13 +57,13 @@ extern "windows-ms"
   #define P2 pMarInset as const MARGINS ptr
   function DwmExtendFrameIntoClientArea(P1, P2) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
   function DwmFlush() as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -71,7 +71,7 @@ extern "windows-ms"
   #define P2 pfOpaqueBlend as BOOL ptr
   function DwmGetColorizationColor(P1, P2) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -79,7 +79,7 @@ extern "windows-ms"
   #define P2 pTimingInfo as DWM_TIMING_INFO ptr
   function DwmGetCompositionTimingInfo(P1, P2) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -87,7 +87,7 @@ extern "windows-ms"
   #define P2 pClientUuid as UUID ptr
   function DwmGetGraphicsStreamClient(P1, P2) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -95,7 +95,7 @@ extern "windows-ms"
   #define P2 pTransform as MilMatrix3x2D ptr
   function DwmGetGraphicsStreamTransformHint(P1, P2) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -104,7 +104,7 @@ extern "windows-ms"
   #define P3 pDwGeneration as DWORD ptr
   function DwmGetTransportAttributes(P1, P2, P3) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -114,14 +114,14 @@ extern "windows-ms"
   #define P4 size as DWORD
   function DwmGetWindowAttribute(P1, P2, P3, P4) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
   #define P1 hwnd as HWND
   function DwmInvalidateIconicBitmaps(P1) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -144,7 +144,7 @@ extern "windows-ms"
   #define P2 pSize as PSIZE
   function DwmQueryThumbnailSourceSize(P1, P2) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -153,7 +153,7 @@ extern "windows-ms"
   #define P3 thumbnail_id as PHTHUMBNAIL
   function DwmRegisterThumbnail(P1, P2, P3) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -170,7 +170,7 @@ extern "windows-ms"
   #define P4 dwSITFlags as DWORD
   function DwmSetIconicLivePreviewBitmap(P1, P2, P3, P4) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -179,7 +179,7 @@ extern "windows-ms"
   #define P3 dwSITFlags as DWORD
   function DwmSetIconicThumbnail(P1, P2, P3) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -202,7 +202,7 @@ extern "windows-ms"
   #define P1 thumbnail as HTHUMBNAIL
   function DwmUnregisterThumbnail(P1) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
   
   UndefAllParams()
@@ -210,6 +210,6 @@ extern "windows-ms"
   #define P2 props as const DWM_THUMBNAIL_PROPERTIES ptr
   function DwmUpdateThumbnailProperties(P1, P2) as HRESULT
     'UnimplementedFunction()
-    return ERROR_OUT_OF_PAPER
+    return E_NOTIMPL
   end function
 end extern

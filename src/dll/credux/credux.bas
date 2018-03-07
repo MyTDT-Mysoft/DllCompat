@@ -71,7 +71,7 @@ extern "windows-ms"
     var retErr = TreatPromptFlags(dwFlags, @newFlags)
     if retErr <> ERROR_SUCCESS then
       'TODO: return proper error according to flag
-      return ERROR_OUT_OF_PAPER
+      return E_INVALIDARG
     end if
     
     /'
