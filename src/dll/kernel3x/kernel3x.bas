@@ -728,7 +728,6 @@ extern "windows-ms"
   #define P3 langbuffer as PZZWSTR
   #define P4 bufferlen as PULONG
   function GetUserPreferredUILanguages(P1, P2, P3, P4) as BOOL export
-    UnimplementedFunction()
     SetLastError(ERROR_OUT_OF_PAPER)
     return 0
   end function
