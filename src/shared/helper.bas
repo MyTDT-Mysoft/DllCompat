@@ -41,13 +41,21 @@ type WINBOOL as integer
   #endif
 #endmacro
 
-#macro DEBUG_MsgTrace( _STRING , _PARAMS... )
+#macro DEBUG_MsgTrace(_STRING , _PARAMS...)
   #ifdef GlobalDebugEnabled
     scope
       dim as zstring*4096 zTemp = any
-      sprintf( zTemp , "MSG:   %s(%i): " _STRING , __FUNCTION__  , __LINE__ , _PARAMS )  
-      OutputDebugString( zTemp )
+      sprintf(zTemp , "MSG:   %s(%i): " _STRING , __FUNCTION__  , __LINE__ , _PARAMS)  
+      OutputDebugString(zTemp)
     end scope
+  #endif
+#endmacro
+
+#macro DEBUG_TripDebugger()
+  #ifdef GlobalDebugEnabled
+    if IsDebuggerPresent() then
+      asm .byte 0xCC
+    end if
   #endif
 #endmacro
 ' **************************************************************************  
