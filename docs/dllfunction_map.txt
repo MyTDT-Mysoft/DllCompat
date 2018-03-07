@@ -101,12 +101,12 @@ powrprox
     PowerGetActiveScheme                            dummy
     PowerSetActiveScheme                            dummy
 shell3x
-    SHCreateItemFromIDList                          TODO
-    SHCreateItemFromParsingName                     TODO
-    Shell_NotifyIconGetRect                         TODO
-    SHGetKnownFolderIDList                          TODO
+    SHCreateItemFromIDList                          dummy       fixme
+    SHCreateItemFromParsingName                     dummy       fixme
+    Shell_NotifyIconGetRect                         dummy
+    SHGetKnownFolderIDList                          dummy       fixme
     SHGetKnownFolderPath                                        testme
-    SHGetStockIconInfo                              TODO
+    SHGetStockIconInfo                              dummy       fixme
 user3x
     CloseTouchInputHandle                           dummy
     GetTouchInputInfo                               dummy
