@@ -117,8 +117,11 @@ uxthemx
     GetThemeTransitionDuration                      dummy
     SetWindowThemeAttribute                         dummy
 ws2_3x
-    inet_ntop
+    inet_ntop                                       full
+    InetNtopW                                       full        testme
     inet_pton                                       TODO
+    InetPtonW                                       TODO
+    WSAPoll                                         dummy       fixme
 
 
 ;vcruntime140

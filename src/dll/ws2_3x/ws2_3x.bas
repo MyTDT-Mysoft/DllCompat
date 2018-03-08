@@ -1,29 +1,69 @@
 #define fbc -dll -Wl "ws2_3x.dll.def" -x ..\..\bin\dll\ws2_3x.dll -i ..\..\
 
-#include "win/winsock2.bi"
-#Include "win/ws2tcpip.bi"
+#include "win\winsock2.bi"
+#Include "win\ws2tcpip.bi"
+#include "includes\win\winsock2_fix.bi"
+#include "shared\helper.bas"
 
 extern "windows-ms"
-
-function inet_ntop alias "inet_ntop" (af as integer, src as any ptr, dst as zstring ptr, size as socklen_t) as zstring ptr export
-  dim as sockaddr_storage ss
-  dim as ulong s = size
+  UndefAllParams()
+  #define P1 Family as integer
+  #define P2 pAddr as PVOID
+  #define P3 pStringBuf as PSTR
+  #define P4 StringBufSize as size_t
+  function _InetNtopA alias "inet_ntop" (P1, P2, P3, P4) as PCSTR export
+    dim ss as SOCKADDR_STORAGE
+    dim s as ulong = StringBufSize
+    
+    ss.ss_family = Family
   
-  ss.ss_family = af
-
-  select case af
-  case AF_INET
-    cptr(sockaddr_in ptr,@ss)->sin_addr = *cptr(in_addr ptr,src)
-  case AF_INET6:
-    cptr(sockaddr_in6 ptr,@ss)->sin6_addr = *cptr(in6_addr ptr,src)
-  case else          
-    return NULL
-  end select
+    select case Family
+      case AF_INET
+        cptr(SOCKADDR_IN  ptr, @ss)->sin_addr  = *cptr(IN_ADDR  ptr, pAddr)
+      case AF_INET6:
+        cptr(SOCKADDR_IN6 ptr, @ss)->sin6_addr = *cptr(IN6_ADDR ptr, pAddr)
+      case else          
+        return NULL
+    end select
+    
+    '/* cannot direclty use &StringBufSize because of strict aliasing rules */
+    return iif(WSAAddressToStringA(cast(any ptr,@ss), sizeof(ss), NULL, pStringBuf, @s)=0, pStringBuf, NULL)
+  end function
   
-  '/* cannot direclty use &size because of strict aliasing rules */
-  return iif(WSAAddressToString(cast(any ptr,@ss), sizeof(ss), NULL, dst, @s) = 0 , dst , NULL )
-end function
-
+  UndefAllParams()
+  #define P1 Family as integer
+  #define P2 pAddr as PVOID
+  #define P3 pStringBuf as PWSTR
+  #define P4 StringBufSize as size_t
+  function _InetNtopW alias "InetNtopW" (P1, P2, P3, P4) as PCWSTR export
+    dim ss as SOCKADDR_STORAGE
+    dim s as ulong = StringBufSize
+    
+    ss.ss_family = Family
+  
+    select case Family
+      case AF_INET
+        cptr(SOCKADDR_IN  ptr, @ss)->sin_addr  = *cptr(IN_ADDR  ptr, pAddr)
+      case AF_INET6:
+        cptr(SOCKADDR_IN6 ptr, @ss)->sin6_addr = *cptr(IN6_ADDR ptr, pAddr)
+      case else          
+        return NULL
+    end select
+    
+    '/* cannot direclty use &StringBufSize because of strict aliasing rules */
+    return iif(WSAAddressToStringW(cast(any ptr,@ss), sizeof(ss), NULL, pStringBuf, @s)=0, pStringBuf, NULL)
+  end function
+  
+  UndefAllParams()
+  #define P1 fdarray as WSAPOLLFD ptr
+  #define P2 nfds as ULONG
+  #define P3 timeout as integer
+  function WSAPoll(P1, P2, P3) as integer export
+    DEBUG_MsgNotImpl()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return SOCKET_ERROR
+  end function
+  
 end extern
 
 #if 0
