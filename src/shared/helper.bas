@@ -26,26 +26,43 @@ type WINBOOL as integer
 #endmacro
 
 ' **************************************************************************
+#define DEBUG_MAXSTR 512
 #define GlobalDebugEnabled
+#define CallerTraceEnabled
+
+sub DebugOutputCalledResult(__pCaller as any ptr, pzFunction as zstring ptr)
+  dim zResult as zstring*DEBUG_MAXSTR = any
+  dim hCallerModule as HMODULE = null
+  var iSz = sprintf(zResult, "DLLC_WHOCALL: %s was called by ", pzFunction)
+
+  const cFlags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS or GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT    
+  if GetModuleHandleEx(cFlags, __pCaller, @hCallerModule) andalso hCallerModule then
+    GetModuleFileName(hCallerModule, @zResult+iSz , DEBUG_MAXSTR-iSz)
+  else
+    sprintf(@zResult+iSz, "Unknown (0x%08X)", __pCaller)
+  end if
+  
+  OutputDebugString(zResult)
+end sub
 
 #macro DEBUG_AlertNotImpl()
   #ifdef GlobalDebugEnabled
-    OutputDebugString("ALERT: " __FUNCTION__ !" STUB called.\r\n" )
+    OutputDebugString("DLLC_ALERT:   " __FUNCTION__ !" STUB called.\r\n" )
     MessageBox(null, __FUNCTION__ !" STUB called.\r\n", "DllCompat", MB_SYSTEMMODAL or MB_ICONINFORMATION)
   #endif
 #endmacro
 
 #macro DEBUG_MsgNotImpl()
   #ifdef GlobalDebugEnabled
-    OutputDebugString("MSG:   " __FUNCTION__ !" STUB called. \r\n" )
+    OutputDebugString("DLLC_MSG:     " __FUNCTION__ !" STUB called. \r\n" )
   #endif
 #endmacro
 
 #macro DEBUG_MsgTrace(_STRING , _PARAMS...)
   #ifdef GlobalDebugEnabled
     scope
-      dim as zstring*4096 zTemp = any
-      sprintf(zTemp , "MSG:   %s(%i)| " _STRING , __FUNCTION__  , __LINE__ , _PARAMS)  
+      dim as zstring*DEBUG_MAXSTR zTemp = any
+      sprintf(zTemp , "DLLC_MSG:     %s(%i)| " _STRING , __FUNCTION__  , __LINE__ , _PARAMS)  
       OutputDebugString(zTemp)
     end scope
   #endif
@@ -56,6 +73,22 @@ type WINBOOL as integer
     if IsDebuggerPresent() then
       asm .byte 0xCC
     end if
+  #endif
+#endmacro
+
+#macro DEBUG_WhoCalledInit()
+  #if defined(GlobalDebugEnabled) andalso defined(CallerTraceEnabled)
+    dim __pCaller as any ptr = any
+    asm
+      mov eax, [ebp+4]
+      mov [__pCaller], eax
+    end asm
+  #endif
+#endmacro
+
+#macro DEBUG_WhoCalledResult()  
+  #if defined(GlobalDebugEnabled) andalso defined(CallerTraceEnabled)
+    DebugOutputCalledResult(__pCaller, @__FUNCTION__)    
   #endif
 #endmacro
 ' **************************************************************************  

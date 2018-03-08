@@ -15,10 +15,12 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 lpModuleName as LPCSTR
   function _GetModuleHandleA alias "GetModuleHandleA"(P1) as HMODULE export
+    DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
     ret = GetModuleHandleA(lpModuleName)
     if ret=0 then
+      DEBUG_WhoCalledResult()
       DEBUG_MsgTrace("Dynload FAIL: %s", lpModuleName)
     end if
     
@@ -28,10 +30,12 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 lpModuleName as LPCWSTR
   function _GetModuleHandleW alias "GetModuleHandleW"(P1) as HMODULE export
+    DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
     ret = GetModuleHandleW(lpModuleName)
     if ret=0 then
+      DEBUG_WhoCalledResult()
       DEBUG_MsgTrace("Dynload FAIL: %ls", lpModuleName)
     end if
     
@@ -43,10 +47,12 @@ extern "windows-ms"
   #define P2 lpModuleName as LPCSTR
   #define P3 phModule as HMODULE ptr
   function _GetModuleHandleExA alias "GetModuleHandleExA"(P1, P2, P3) as BOOL export
+    DEBUG_WhoCalledInit()
     dim ret as BOOL
     
     ret = GetModuleHandleExA(dwFlags, lpModuleName, phModule)
     if ret=0 then
+      DEBUG_WhoCalledResult()
       DEBUG_MsgTrace("Dynload FAIL: %s", lpModuleName)
     end if
     
@@ -58,10 +64,12 @@ extern "windows-ms"
   #define P2 lpModuleName as LPCWSTR
   #define P3 phModule as HMODULE ptr
   function _GetModuleHandleExW alias "GetModuleHandleExW"(P1, P2, P3) as BOOL export
+    DEBUG_WhoCalledInit()
     dim ret as BOOL
     
     ret = GetModuleHandleExW(dwFlags, lpModuleName, phModule)
     if ret=0 then
+      DEBUG_WhoCalledResult()
       DEBUG_MsgTrace("Dynload FAIL: %ls", lpModuleName)
     end if
     
@@ -71,10 +79,12 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 lpFileName as LPCSTR
   function _LoadLibraryA alias "LoadLibraryA"(P1) as HMODULE export
+    DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
     ret = LoadLibraryA(lpFileName)
     if ret=0 then
+      DEBUG_WhoCalledResult()
       DEBUG_MsgTrace("Dynload FAIL: %s", lpFileName)
     end if
     
@@ -84,10 +94,12 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 lpFileName as LPCWSTR
   function _LoadLibraryW alias "LoadLibraryW"(P1) as HMODULE export
+    DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
     ret = LoadLibraryW(lpFileName)
     if ret=0 then
+      DEBUG_WhoCalledResult()
       DEBUG_MsgTrace("Dynload FAIL: %ls", lpFileName)
     end if
     
@@ -99,10 +111,12 @@ extern "windows-ms"
   #define P2 hFile as HANDLE
   #define P3 dwFlags as DWORD
   function _LoadLibraryExA alias "LoadLibraryExA"(P1, P2, P3) as HMODULE export
+    DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
     ret = LoadLibraryExA(lpFileName, hFile, dwFlags)
     if ret=0 then
+      DEBUG_WhoCalledResult()
       DEBUG_MsgTrace("Dynload FAIL: %s", lpFileName)
     end if
     
@@ -114,10 +128,12 @@ extern "windows-ms"
   #define P2 hFile as HANDLE
   #define P3 dwFlags as DWORD
   function _LoadLibraryExW alias "LoadLibraryExW"(P1, P2, P3) as HMODULE export
+    DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
     ret = LoadLibraryExW(lpFileName, hFile, dwFlags)
     if ret=0 then
+      DEBUG_WhoCalledResult()
       DEBUG_MsgTrace("Dynload FAIL: %ls", lpFileName)
     end if
     
@@ -128,6 +144,7 @@ extern "windows-ms"
   #define P1 hModule as HMODULE
   #define P2 lpProcName as LPCSTR
   function _GetProcAddress alias "GetProcAddress"(P1, P2) as FARPROC export
+    DEBUG_WhoCalledInit()
     dim ret as FARPROC
     dim zModname as zstring*4096 = any
     
@@ -136,6 +153,7 @@ extern "windows-ms"
       if GetModuleFileNameA(hModule, @zModname, 4096)=0 then
         zModname = "NONE"
       end if
+      DEBUG_WhoCalledResult()
       DEBUG_MsgTrace("Dynload FAIL: %s > %s", @zModname, lpProcName)
     end if
     
