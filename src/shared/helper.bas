@@ -31,7 +31,7 @@ type WINBOOL as integer
 #macro DEBUG_AlertNotImpl()
   #ifdef GlobalDebugEnabled
     OutputDebugString("ALERT: " __FUNCTION__ !" STUB called.\r\n" )
-    messagebox(null, __FUNCTION__ !" STUB called.\r\n", "DllCompat", MB_SYSTEMMODAL or MB_ICONINFORMATION)
+    MessageBox(null, __FUNCTION__ !" STUB called.\r\n", "DllCompat", MB_SYSTEMMODAL or MB_ICONINFORMATION)
   #endif
 #endmacro
 
@@ -45,7 +45,7 @@ type WINBOOL as integer
   #ifdef GlobalDebugEnabled
     scope
       dim as zstring*4096 zTemp = any
-      sprintf(zTemp , "MSG:   %s(%i): " _STRING , __FUNCTION__  , __LINE__ , _PARAMS)  
+      sprintf(zTemp , "MSG:   %s(%i)| " _STRING , __FUNCTION__  , __LINE__ , _PARAMS)  
       OutputDebugString(zTemp)
     end scope
   #endif

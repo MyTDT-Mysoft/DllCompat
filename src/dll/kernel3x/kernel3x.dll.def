@@ -403,7 +403,6 @@ GetPrivateProfileStringA = kernel32.GetPrivateProfileStringA @405
 GetPrivateProfileStringW = kernel32.GetPrivateProfileStringW @406
 GetPrivateProfileStructA = kernel32.GetPrivateProfileStructA @407
 GetPrivateProfileStructW = kernel32.GetPrivateProfileStructW @408
-GetProcAddress = kernel32.GetProcAddress @409
 GetProcessAffinityMask = kernel32.GetProcessAffinityMask @410
 GetProcessDEPPolicy = kernel32.GetProcessDEPPolicy @411
 GetProcessHandleCount = kernel32.GetProcessHandleCount @412
@@ -954,6 +953,7 @@ LoadLibraryA @581
 LoadLibraryW @584
 LoadLibraryExA @582
 LoadLibraryExW @583
+GetProcAddress @409
 
 GetLogicalProcessorInformation @369
 
