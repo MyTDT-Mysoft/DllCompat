@@ -542,7 +542,6 @@ RegisterClipboardFormatA = user32.RegisterClipboardFormatA @539
 RegisterClipboardFormatW = user32.RegisterClipboardFormatW @540
 RegisterDeviceNotificationA = user32.RegisterDeviceNotificationA @541
 RegisterDeviceNotificationW = user32.RegisterDeviceNotificationW @542
-RegisterHotKey = user32.RegisterHotKey @543
 RegisterLogonProcess = user32.RegisterLogonProcess @544
 RegisterMessagePumpHook = user32.RegisterMessagePumpHook @545
 RegisterRawInputDevices = user32.RegisterRawInputDevices @546
@@ -732,6 +731,8 @@ wsprintfA = user32.wsprintfA @729
 wsprintfW = user32.wsprintfW @730
 wvsprintfA = user32.wvsprintfA @731
 wvsprintfW = user32.wvsprintfW @732
+
+RegisterHotKey @543
 
 CloseTouchInputHandle
 GetTouchInputInfo

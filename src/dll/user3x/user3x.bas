@@ -4,14 +4,19 @@
 #include "shared\helper.bas"
 #include "includes\win\user32_fix.bi"
 
-#ifndef HGESTUREINFO
-  type HGESTUREINFO as HANDLE
-#endif
-#ifndef PGESTUREINFO
-  type PGESTUREINFO as any ptr
-#endif
-
 extern "windows-ms"
+  UndefAllParams()
+  #define P1 hWnd as HWND
+  #define P2 id as integer
+  #define P3 fsModifiers as UINT
+  #define P4 vk as UINT
+  function _RegisterHotKey alias "RegisterHotKey"(P1, P2, P3, P4) as BOOL export
+    dim newModifiers as UINT
+    newModifiers = fsModifiers and (not MOD_NOREPEAT)
+    'TODO: replicate MOD_NOREPEAT behaviour in XP
+    return RegisterHotKey(hWnd, id, newModifiers, vk)
+  end function
+
   UndefAllParams()
   #define P1 hTouchInput as HANDLE
   function CloseTouchInputHandle(P1) as BOOL export
