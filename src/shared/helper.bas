@@ -91,6 +91,7 @@ end sub
     DebugOutputCalledResult(__pCaller, @__FUNCTION__)    
   #endif
 #endmacro
+
 ' **************************************************************************  
 
 sub hexdump(mem as any ptr, lenny as UInteger, elemsize as UInteger)

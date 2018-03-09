@@ -1,3 +1,5 @@
+#define fbc -dll -Wl "uxthemx.dll.def" -x ..\..\..\bin\dll\uxthemx.dll -i ..\..\
+
 #include "windows.bi"
 #include "win\tmschema.bi"
 #include "win\uxtheme.bi"

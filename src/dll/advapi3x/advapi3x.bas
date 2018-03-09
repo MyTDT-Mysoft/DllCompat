@@ -112,5 +112,20 @@ extern "windows-ms"
     return iResu
     
   end function
+  
+  UndefAllParams()
+  #undef RegLoadMUIStringW
+  #define P1 hKey         as HKEY
+  #define P2 pszValue     as LPCTSTR
+  #define P3 pszOutBuf    as LPTSTR
+  #define P4 cbOutBuf     as DWORD
+  #define P5 pcbData      as LPDWORD
+  #define P6 Flags        as DWORD
+  #define P7 pszDirectory as LPCTSTR
+  function RegLoadMUIStringW( P1 , P2 , P3 , P4 , P5 , P6 , P7 ) as long export
+    NotifyBox( "RegLoadMUIStringW" )
+    return ERROR_CALL_NOT_IMPLEMENTED
+  end function
+  
 end extern
 

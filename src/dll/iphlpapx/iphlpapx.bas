@@ -1,4 +1,4 @@
-#define fbc -dll -Wl "iphlpapx.dll.def" -x ..\..\..\bin\dll\iphlpapx.dll -i ..\..\
+#define fbc -dll -Wl "iphlpapx.dll.def" -i ..\..\ -x ..\..\..\bin\dll\iphlpapx.dll 
 
 #include "windows.bi"
 #include "win\winbase.bi"

@@ -977,10 +977,10 @@ VerifyVersionInfoA
 GetThreadId
 GetFinalPathNameByHandleW
 
-FlsFree
-FlsGetValue
-FlsSetValue
-FlsAlloc
+;FlsFree
+;FlsGetValue
+;FlsSetValue
+;FlsAlloc
 SetFileInformationByHandle
 SetThreadStackGuarantee
 LCMapStringEx

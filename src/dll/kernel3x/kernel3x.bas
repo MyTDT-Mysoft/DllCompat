@@ -1,6 +1,7 @@
-#define fbc -dll -Wl "kernel3x.dll.def" -x ..\..\..\bin\dll\kernel3x.dll -i ..\..\
+#define fbc -dll -Wl "kernel3x.dll.def" -i ..\..\ -x ..\..\..\bin\dll\kernel3x.dll 
 
 #define DebugFailedCalls
+#define DebugDisableExceptions
 
 #define DebugBox(_MSG) Messagebox(null,_MSG,__FUNCTION__ ":" & __LINE__,MB_SYSTEMMODAL or MB_ICONERROR)
 #define NotifyBox(_MSG) Messagebox(null,_MSG,__FUNCTION__ ":" & __LINE__,MB_SYSTEMMODAL or MB_ICONWARNING)
@@ -787,6 +788,16 @@ extern "windows-ms"
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
+  
+  #ifdef DebugDisableExceptions
+  'experimental... the other exception functions need to be added...
+  'but it will help with programs that crashes and are " internally handled to be 'safe' "
+  UndefAllParams()
+  function fnSetUnhandledExceptionFilter alias "SetUnhandledExceptionFilter" ( Proc as any ptr ) as any ptr export
+    return 0
+  end function
+  #endif
+  
 end extern
 
 #if 0

@@ -66,3 +66,8 @@ type _DTTOPTS
 end type
 type DTTOPTS as _DTTOPTS
 type PDTTOPTS as _DTTOPTS ptr
+
+extern "Windows"
+  #undef GetThemeFont
+  declare function GetThemeFont(byval hTheme as HTHEME, byval hdc as HDC, byval iPartId as long, byval iStateId as long, byval iPropId as long, byval pFont as LOGFONTW ptr) as HRESULT
+end extern
