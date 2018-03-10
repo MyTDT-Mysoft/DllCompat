@@ -590,7 +590,7 @@ end extern
 '---------------- APP SPECIFIC INCLUDES ---------------------
 'should we add a define check? 
 
-#include "..\..\AppHaxes\keycastow_kernel32.bas"
+'#include "..\..\AppHaxes\keycastow_kernel32.bas"
 '#include "..\..\AppHaxes\mischief_kernel32.bas"
   
 
