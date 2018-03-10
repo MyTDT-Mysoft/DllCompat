@@ -1,127 +1,129 @@
 States:
-    Implementation: full, partial, dummy, TODO
-    Other: testme, fixme
+    Completeness: full, partial, dummy, TODO
+    Type: new, reimpl
+    Notes: testme, fixme
 
 advapi3x
-    RegGetValueA
-    RegGetValueW
+    RegGetValueA                                    new
+    RegGetValueW                                    new
+    RegLoadMUIStringW                               new         dummy       fixme
 avrt
-    AvQuerySystemResponsiveness                     dummy
-    AvRevertMmThreadCharacteristics                 dummy
-    AvRtCreateThreadOrderingGroup                   dummy
-    AvRtCreateThreadOrderingGroupExA                dummy
-    AvRtCreateThreadOrderingGroupExW                dummy
-    AvRtDeleteThreadOrderingGroup                   dummy
-    AvRtJoinThreadOrderingGroup                     dummy
-    AvRtLeaveThreadOrderingGroup                    dummy
-    AvRtWaitOnThreadOrderingGroup                   dummy
-    AvSetMmMaxThreadCharacteristicsA                dummy
-    AvSetMmMaxThreadCharacteristicsW                dummy
-    AvSetMmThreadCharacteristicsA                   dummy
-    AvSetMmThreadCharacteristicsW                   dummy
-    AvSetMmThreadPriority                           dummy
+    AvQuerySystemResponsiveness                     new         dummy
+    AvRevertMmThreadCharacteristics                 new         dummy
+    AvRtCreateThreadOrderingGroup                   new         dummy
+    AvRtCreateThreadOrderingGroupExA                new         dummy
+    AvRtCreateThreadOrderingGroupExW                new         dummy
+    AvRtDeleteThreadOrderingGroup                   new         dummy
+    AvRtJoinThreadOrderingGroup                     new         dummy
+    AvRtLeaveThreadOrderingGroup                    new         dummy
+    AvRtWaitOnThreadOrderingGroup                   new         dummy
+    AvSetMmMaxThreadCharacteristicsA                new         dummy
+    AvSetMmMaxThreadCharacteristicsW                new         dummy
+    AvSetMmThreadCharacteristicsA                   new         dummy
+    AvSetMmThreadCharacteristicsW                   new         dummy
+    AvSetMmThreadPriority                           new         dummy
 credux
-    CredUIPromptForWindowsCredentialsW              partial
-    CredUnPackAuthenticationBufferW                 partial
+    CredUIPromptForWindowsCredentialsW              new         partial
+    CredUnPackAuthenticationBufferW                 new         partial
 dwmapi
-    DwmAttachMilContent                             dummy
-    DwmDefWindowProc                                dummy
-    DwmDetachMilContent                             dummy
-    DwmEnableBlurBehindWindow                       dummy
-    DwmEnableComposition                            dummy
-    DwmEnableMMCSS                                  dummy
-    DwmExtendFrameIntoClientArea                    dummy
-    DwmFlush                                        dummy
-    DwmGetColorizationColor                         dummy
-    DwmGetCompositionTimingInfo                     dummy
-    DwmGetGraphicsStreamClient                      dummy
-    DwmGetGraphicsStreamTransformHint               dummy    
-    DwmGetTransportAttributes                       dummy
-    DwmGetWindowAttribute                           dummy
-    DwmInvalidateIconicBitmaps                      dummy
-    DwmIsCompositionEnabled                         dummy
-    DwmModifyPreviousDxFrameDuration                dummy    
-    DwmQueryThumbnailSourceSize                     dummy
-    DwmRegisterThumbnail                            dummy
-    DwmSetDxFrameDuration                           dummy
-    DwmSetIconicLivePreviewBitmap                   dummy
-    DwmSetIconicThumbnail                           dummy
-    DwmSetPresentParameters                         dummy
-    DwmSetWindowAttribute                           dummy
-    DwmUnregisterThumbnail                          dummy
-    DwmUpdateThumbnailProperties                    dummy    
+    DwmAttachMilContent                             new         dummy
+    DwmDefWindowProc                                new         dummy
+    DwmDetachMilContent                             new         dummy
+    DwmEnableBlurBehindWindow                       new         dummy
+    DwmEnableComposition                            new         dummy
+    DwmEnableMMCSS                                  new         dummy
+    DwmExtendFrameIntoClientArea                    new         dummy
+    DwmFlush                                        new         dummy
+    DwmGetColorizationColor                         new         dummy
+    DwmGetCompositionTimingInfo                     new         dummy
+    DwmGetGraphicsStreamClient                      new         dummy
+    DwmGetGraphicsStreamTransformHint               new         dummy    
+    DwmGetTransportAttributes                       new         dummy
+    DwmGetWindowAttribute                           new         dummy
+    DwmInvalidateIconicBitmaps                      new         dummy
+    DwmIsCompositionEnabled                         new         dummy
+    DwmModifyPreviousDxFrameDuration                new         dummy    
+    DwmQueryThumbnailSourceSize                     new         dummy
+    DwmRegisterThumbnail                            new         dummy
+    DwmSetDxFrameDuration                           new         dummy
+    DwmSetIconicLivePreviewBitmap                   new         dummy
+    DwmSetIconicThumbnail                           new         dummy
+    DwmSetPresentParameters                         new         dummy
+    DwmSetWindowAttribute                           new         dummy
+    DwmUnregisterThumbnail                          new         dummy
+    DwmUpdateThumbnailProperties                    new         dummy    
 gdi3x
-    D3DKMTCreateDCFromMemory
-    D3DKMTDestroyDCFromMemory
+    D3DKMTCreateDCFromMemory                        new
+    D3DKMTDestroyDCFromMemory                       new
 iphlpapx
-    ConvertInterfaceIndexToLuid                     full        testme
-    ConvertInterfaceLuidToIndex                     full        testme
-    ConvertInterfaceLuidToNameA                     dummy       fixme
-    ConvertInterfaceLuidToNameW                     full        testme
-    ConvertInterfaceNameToLuidA                     dummy       fixme
-    ConvertInterfaceNameToLuidW                     dummy       fixme
+    ConvertInterfaceIndexToLuid                     new         full        testme
+    ConvertInterfaceLuidToIndex                     new         full        testme
+    ConvertInterfaceLuidToNameA                     new         dummy       fixme
+    ConvertInterfaceLuidToNameW                     new         full        testme
+    ConvertInterfaceNameToLuidA                     new         dummy       fixme
+    ConvertInterfaceNameToLuidW                     new         dummy       fixme
 kernel3x
-    _GetThreadId
-    _GetVersionExW
-    _GetVersionExA
-    _VerifyVersionInfoW
-    _VerifyVersionInfoA
-    CancelIoEx                                      dummy       fixme
-    FlsAlloc                                        dummy
-    FlsFree                                         dummy
-    FlsGetValue                                     dummy
-    FlsSetValue                                     dummy
-    GetFileInformationByHandleEx                    partial     testme
-    GetFinalPathNameByHandleW
-    GetLogicalProcessorInformation
-    GetNumaNodeProcessorMaskEx                      dummy
-    GetSystemDefaultLocaleName
-    GetTickCount64                                              testme
-    GetUserPreferredUILanguages                     dummy
-    InitializeConditionVariable
-    InitializeCriticalSectionEx
-    InitOnceExecuteOnce
-    InterlockedCompareExchange64
-    LCMapStringEx                                   dummy
-    SetFileInformationByHandle                      dummy
-    SetThreadGroupAffinity                          dummy
-    SetThreadStackGuarantee                         dummy
-    SleepConditionVariableCS
-    WakeAllConditionVariable
-    WakeConditionVariable
+    GetThreadId                                     new
+    CancelIoEx                                      new         dummy       fixme
+    FlsAlloc                                        new         dummy       fixme
+    FlsFree                                         new         dummy       fixme
+    FlsGetValue                                     new         dummy       fixme
+    FlsSetValue                                     new         dummy       fixme
+    GetFileInformationByHandleEx                    new         partial     testme
+    GetFinalPathNameByHandleW                       new
+    GetLogicalProcessorInformation                  reimpl      partial
+    GetNumaNodeProcessorMaskEx                      new         dummy
+    GetSystemDefaultLocaleName                      new
+    GetTickCount64                                  new         testme
+    GetUserPreferredUILanguages                     new         dummy
+    GetVersionExW                                   reimpl
+    GetVersionExA                                   reimpl
+    InitializeConditionVariable                     new
+    InitializeCriticalSectionEx                     new
+    InitOnceExecuteOnce                             new
+    InterlockedCompareExchange64                    new
+    LCMapStringEx                                   new         dummy
+    SetFileInformationByHandle                      new         dummy
+    SetThreadGroupAffinity                          new         dummy
+    SetThreadStackGuarantee                         new         dummy
+    SleepConditionVariableCS                        new
+    VerifyVersionInfoW                              reimpl
+    VerifyVersionInfoA                              reimpl
+    WakeAllConditionVariable                        new
+    WakeConditionVariable                           new
 msvcrx
-    _adjust_fdiv                                    full
-    _time
-    _ftol2
-    _ftol2_sse
+    _adjust_fdiv                                    reimpl
+    _ftol2                                          new
+    _ftol2_sse                                      new
+    time                                            reimpl
 opengl3x
-    _glGetString
-    _wglGetProcAddress
+    glGetString                                     reimpl
+    wglGetProcAddress                               reimpl
 powrprox
-    PowerGetActiveScheme                            dummy
-    PowerSetActiveScheme                            dummy
+    PowerGetActiveScheme                            new         dummy
+    PowerSetActiveScheme                            new         dummy
 shell3x
-    SHCreateItemFromIDList                          dummy       fixme
-    SHCreateItemFromParsingName                     dummy       fixme
-    Shell_NotifyIconGetRect                         dummy
-    SHGetKnownFolderIDList                          dummy       fixme
-    SHGetKnownFolderPath                                        testme
-    SHGetStockIconInfo                              dummy       fixme
+    SHCreateItemFromIDList                          new         dummy       fixme
+    SHCreateItemFromParsingName                     new         dummy       fixme
+    Shell_NotifyIconGetRect                         new         dummy
+    SHGetKnownFolderIDList                          new         dummy       fixme
+    SHGetKnownFolderPath                            new                     testme
+    SHGetStockIconInfo                              new         dummy       fixme
 user3x
-    CloseTouchInputHandle                           dummy
-    GetTouchInputInfo                               dummy
-    RegisterTouchWindow                             dummy
-    UpdateLayeredWindowIndirect                     partial     fixme
+    CloseTouchInputHandle                           new         dummy
+    GetTouchInputInfo                               new         dummy
+    RegisterTouchWindow                             new         dummy
+    UpdateLayeredWindowIndirect                     new         partial     fixme
 uxthemx
-    DrawThemeTextEx                                 partial     testme
-    GetThemeTransitionDuration                      dummy
-    SetWindowThemeAttribute                         dummy
+    DrawThemeTextEx                                 new         partial     testme
+    GetThemeTransitionDuration                      new         dummy
+    SetWindowThemeAttribute                         new         dummy
 ws2_3x
-    inet_ntop                                       full
-    InetNtopW                                       full        testme
-    inet_pton                                       TODO
-    InetPtonW                                       TODO
-    WSAPoll                                         dummy       fixme
+    inet_ntop                                       new         full
+    InetNtopW                                       new         full        testme
+    inet_pton                                       new         TODO
+    InetPtonW                                       new         TODO
+    WSAPoll                                         new         dummy       fixme
 
 
 ;vcruntime140

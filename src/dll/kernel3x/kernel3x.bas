@@ -429,6 +429,7 @@ extern "windows-ms"
   end function
   
   function GetTickCount64() as ulongint export
+    'this wraps around if called less often than every ~25 days
     dim as ulongint ulFreq = any, ulCounter = any 
     QueryPerformanceFrequency( cptr(LARGE_INTEGER ptr,@ulFreq ) )
     QueryPerformanceCounter( cptr(LARGE_INTEGER ptr,@ulCounter ) )
