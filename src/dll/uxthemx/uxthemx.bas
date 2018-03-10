@@ -8,15 +8,15 @@
 
 extern "windows-ms"
   UndefAllParams()
-  #define P1 hTheme as HTHEME
-  #define P2 hdc as HDC
-  #define P3 iPartId as integer
-  #define P4 iStateId as integer
-  #define P5 pszText as LPCWSTR
-  #define P6 iCharCount as integer
-  #define P7 dwFlags as DWORD
-  #define P8 pRect as LPRECT
-  #define P9 pOptions as const DTTOPTS ptr
+  #define P1 hTheme     as _In_    HTHEME
+  #define P2 hdc        as _In_    HDC
+  #define P3 iPartId    as _In_    int
+  #define P4 iStateId   as _In_    int
+  #define P5 pszText    as _In_    LPCWSTR
+  #define P6 iCharCount as _In_    int
+  #define P7 dwFlags    as _In_    DWORD
+  #define P8 pRect      as _Inout_ LPRECT
+  #define P9 pOptions   as _In_    const DTTOPTS ptr
   function DrawThemeTextEx(P1, P2, P3, P4, P5, P6, P7, P8, P9) as HRESULT export
     'testme: GetThemeFont warning param 6
     dim hr as HRESULT
@@ -69,10 +69,10 @@ extern "windows-ms"
   
   UndefAllParams()
   #define P1 hTheme as HTHEME
-  #define P2 iPartId as integer
-  #define P3 iStateIdFrom as integer
-  #define P4 iStateIdTo as integer
-  #define P5 iPropId as integer
+  #define P2 iPartId as int
+  #define P3 iStateIdFrom as int
+  #define P4 iStateIdTo as int
+  #define P5 iPropId as int
   #define P6 pdwDuration as DWORD ptr
   function GetThemeTransitionDuration(P1, P2, P3, P4, P5, P6) as HRESULT export
     DEBUG_MsgNotImpl()
@@ -80,10 +80,10 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
-  #define P1 hwnd as HWND
-  #define P2 eAttribute as WINDOWTHEMEATTRIBUTETYPE 'enum
-  #define P3 pvAttribute as PVOID
-  #define P4 cbAttribute as DWORD
+  #define P1 hwnd        as _In_ HWND
+  #define P2 eAttribute  as _In_ WINDOWTHEMEATTRIBUTETYPE
+  #define P3 pvAttribute as _In_ PVOID
+  #define P4 cbAttribute as _In_ DWORD
   function SetWindowThemeAttribute(P1, P2, P3, P4) as HRESULT export
     DEBUG_MsgNotImpl()
     return E_NOTIMPL

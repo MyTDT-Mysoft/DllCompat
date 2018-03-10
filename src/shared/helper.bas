@@ -6,12 +6,15 @@
 #undef WINBOOL
 type INT     as integer
 type BOOL    as integer
+type BOOLEAN as unsigned char
+
 type WINBOOL as integer
 
 #define _In_  
+#define _In_opt_
 #define _Out_
 #define _Inout_
-#define _In_opt_
+#define _Inout_opt_
 
 #macro UndefAllParams()
   #undef P1
