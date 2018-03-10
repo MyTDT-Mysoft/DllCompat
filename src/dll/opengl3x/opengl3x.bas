@@ -2,17 +2,18 @@
 
 #include "windows.bi"
 #include "gl\gl.bi"
+#include "shared\helper.bas"
 
 #define DebugAddress
 
 extern "windows-ms"
 
-  function _glGetString alias "glGetString" (iName as GLenum) as zstring ptr export
+  function fnglGetString alias "glGetString"(iName as GLenum) as zstring ptr export
     if iname = GL_VERSION then return @"2.0.0"
     return cast(zstring ptr,glGetString(iName))
   end function
   
-  function _wglGetProcAddress alias "wglGetProcAddress" (lpszProc as zstring ptr) as any ptr export
+  function fnwglGetProcAddress alias "wglGetProcAddress"(lpszProc as zstring ptr) as any ptr export
     
     dim as string zAlt = ""
     if lpszProc = 0 then return 0

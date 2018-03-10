@@ -1,10 +1,28 @@
+#pragma once
+
 #include "crt\stdio.bi"
 #include "crt\ctype.bi"
 
+'<ThFabba> [INT and int] They're the same
+'<ThFabba> BOOL is int, BOOLEAN is unsigned char
+'<ThFabba> Yeah [BOOLEAN] it's more common in NT APIs
+
+#undef INT
 #undef BOOL
+#undef BOOLEAN
 #undef WINBOOL
-type BOOL as integer
+type INT     as integer
+type BOOL    as integer
+type BOOLEAN as unsigned char
+
 type WINBOOL as integer
+
+#define _In_  
+#define _In_opt_
+#define _Out_
+#define _Out_opt_
+#define _Inout_
+#define _Inout_opt_
 
 #macro UndefAllParams()
   #undef P1

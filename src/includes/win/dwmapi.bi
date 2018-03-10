@@ -102,32 +102,3 @@ type _DWM_BLURBEHIND
 end type
 type DWM_BLURBEHIND as _DWM_BLURBEHIND
 type PDWM_BLURBEHIND as _DWM_BLURBEHIND ptr
-
-extern "windows-ms"
-  declare function DwmAttachMilContent(as HWND) as HRESULT
-  declare function DwmDefWindowProc(as HWND, as UINT, as WPARAM, as LPARAM, as LRESULT ptr) as BOOL
-  declare function DwmDetachMilContent(as HWND) as HRESULT
-  declare function DwmEnableBlurBehindWindow(as HWND, as const DWM_BLURBEHIND ptr) as HRESULT
-  declare function DwmEnableComposition(as UINT) as HRESULT
-  declare function DwmEnableMMCSS(as BOOL) as HRESULT
-  declare function DwmExtendFrameIntoClientArea(as HWND, as const MARGINS ptr) as HRESULT
-  declare function DwmFlush() as HRESULT
-  declare function DwmGetColorizationColor(as DWORD ptr, as BOOL ptr) as HRESULT
-  declare function DwmGetCompositionTimingInfo(as HWND, as DWM_TIMING_INFO ptr) as HRESULT
-  declare function DwmGetGraphicsStreamClient(as UINT, as UUID ptr) as HRESULT
-  declare function DwmGetGraphicsStreamTransformHint(as UINT, as MilMatrix3x2D ptr) as HRESULT
-  declare function DwmGetTransportAttributes(as BOOL ptr, as BOOL ptr, as DWORD ptr) as HRESULT
-  declare function DwmGetWindowAttribute(as HWND, as DWORD, as PVOID, as DWORD) as HRESULT
-  declare function DwmInvalidateIconicBitmaps(as HWND) as HRESULT
-  declare function DwmIsCompositionEnabled(as BOOL ptr) as HRESULT
-  declare function DwmModifyPreviousDxFrameDuration(as HWND, as integer, as BOOL) as HRESULT
-  declare function DwmQueryThumbnailSourceSize(as HTHUMBNAIL, as PSIZE) as HRESULT
-  declare function DwmRegisterThumbnail(as HWND, as HWND, as PHTHUMBNAIL) as HRESULT
-  declare function DwmSetDxFrameDuration(as HWND, as integer) as HRESULT
-  declare function DwmSetIconicLivePreviewBitmap(as HWND, as HBITMAP, as POINT ptr, as DWORD) as HRESULT
-  declare function DwmSetIconicThumbnail(as HWND, as HBITMAP, as DWORD) as HRESULT
-  declare function DwmSetPresentParameters(as HWND, as DWM_PRESENT_PARAMETERS ptr) as HRESULT
-  declare function DwmSetWindowAttribute(as HWND, as DWORD, as LPCVOID, as DWORD) as HRESULT
-  declare function DwmUnregisterThumbnail(as HTHUMBNAIL) as HRESULT
-  declare function DwmUpdateThumbnailProperties(as HTHUMBNAIL, as const DWM_THUMBNAIL_PROPERTIES ptr) as HRESULT
-end extern

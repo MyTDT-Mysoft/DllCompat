@@ -325,7 +325,6 @@ __uncaught_exception = msvcr120.__uncaught_exception
 ?wait_for_multiple@event@Concurrency@@SAIPAPAV12@I_NI@Z = msvcr120.?wait_for_multiple@event@Concurrency@@SAIPAPAV12@I_NI@Z
 ?what@exception@std@@UBEPBDXZ = msvcr120.?what@exception@std@@UBEPBDXZ
 $I10_OUTPUT = msvcr120.$I10_OUTPUT
-_adjust_fdiv = _ADJUST_FDIV
 _CIacos = msvcr120._CIacos
 _CIasin = msvcr120._CIasin
 _CIatan = msvcr120._CIatan
@@ -1983,3 +1982,5 @@ gmtime = msvcr120._gmtime32
 _fstat = msvcrt._fstat
 ctime  = msvcrt.ctime
 _wstat = msvcrt._wsta
+
+_adjust_fdiv = _ADJUST_FDIV

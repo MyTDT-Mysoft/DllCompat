@@ -4,9 +4,9 @@
 #include "windows.bi"
 #include "win\Objbase.bi"
 
-#include "shared\helper.bas"
 #include "includes\win\credui.bi"
 #include "includes\win\wincred.bi"
+#include "shared\helper.bas"
 
 
 
@@ -49,15 +49,15 @@ end function
 
 extern "windows-ms"
   UndefAllParams()
-  #define P1 pUiInfo as PCREDUI_INFOW
-  #define P2 dwAuthError as DWORD
-  #define P3 pulAuthPackage as ULONG ptr
-  #define P4 pvInAuthBuffer as LPCVOID
-  #define P5 ulInAuthBufferSize as ULONG
-  #define P6 ppvOutAuthBuffer as LPVOID ptr
-  #define P7 pulOutAuthBufferSize as ULONG ptr
-  #define P8 pfSave as BOOL ptr
-  #define P9 dwFlags as DWORD
+  #define P1 pUiInfo              as _In_opt_    PCREDUI_INFOW
+  #define P2 dwAuthError          as _In_        DWORD
+  #define P3 pulAuthPackage       as _Inout_     ULONG ptr
+  #define P4 pvInAuthBuffer       as _In_opt_    LPCVOID
+  #define P5 ulInAuthBufferSize   as _In_        ULONG
+  #define P6 ppvOutAuthBuffer     as _Out_       LPVOID ptr
+  #define P7 pulOutAuthBufferSize as _Out_       ULONG ptr
+  #define P8 pfSave               as _Inout_opt_ BOOL ptr
+  #define P9 dwFlags              as _In_        DWORD
   #undef CredUIPromptForWindowsCredentialsW
   function CredUIPromptForWindowsCredentialsW(P1, P2, P3, P4, P5, P6, P7, P8, P9) as DWORD export
     dim as DWORD newFlags
@@ -111,17 +111,17 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
-  #define P1 dwFlags as DWORD
-  #define P2 pAuthBuffer as PVOID
-  #define P3 cbAuthBuffer as DWORD
-  #define P4 pszUserName as LPWSTR
-  #define P5 pcchMaxUserName as DWORD ptr
-  #define P6 pszDomainName as LPWSTR
-  #define P7 pcchMaxDomainname as DWORD ptr
-  #define P8 pszPassword as LPWSTR
-  #define P9 pcchMaxPassword as DWORD ptr
+  #define P1 dwFlags           as _In_    DWORD
+  #define P2 pAuthBuffer       as _In_    PVOID
+  #define P3 cbAuthBuffer      as _In_    DWORD
+  #define P4 pszUserName       as _Out_   LPWSTR
+  #define P5 pcchMaxUserName   as _Inout_ DWORD ptr
+  #define P6 pszDomainName     as _Out_   LPWSTR
+  #define P7 pcchMaxDomainname as _Inout_ DWORD ptr
+  #define P8 pszPassword       as _Out_   LPWSTR
+  #define P9 pcchMaxPassword   as _Inout_ DWORD ptr
   #undef CredUnPackAuthenticationBufferW
-  function CredUnPackAuthenticationBufferW (P1, P2, P3, P4, P5, P6, P7, P8, P9) as BOOL export
+  function CredUnPackAuthenticationBufferW(P1, P2, P3, P4, P5, P6, P7, P8, P9) as BOOL export
     dim as UInteger usernameOff, passwordOff, domainOff
     'TODO: treat flags
     'TODO: behaviour for insufficient output buffer sizes

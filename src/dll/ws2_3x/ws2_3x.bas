@@ -7,11 +7,11 @@
 
 extern "windows-ms"
   UndefAllParams()
-  #define P1 Family as integer
-  #define P2 pAddr as PVOID
-  #define P3 pStringBuf as PSTR
-  #define P4 StringBufSize as size_t
-  function _InetNtopA alias "inet_ntop" (P1, P2, P3, P4) as PCSTR export
+  #define P1 Family        as _In_  INT
+  #define P2 pAddr         as _In_  PVOID
+  #define P3 pStringBuf    as _Out_ PSTR
+  #define P4 StringBufSize as _In_  size_t
+  function fnInetNtopA alias "inet_ntop" (P1, P2, P3, P4) as PCSTR export
     dim ss as SOCKADDR_STORAGE
     dim s as ulong = StringBufSize
     
@@ -31,11 +31,11 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
-  #define P1 Family as integer
-  #define P2 pAddr as PVOID
-  #define P3 pStringBuf as PWSTR
-  #define P4 StringBufSize as size_t
-  function _InetNtopW alias "InetNtopW" (P1, P2, P3, P4) as PCWSTR export
+  #define P1 Family        as _In_  INT
+  #define P2 pAddr         as _In_  PVOID
+  #define P3 pStringBuf    as _Out_ PWSTR
+  #define P4 StringBufSize as _In_  size_t
+  function InetNtopW(P1, P2, P3, P4) as PCWSTR export
     dim ss as SOCKADDR_STORAGE
     dim s as ulong = StringBufSize
     
@@ -55,62 +55,67 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
-  #define P1 fdarray as WSAPOLLFD ptr
-  #define P2 nfds as ULONG
-  #define P3 timeout as integer
-  function WSAPoll(P1, P2, P3) as integer export
-    DEBUG_MsgNotImpl()
-    SetLastError(ERROR_OUT_OF_PAPER)
-    return SOCKET_ERROR
-  end function
-
-  '???? whre this go??? omfg :P
-  ''/* cannot direclty use &size because of strict aliasing rules */
-  'return iif(WSAAddressToString(cast(any ptr,@ss), sizeof(ss), NULL, dst, @s) = 0 , dst , NULL )
-
-  function InetPtonA (af as integer, src as zstring ptr, dst as any ptr ) as integer export
+  #define P1 Family        as _In_  INT
+  #define P2 pszAddrString as _In_  PCSTR
+  #define P3 pAddrBuf      as _Out_ PVOID
+  function fnInetPtonA alias "inet_pton"(P1, P2, P3) as INT export
     dim as sockaddr_storage ss
     dim as integer size = sizeof(ss)
     dim as zstring*(INET6_ADDRSTRLEN+1) src_copy
     
-    src_copy = *src  
+    src_copy = *pszAddrString  
   
-    if WSAStringToAddressA(src_copy, af, NULL, cast(sockaddr ptr,@ss), @size) = 0 then
-      select case af
+    if WSAStringToAddressA(src_copy, Family, NULL, cast(sockaddr ptr,@ss), @size) = 0 then
+      select case Family
       case AF_INET
-        *cptr(in_addr ptr,dst) = (cptr(sockaddr_in ptr,@ss))->sin_addr
+        *cptr(in_addr ptr,pAddrBuf) = (cptr(sockaddr_in ptr,@ss))->sin_addr
         return 1
       case AF_INET6
-        *cptr(in6_addr ptr,dst) = (cptr(sockaddr_in6 ptr,@ss))->sin6_addr
+        *cptr(in6_addr ptr,pAddrBuf) = (cptr(sockaddr_in6 ptr,@ss))->sin6_addr
         return 1
       end select
     end if  
     
     return 0
-    
   end function
-  function InetPtonW (af as integer, src as wstring ptr, dst as any ptr ) as integer export
+  
+  UndefAllParams()
+  #define P1 Family        as _In_  INT
+  #define P2 pszAddrString as _In_  PCWSTR
+  #define P3 pAddrBuf      as _Out_ PVOID
+  function InetPtonW(P1, P2, P3) as INT export
     dim as sockaddr_storage ss
     dim as integer size = sizeof(ss)
     dim as wstring*(INET6_ADDRSTRLEN+1) src_copy
   
-    src_copy = *src  
+    src_copy = *pszAddrString  
   
-    if WSAStringToAddressW(src_copy, af, NULL, cast(sockaddr ptr,@ss), @size) = 0 then
-      select case af
+    if WSAStringToAddressW(src_copy, Family, NULL, cast(sockaddr ptr,@ss), @size) = 0 then
+      select case Family
       case AF_INET
-        *cptr(in_addr ptr,dst) = (cptr(sockaddr_in ptr,@ss))->sin_addr
+        *cptr(in_addr ptr,pAddrBuf) = (cptr(sockaddr_in ptr,@ss))->sin_addr
         return 1
       case AF_INET6
-        *cptr(in6_addr ptr,dst) = (cptr(sockaddr_in6 ptr,@ss))->sin6_addr
+        *cptr(in6_addr ptr,pAddrBuf) = (cptr(sockaddr_in6 ptr,@ss))->sin6_addr
         return 1
       end select
     end if  
     return 0
   end function
-
+  
+  UndefAllParams()
+  #define P1 fdarray as _Inout_ WSAPOLLFD ptr
+  #define P2 nfds    as _In_    ULONG
+  #define P3 timeout as _In_    INT
+  function WSAPoll(P1, P2, P3) as INT export
+    DEBUG_MsgNotImpl()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return SOCKET_ERROR
+  end function
 end extern
 
+
+'do we still need all this stuff below?
 #if 0
   #include <stdlib.h>
   #include <string.h>
@@ -166,5 +171,8 @@ end extern
     return (WSAAddressToString((struct sockaddr *)&ss, sizeof(ss), NULL, dst, &s) == 0)?
             dst : NULL;
   }
+  '???? whre this go??? omfg :P
+  ''/* cannot direclty use &size because of strict aliasing rules */
+  'return iif(WSAAddressToString(cast(any ptr,@ss), sizeof(ss), NULL, dst, @s) = 0 , dst , NULL )
 #endif  
   
