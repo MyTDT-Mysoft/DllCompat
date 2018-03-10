@@ -1,5 +1,6 @@
-#define fbc -dll -Wl "kernel3x.dll.def" -i ..\..\ -x ..\..\..\bin\dll\kernel3x.dll 
-'-x G:\downloads\app\kernel3x.dll
+#define fbc -dll -Wl "kernel3x.dll.def" -i ..\..\ -x ..\..\..\bin\dll\kernel3x.dll
+'..\..\..\bin\dll\kernel3x.dll 
+'G:\downloads\app\kernel3x.dll
 
 #define DebugFailedCalls
 #define DebugDisableExceptions
@@ -589,7 +590,7 @@ end extern
 '---------------- APP SPECIFIC INCLUDES ---------------------
 'should we add a define check? 
 
-'#include "..\..\AppHaxes\keycastow_kernel32.bas"
+#include "..\..\AppHaxes\keycastow_kernel32.bas"
 '#include "..\..\AppHaxes\mischief_kernel32.bas"
   
 
