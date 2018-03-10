@@ -1,5 +1,5 @@
-#define fbc -dll -Wl "kernel3x.dll.def" -i ..\..\ -x G:\downloads\app\kernel3x.dll
-'-x ..\..\..\bin\dll\kernel3x.dll 
+#define fbc -dll -Wl "kernel3x.dll.def" -i ..\..\ -x ..\..\..\bin\dll\kernel3x.dll 
+'-x G:\downloads\app\kernel3x.dll
 
 #define DebugFailedCalls
 #define DebugDisableExceptions
@@ -429,7 +429,6 @@ extern "windows-ms"
   end function
   
   function GetTickCount64() as ulongint export
-    'this wraps around if called less often than every ~25 days
     dim as ulongint ulFreq = any, ulCounter = any 
     QueryPerformanceFrequency( cptr(LARGE_INTEGER ptr,@ulFreq ) )
     QueryPerformanceCounter( cptr(LARGE_INTEGER ptr,@ulCounter ) )
