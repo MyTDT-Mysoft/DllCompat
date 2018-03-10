@@ -5,15 +5,15 @@
 #include "win\iphlpapi.bi"
 '#include "win\netioapi.bi" 'needed NETIO_STATUS definition not available to pre-v6 winNT. Jerks.
 #include "win\ifdef.bi"
-#include "shared\helper.bas"
 #include "includes\win\ifdef_fix.bi"
+#include "shared\helper.bas"
 
 type NETIO_STATUS as DWORD
 
 extern "windows-ms"
   UndefAllParams()
-  #define P1 InterfaceIndex as NET_IFINDEX
-  #define P2 InterfaceLuid as PNET_LUID
+  #define P1 InterfaceIndex as _In_  NET_IFINDEX
+  #define P2 InterfaceLuid  as _Out_ PNET_LUID
   function ConvertInterfaceIndexToLuid(P1, P2) as NETIO_STATUS export
     dim row as MIB_IFROW
 
@@ -34,8 +34,8 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
-  #define P1 InterfaceLuid as const NET_LUID ptr
-  #define P2 InterfaceIndex as PNET_IFINDEX
+  #define P1 InterfaceLuid  as _In_  const NET_LUID ptr
+  #define P2 InterfaceIndex as _Out_ PNET_IFINDEX
   function ConvertInterfaceLuidToIndex(P1, P2) as NETIO_STATUS export
     dim ret as DWORD
     dim row as MIB_IFROW
@@ -55,9 +55,9 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
-  #define P1 InterfaceLuid as const NET_LUID ptr
-  #define P2 InterfaceName as PSTR
-  #define P3 Length as SIZE_T
+  #define P1 InterfaceLuid as _In_  const NET_LUID ptr
+  #define P2 InterfaceName as _Out_ PSTR
+  #define P3 Length        as _In_  SIZE_T
   function ConvertInterfaceLuidToNameA(P1, P2, P3) as NETIO_STATUS export
     DEBUG_MsgNotImpl()
     'fixme: CP_UNIXCP
@@ -75,7 +75,7 @@ extern "windows-ms"
       return ret
     end if
 
-    if InterfaceName=0 orelse Length < WideCharToMultiByte(CP_UNIXCP, 0, @row.wszName, -1, NULL, 0, NULL, NULL) then
+if InterfaceName=0 orelse Length < WideCharToMultiByte(CP_UNIXCP, 0, @row.wszName, -1, NULL, 0, NULL, NULL) then
       return ERROR_NOT_ENOUGH_MEMORY
     end if
     
@@ -86,9 +86,9 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
-  #define P1 InterfaceLuid as const NET_LUID ptr
-  #define P2 InterfaceName as PWSTR
-  #define P3 Length as SIZE_T
+  #define P1 InterfaceLuid as _In_  const NET_LUID ptr
+  #define P2 InterfaceName as _Out_ PWSTR
+  #define P3 Length        as _In_  SIZE_T
   function ConvertInterfaceLuidToNameW(P1, P2, P3) as NETIO_STATUS export
     dim ret as DWORD
     dim row as MIB_IFROW
@@ -111,8 +111,8 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
-  #define P1 InterfaceName as const CHAR ptr
-  #define P2 InterfaceLuid as PNET_LUID
+  #define P1 InterfaceName as _In_  const CHAR ptr
+  #define P2 InterfaceLuid as _Out_ PNET_LUID
   function ConvertInterfaceNameToLuidA(P1, P2) as NETIO_STATUS export
     DEBUG_MsgNotImpl()
     'fixme: getInterfaceIndexByName
@@ -144,8 +144,8 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
-  #define P1 InterfaceName as const WCHAR ptr
-  #define P2 InterfaceLuid as PNET_LUID
+  #define P1 InterfaceName as _In_  const WCHAR ptr
+  #define P2 InterfaceLuid as _Out_ PNET_LUID
   function ConvertInterfaceNameToLuidW(P1, P2) as NETIO_STATUS export
     DEBUG_MsgNotImpl()
     'fixme: CP_UNIXCP

@@ -14,17 +14,16 @@
 #endif
 
 extern "windows-ms"
-  #undef RegGetValueA
-  
   UndefAllParams()
-  #define P1 hkey as HKEY
-  #define P2 lpSubKey as zstring ptr
-  #define P3 lpValue as zstring ptr
-  #define P4 dwFlags as DWORD
-  #define P5 pdwType as LPDWORD
-  #define P6 pvData as PVOID
-  #define P7 pcbData as LPDWORD  
-  function RegGetValueA( P1 , P2 , P3 , P4 , P5 , P6 , P7 ) as long export
+  #define P1 hkey     as _In_        HKEY
+  #define P2 lpSubKey as _In_opt_    LPCSTR
+  #define P3 lpValue  as _In_opt_    LPCSTR
+  #define P4 dwFlags  as _In_opt_    DWORD
+  #define P5 pdwType  as _Out_opt_   LPDWORD
+  #define P6 pvData   as _Out_opt_   PVOID
+  #define P7 pcbData  as _Inout_opt_ LPDWORD
+  #undef RegGetValueA
+  function RegGetValueA(P1, P2, P3, P4, P5, P6, P7) as LONG export
     dim as zstring ptr pSub = cast(zstring ptr,iif(lpSubKey,lpSubKey,@"<null>"))
     dim as zstring ptr pVal = cast(zstring ptr,iif(lpValue,lpValue,@"<null>"))
     dim as zstring*256 zDebug
@@ -34,15 +33,15 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
-  #undef RegGetValuew  
-  #define P1 hKey as HKEY
-  #define P2 lpSubKey as lpwstr
-  #define P3 lpValue as lpwstr
-  #define P4 dwFlags as DWORD
-  #define P5 pdwType as LPDWORD
-  #define P6 pvData as PVOID
-  #define P7 pcbData as LPDWORD  
-  function RegGetValueW( P1 , P2 , P3 , P4 , P5 , P6 , P7 ) as long export
+  #define P1 hKey     as _In_        HKEY
+  #define P2 lpSubKey as _In_opt_    LPCWSTR
+  #define P3 lpValue  as _In_opt_    LPCWSTR
+  #define P4 dwFlags  as _In_opt_    DWORD
+  #define P5 pdwType  as _Out_opt_   LPDWORD
+  #define P6 pvData   as _Out_opt_   PVOID
+  #define P7 pcbData  as _Inout_opt_ LPDWORD  
+  #undef RegGetValueW 
+  function RegGetValueW( P1 , P2 , P3 , P4 , P5 , P6 , P7 ) as LONG export
     DebugBox("Yay!")
     dim as HKEY hSubKey = null
     if lpSubKey andalso lpSubKey[0]<>null then 'want subkey so opening it...
@@ -114,15 +113,15 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
+  #define P1 hKey         as _In_      HKEY
+  #define P2 pszValue     as _In_opt_  LPCWSTR
+  #define P3 pszOutBuf    as _Out_opt_ LPWSTR
+  #define P4 cbOutBuf     as _In_      DWORD
+  #define P5 pcbData      as _Out_opt_ LPDWORD
+  #define P6 Flags        as _In_      DWORD
+  #define P7 pszDirectory as _In_opt_  LPCWSTR
   #undef RegLoadMUIStringW
-  #define P1 hKey         as HKEY
-  #define P2 pszValue     as LPCTSTR
-  #define P3 pszOutBuf    as LPTSTR
-  #define P4 cbOutBuf     as DWORD
-  #define P5 pcbData      as LPDWORD
-  #define P6 Flags        as DWORD
-  #define P7 pszDirectory as LPCTSTR
-  function RegLoadMUIStringW( P1 , P2 , P3 , P4 , P5 , P6 , P7 ) as long export
+  function RegLoadMUIStringW(P1, P2, P3, P4, P5, P6, P7) as long export
     NotifyBox( "RegLoadMUIStringW" )
     return ERROR_CALL_NOT_IMPLEMENTED
   end function

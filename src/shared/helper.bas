@@ -1,3 +1,5 @@
+#pragma once
+
 #include "crt\stdio.bi"
 #include "crt\ctype.bi"
 

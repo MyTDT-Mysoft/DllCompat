@@ -1,4 +1,5 @@
 #include "wincred.bi"
+#include "shared\helper.bas"
 
 enum
   CREDUIWIN_GENERIC                 = &H1
