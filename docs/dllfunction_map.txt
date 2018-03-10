@@ -86,6 +86,7 @@ kernel3x
     SetFileInformationByHandle                      new         dummy
     SetThreadGroupAffinity                          new         dummy
     SetThreadStackGuarantee                         new         dummy
+    SetUnhandledExceptionFilter                     reimpl
     SleepConditionVariableCS                        new
     VerifyVersionInfoW                              reimpl
     VerifyVersionInfoA                              reimpl
@@ -107,7 +108,7 @@ shell3x
     SHCreateItemFromParsingName                     new         dummy       fixme
     Shell_NotifyIconGetRect                         new         dummy
     SHGetKnownFolderIDList                          new         dummy       fixme
-    SHGetKnownFolderPath                            new                     testme
+    SHGetKnownFolderPath                            new         partial     fixme
     SHGetStockIconInfo                              new         dummy       fixme
 user3x
     CloseTouchInputHandle                           new         dummy
@@ -121,8 +122,8 @@ uxthemx
 ws2_3x
     inet_ntop                                       new         full
     InetNtopW                                       new         full        testme
-    inet_pton                                       new         TODO
-    InetPtonW                                       new         TODO
+    inet_pton                                       new         full        testme
+    InetPtonW                                       new         full        testme
     WSAPoll                                         new         dummy       fixme
 
 
