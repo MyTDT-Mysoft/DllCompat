@@ -1,17 +1,21 @@
 #define fbc -dll -Wl "shell3x.dll.def" -x ..\..\bin\dll\shell3x.dll -i ..\..\
 
 #include "windows.bi"
+#include "crt\string.bi"
 #include "win\shellapi.bi"
+#include "win\shlobj.bi"
 #include "win\shtypes.bi"
 #include "win\ole2.bi"
 #include "includes\win\shellapi_fix.bi"
+#include "includes\win\shlobj_fix.bi"
+#include "includes\win\knownfolders_fix.bi"
 #include "shared\helper.bas"
 
 extern "windows-ms"
   UndefAllParams()
-    #define P1 pidl as _In_  PCIDLIST_ABSOLUTE
-    #define P2 riid as _In_  REFIID
-    #define P3 ppv  as _Out_ any ptr ptr
+  #define P1 pidl as _In_  PCIDLIST_ABSOLUTE
+  #define P2 riid as _In_  REFIID
+  #define P3 ppv  as _Out_ any ptr ptr
   function SHCreateItemFromIDList(P1, P2, P3) as HRESULT export
     DEBUG_MsgNotImpl()
     return E_INVALIDARG
@@ -51,10 +55,57 @@ extern "windows-ms"
   #define P3 hToken   as _In_opt_ HANDLE
   #define P4 ppszPath as _Out_    PWSTR ptr
   function SHGetKnownFolderPath(P1, P2, P3, P4) as HRESULT export
-    var sTemp = exepath+"\"
-    dim as wstring ptr pw = CoTaskMemAlloc(len(sTemp)*2+2)
-    if pw then return E_FAIL
-    *pw = sTemp: *ppszPath = pw
+    dim wtpath as wstring*1024 = any
+    dim hret as HRESULT
+    dim csid as int
+    dim flg as int
+    dim pw as wstring ptr
+    'static as zstring ptr WPATH_FIXME        = @"\_OS\FIXME"
+    
+    if     IsEqualGUID(rfid, @FOLDERID_LocalAppData) then
+      csid = CSIDL_LOCAL_APPDATA
+    elseif IsEqualGUID(rfid, @FOLDERID_ProgramData) then
+      csid = CSIDL_COMMON_APPDATA
+    else
+      DEBUG_MsgTrace("Unimplemented KNOWN_FOLDER")
+      return E_FAIL
+    end if
+    
+    'TODO check following in windows or copy-paste from WINE
+    'CSIDL_FLAG_CREATE with CSIDL_FLAG_DONT_VERIFY
+    'KF_FLAG_NOT_PARENT_RELATIVE w/o KF_FLAG_DEFAULT_PATH
+    flg = SHGFP_TYPE_CURRENT
+    'if dwFlags and KF_FLAG_DEFAULT then
+    'if dwFlags and KF_FLAG_SIMPLE_IDLIST then
+    'if dwFlags and KF_FLAG_NOT_PARENT_RELATIVE then
+    'if dwFlags and KF_FLAG_INIT then
+    'if dwFlags and KF_FLAG_ALIAS_ONLY then
+    if dwFlags and KF_FLAG_DEFAULT_PATH then
+      flg = SHGFP_TYPE_DEFAULT
+    end if
+    if dwFlags and KF_FLAG_NO_ALIAS then
+      csid or= CSIDL_FLAG_NO_ALIAS 'no effect on SHGetFolderPath
+    end if
+    if dwFlags and KF_FLAG_DONT_UNEXPAND then
+      csid or= CSIDL_FLAG_DONT_UNEXPAND
+    end if
+    if dwFlags and KF_FLAG_DONT_VERIFY then
+      csid or= CSIDL_FLAG_DONT_VERIFY
+    end if
+    if dwFlags and KF_FLAG_CREATE then
+      csid or= CSIDL_FLAG_CREATE
+    end if
+    'win10 and win8 specific flags
+    'KF_FLAG_NO_PACKAGE_REDIRECTION, KF_FLAG_FORCE_PACKAGE_REDIRECTION, KF_FLAG_RETURN_FILTER_REDIRECTION_TARGET, KF_FLAG_FORCE_APP_DATA_REDIRECTION
+    'KF_FLAG_NO_APPCONTAINER_REDIRECTION, KF_FLAG_FORCE_APPCONTAINER_REDIRECTION
+    
+    hret = SHGetFolderPathW(NULL, csid, NULL, flg, @wtpath)
+    if hret<>S_OK then return hret
+    
+    pw = CoTaskMemAlloc(len(wtpath)*2+2)
+    if pw=NULL then return E_FAIL
+    *pw = wtpath: *ppszPath = pw
+    'var sTemp = exepath + *WPATH_FIXME
     return S_OK
   end function
   
