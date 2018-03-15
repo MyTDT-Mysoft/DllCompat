@@ -11,6 +11,8 @@
 #include "includes\win\knownfolders_fix.bi"
 #include "shared\helper.bas"
 
+#include "shellpath.bas"
+
 extern "windows-ms"
   UndefAllParams()
   #define P1 pidl as _In_  PCIDLIST_ABSOLUTE
@@ -62,12 +64,9 @@ extern "windows-ms"
     dim pw as wstring ptr
     'static as zstring ptr WPATH_FIXME        = @"\_OS\FIXME"
     
-    if     IsEqualGUID(rfid, @FOLDERID_LocalAppData) then
-      csid = CSIDL_LOCAL_APPDATA
-    elseif IsEqualGUID(rfid, @FOLDERID_ProgramData) then
-      csid = CSIDL_COMMON_APPDATA
-    else
-      DEBUG_MsgTrace("Unimplemented KNOWN_FOLDER")
+    csid = 0
+    if kfid2clsid(rfid, @csid)=FALSE then
+      DEBUG_MsgTrace("Unimplemented KNOWNFOLDERID")
       return E_FAIL
     end if
     
