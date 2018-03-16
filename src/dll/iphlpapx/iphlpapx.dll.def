@@ -155,10 +155,3 @@ _PfUnBindInterface@4 = iphlpapi._PfUnBindInterface@4 @132
 do_echo_rep = iphlpapi.do_echo_rep @153
 do_echo_req = iphlpapi.do_echo_req @154
 register_icmp = iphlpapi.register_icmp @155
-
-ConvertInterfaceIndexToLuid
-ConvertInterfaceLuidToIndex
-ConvertInterfaceLuidToNameA
-ConvertInterfaceLuidToNameW
-ConvertInterfaceNameToLuidA
-ConvertInterfaceNameToLuidW
