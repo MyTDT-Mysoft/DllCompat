@@ -1,7 +1,8 @@
 @echo off
 setlocal
 
-set params=advapi3x avrt credux dwmapi gdi3x iphlpapx kernel3x msvcrx opengl3x powrprox shell3x user3x vcruntime140 uxthemx ws2_3x
+::set old=msvcrx
+set params=advapi3x avrt credux dwmapi gdi3x iphlpapx kernel3x opengl3x powrprox shell3x user3x uxthemx vcruntime140 ws2_3x
 rem set params=kernel3x
 
 set settfile=compile.ini
