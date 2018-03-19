@@ -93,11 +93,13 @@ kernel3x
     VerifyVersionInfoA                              reimpl
     WakeAllConditionVariable                        new
     WakeConditionVariable                           new
-msvcrx
-    _adjust_fdiv                                    reimpl
-    _ftol2                                          new
-    _ftol2_sse                                      new
-    ;time                                            reimpl
+;;msvcrx
+;;    _adjust_fdiv                                    reimpl
+;;    _ftol2                                          new
+;;    _ftol2_sse                                      new
+;;    ;time                                            reimpl
+ntdlx
+    RtlIsCriticalSectionLockedByThread              new         full
 opengl3x
     glGetString                                     reimpl
     wglGetProcAddress                               reimpl

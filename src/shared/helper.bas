@@ -14,7 +14,7 @@
 #undef WINBOOL
 type INT     as integer
 type BOOL    as integer
-type BOOLEAN as unsigned char
+type BOOLEAN as ubyte
 
 type WINBOOL as integer
 

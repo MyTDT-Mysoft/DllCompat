@@ -2,8 +2,8 @@
 setlocal
 
 ::set old=msvcrx
-set params=advapi3x avrt credux dwmapi gdi3x iphlpapx kernel3x opengl3x powrprox shell3x user3x uxthemx vcruntime140 ws2_3x
-rem set params=kernel3x
+set params=advapi3x avrt credux dwmapi gdi3x iphlpapx kernel3x ntdlx opengl3x powrprox shell3x user3x uxthemx vcruntime140 ws2_3x
+rem set params=ntdlx
 
 set settfile=compile.ini
 set binpath=bin\dll
