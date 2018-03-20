@@ -516,7 +516,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 hFile        as _In_     HANDLE
   #define P2 lpOverlapped as _In_opt_ LPOVERLAPPED
-  function CancelIoEx(P1, P2) as BOOL
+  function CancelIoEx(P1, P2) as BOOL export
     DEBUG_AlertNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
