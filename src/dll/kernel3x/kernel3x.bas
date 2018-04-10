@@ -1,5 +1,5 @@
-#define fbc -dll -Wl "kernel3x.dll.def" -i ..\..\ -x ..\..\..\bin\dll\kernel3x.dll
-'..\..\..\bin\dll\kernel3x.dll 
+#define fbc -dll -Wl "kernel3x.dll.def" -i ..\..\ -x ..\..\..\bin\dll\kernel3x.dll 
+'"c:\windows\kernel3x.dll"'
 'G:\downloads\app\kernel3x.dll
 
 #define DebugFailedCalls
@@ -14,13 +14,24 @@
 #include "includes\win\winnt_fix.bi"
 #include "includes\win\winbase_fix.bi"
 #include "shared\helper.bas"
+#include "win\psapi.bi"
 
 
 #include "fiber.bas"
 #include "dynload.bas"
 
 dim shared as any ptr pInitMutex
+dim shared as handle hKernel
+
 pInitMutex = CreateMutex(NULL,FALSE,NULL)
+hKernel = GetModuleHandle("kernel32.dll")
+
+dim shared pfWow64RevertWow64FsRedirection as function( OldValue as PVOID ptr ) as bool
+pfWow64RevertWow64FsRedirection = cast(any ptr,GetProcAddress(hKernel,"Wow64RevertWow64FsRedirection"))
+  
+dim shared pfWow64DisableWow64FsRedirection as function( OldValue as PVOID ptr ) as bool
+pfWow64DisableWow64FsRedirection = cast(any ptr,GetProcAddress(hKernel,"Wow64DisableWow64FsRedirection"))
+  
 
 'includes TLS static dependencies optiona library
 #inclib "TlsDeps"
@@ -573,6 +584,34 @@ extern "windows-ms"
     DEBUG_AlertNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
+  end function  
+
+  UndefAllParams()  
+  #define P1 hProcess  _In_    as HANDLE
+  #define P2 dwFlags   _In_    as DWORD
+  #define P3 lpExeName _Out_   as LPSTR
+  #define P4 lpdwSize  _Inout_ as PDWORD 
+  function QueryFullProcessImageNameA(P1,P2,P3,P4) as WINBOOL export
+    dim as WINBOOL iResu = 0
+    
+    if lpdwSize=0 then 
+      SetLastError(ERROR_INVALID_PARAMETER)
+      return 0
+    end if
+    
+    if (dwFlags and PROCESS_NAME_NATIVE) then
+      iResu = GetProcessImageFileNameA(hProcess,lpExeName,*lpdwSize)
+    else    
+      iResu = GetModuleFilenameExA(hProcess,null,lpExeName,*lpdwSize)
+    end if
+    
+    if iResu then 
+      DEBUG_MsgTrace("hProcess=%X dwFlags=%X lpExeName=%08X lpDwSize=%08X(%i) Resu=(%i):'%s'", hProcess , dwFlags , lpExeName , lpdwSize , iResu , lpExeName )
+      *lpdwSize = iResu: return 1
+    else
+      return 0
+    end if
+
   end function
   
   #ifdef DebugDisableExceptions
@@ -582,8 +621,16 @@ extern "windows-ms"
   #define P1 lpTopLevelExceptionFilter as _In_ LPTOP_LEVEL_EXCEPTION_FILTER
   function fnSetUnhandledExceptionFilter alias "SetUnhandledExceptionFilter"(P1) as any ptr export
     return 0
+  end function  
+  #endif  
+  
+  function fnWow64RevertWow64FsRedirection alias "Wow64RevertWow64FsRedirection" ( OldValue as PVOID ptr  ) as BOOL export
+    return iif(pfWow64RevertWow64FsRedirection,pfWow64RevertWow64FsRedirection(OldValue),true)
   end function
-  #endif
+  
+  function fnWow64DisableWow64FsRedirection alias "Wow64DisableWow64FsRedirection" ( OldValue as PVOID ptr ) as BOOL export
+    return iif(pfWow64DisableWow64FsRedirection,pfWow64DisableWow64FsRedirection(OldValue),true)
+  end function  
     
 end extern
 
