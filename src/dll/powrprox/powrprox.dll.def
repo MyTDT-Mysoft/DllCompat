@@ -24,6 +24,3 @@ ValidatePowerPolicies = powrprof.ValidatePowerPolicies @21
 WriteGlobalPwrPolicy = powrprof.WriteGlobalPwrPolicy @22
 WriteProcessorPwrScheme = powrprof.WriteProcessorPwrScheme @23
 WritePwrScheme = powrprof.WritePwrScheme @24
-
-PowerGetActiveScheme
-PowerSetActiveScheme

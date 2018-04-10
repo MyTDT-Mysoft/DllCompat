@@ -50,7 +50,3 @@ IsThemePartDefined = uxtheme.IsThemePartDefined @91
 OpenThemeData = uxtheme.OpenThemeData @92
 SetThemeAppProperties = uxtheme.SetThemeAppProperties @93
 SetWindowTheme = uxtheme.SetWindowTheme @94
-
-DrawThemeTextEx
-GetThemeTransitionDuration
-SetWindowThemeAttribute

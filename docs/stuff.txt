@@ -14,3 +14,11 @@ http://www.alex-ionescu.com/?p=39
 http://www.alex-ionescu.com/?p=40
 http://www.alex-ionescu.com/?p=41
 http://www.alex-ionescu.com/?p=43
+
+
+
+
+A small, x64-hosted hypervisor driver by Alex Ionescu.
+Possible study material for implementing x86-64 virtualization of applications, in far future, if at all possible.
+https://ionescu007.github.io/SimpleVisor/
+https://github.com/ionescu007/SimpleVisor

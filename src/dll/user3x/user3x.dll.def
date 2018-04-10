@@ -733,10 +733,3 @@ wvsprintfA = user32.wvsprintfA @731
 wvsprintfW = user32.wvsprintfW @732
 
 RegisterHotKey @543
-
-CloseTouchInputHandle
-GetTouchInputInfo
-RegisterTouchWindow
-ChangeWindowMessageFilter
-ChangeWindowMessageFilterEx
-UpdateLayeredWindowIndirect

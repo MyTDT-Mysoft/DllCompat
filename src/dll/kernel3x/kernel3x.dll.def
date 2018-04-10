@@ -945,6 +945,11 @@ lstrlen = kernel32.lstrlen @952
 lstrlenA = kernel32.lstrlenA @953
 lstrlenW = kernel32.lstrlenW @954
 
+K32EnumProcessModules   = psapi.EnumProcessModules
+K32GetModuleInformation = psapi.GetModuleInformation
+K32GetModuleFileNameExA = psapi.GetModuleFileNameExA
+K32GetModuleFileNameExW = psapi.GetModuleFileNameExW
+
 GetModuleHandleA @375
 GetModuleHandleW @378
 GetModuleHandleExA @376
@@ -954,37 +959,4 @@ LoadLibraryW @584
 LoadLibraryExA @582
 LoadLibraryExW @583
 GetProcAddress @409
-
 GetLogicalProcessorInformation @369
-
-K32EnumProcessModules   = psapi.EnumProcessModules
-K32GetModuleInformation = psapi.GetModuleInformation
-K32GetModuleFileNameExA = psapi.GetModuleFileNameExA
-K32GetModuleFileNameExW = psapi.GetModuleFileNameExW
-
-InitOnceExecuteOnce
-InitializeConditionVariable
-SleepConditionVariableCS
-WakeAllConditionVariable
-WakeConditionVariable
-InterlockedCompareExchange64
-InitializeCriticalSectionEx
-GetSystemDefaultLocaleName
-GetVersionExW
-GetVersionExA
-VerifyVersionInfoW
-VerifyVersionInfoA
-GetThreadId
-GetFinalPathNameByHandleW
-
-;FlsFree
-;FlsGetValue
-;FlsSetValue
-;FlsAlloc
-SetFileInformationByHandle
-SetThreadStackGuarantee
-LCMapStringEx
-GetUserPreferredUILanguages
-
-GetFileInformationByHandleEx
-CancelIoEx
