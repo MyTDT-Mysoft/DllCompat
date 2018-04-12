@@ -84,6 +84,8 @@ kernel3x
     InitOnceExecuteOnce                             new
     InterlockedCompareExchange64                    new
     LCMapStringEx                                   new         dummy
+    QueryFullProcessImageNameA                      new
+    QueryFullProcessImageNameW                      TODO
     SetFileInformationByHandle                      new         dummy
     SetThreadGroupAffinity                          new         dummy
     SetThreadStackGuarantee                         new         dummy
@@ -93,6 +95,8 @@ kernel3x
     VerifyVersionInfoA                              reimpl
     WakeAllConditionVariable                        new
     WakeConditionVariable                           new
+    Wow64DisableWow64FsRedirection                  new         dummy
+    Wow64RevertWow64FsRedirection                   new         dummy
 ;;msvcrx
 ;;    _adjust_fdiv                                    reimpl
 ;;    _ftol2                                          new
