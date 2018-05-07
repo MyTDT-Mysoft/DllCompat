@@ -103,6 +103,8 @@ extern "windows-ms"
     
     desc->hDc = dc
     desc->hBitmap = bitmap
+    DEBUG_MsgTrace("hDc %X | %X || %X", OBJ_MEMDC,  GetObjectType(desc->hDc), desc->hDc)
+    DEBUG_MsgTrace("hBitmap %X | %X || %X", OBJ_BITMAP, GetObjectType(desc->hBitmap), desc->hBitmap)
     SelectObject(dc, bitmap)
     return STATUS_SUCCESS
     
@@ -124,12 +126,12 @@ extern "windows-ms"
 
     if GetObjectType(desc->hDc)     <> OBJ_MEMDC  then
       DEBUG_MsgTrace("STATUS_INVALID_PARAMETER hDc")
-      DEBUG_MsgTrace("%X | %X || %X", OBJ_MEMDC, GetObjectType(desc->hDc), desc->hDc)
+      DEBUG_MsgTrace("hDc %X | %X || %X", OBJ_MEMDC, GetObjectType(desc->hDc), desc->hDc)
       'return STATUS_INVALID_PARAMETER
     end if
     if GetObjectType(desc->hBitmap) <> OBJ_BITMAP then
       DEBUG_MsgTrace("STATUS_INVALID_PARAMETER hBitmap")
-      DEBUG_MsgTrace("%X | %X || %X", OBJ_BITMAP, GetObjectType(desc->hBitmap), desc->hBitmap)
+      DEBUG_MsgTrace("hBitmap %X | %X || %X", OBJ_BITMAP, GetObjectType(desc->hBitmap), desc->hBitmap)
       'return STATUS_INVALID_PARAMETER
     end if
     DeleteObject(desc->hBitmap)
