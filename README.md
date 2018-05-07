@@ -17,3 +17,6 @@ HOW TO COMPILE:
 Each module (DLL) can be compiled separately. The very first line of each .bas file for the specified module contains a "#define fbc ..." with the required command to compile with Freebasic. As a general rule the command is 'fbc -Wl "ModuleNamex.dll.def" -dll'. 
 
 For convenience a .bat is included to compile all modules but obviously that .bat only work if you have the Freebasic folder set as a global environment variable (or inside the Freebasic command line shortcut that is create when freebasic is installed).
+
+Project contact/chat:
+https://kiwiirc.com/client/irc.freenode.net/?#AppCompat
