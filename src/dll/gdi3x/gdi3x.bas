@@ -62,8 +62,9 @@ extern "windows-ms"
     if desc->Pitch = 0 orelse desc->Height = 0 then return STATUS_INVALID_PARAMETER
     if desc->Pitch < (((desc->Width * format->bit_count + 31) shr 3) and (not 3)) then return STATUS_INVALID_PARAMETER
 
+    if desc->hDeviceDc = NULL then return STATUS_INVALID_PARAMETER
     dc = CreateCompatibleDC(desc->hDeviceDc)
-    if desc->hDeviceDc = NULL orelse dc = NULL then return STATUS_INVALID_PARAMETER
+    if dc = NULL then return STATUS_INVALID_PARAMETER
 
     bmpInfo = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(*bmpInfo) + (format->palette_size * sizeof(RGBQUAD)))
     bmpHeader = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(*bmpHeader))
@@ -126,12 +127,12 @@ extern "windows-ms"
 
     if GetObjectType(desc->hDc)     <> OBJ_MEMDC  then
       DEBUG_MsgTrace("STATUS_INVALID_PARAMETER hDc")
-      DEBUG_MsgTrace("hDc %X | %X || %X", OBJ_MEMDC, GetObjectType(desc->hDc), desc->hDc)
+      DEBUG_MsgTrace("%X | %X || %X", OBJ_MEMDC, GetObjectType(desc->hDc), desc->hDc)
       'return STATUS_INVALID_PARAMETER
     end if
     if GetObjectType(desc->hBitmap) <> OBJ_BITMAP then
       DEBUG_MsgTrace("STATUS_INVALID_PARAMETER hBitmap")
-      DEBUG_MsgTrace("hBitmap %X | %X || %X", OBJ_BITMAP, GetObjectType(desc->hBitmap), desc->hBitmap)
+      DEBUG_MsgTrace("%X | %X || %X", OBJ_BITMAP, GetObjectType(desc->hBitmap), desc->hBitmap)
       'return STATUS_INVALID_PARAMETER
     end if
     DeleteObject(desc->hBitmap)
