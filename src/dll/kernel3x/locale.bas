@@ -64,4 +64,34 @@ extern "windows-ms"
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function
+  
+  UndefAllParams()
+  #define P1 lpLocaleName as _In_opt_  LPCWSTR
+  #define P2 LCType       as _In_      LCTYPE
+  #define P3 lpLCData     as _Out_opt_ LPWSTR
+  #define P4 cchData      as _In_      int
+  function GetLocaleInfoEx(P1, P2, P3, P4) as int export
+    DEBUG_MsgNotImpl()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return 0
+  end function
+  
+  UndefAllParams()
+  #define P1 lpLocaleName as _In_ LPCWSTR
+  function IsValidLocaleName(P1) as BOOL export
+    DEBUG_MsgNotImpl()
+    return FALSE
+  end function
+  
+  UndefAllParams()
+  #define P1 Locale  as _In_      LCID
+  #define P2 lpName  as _Out_opt_ LPWSTR
+  #define P3 cchName as _In_      int
+  #define P4 dwFlags as _In_      DWORD
+  function LCIDToLocaleName(P1, P2, P3, P4) as int export
+    DEBUG_MsgNotImpl()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return 0
+  end function
+  
 end extern

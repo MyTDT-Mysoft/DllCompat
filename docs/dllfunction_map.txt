@@ -71,6 +71,7 @@ kernel3x
     FlsSetValue                                     new         dummy       fixme
     GetFileInformationByHandleEx                    new         partial     testme
     GetFinalPathNameByHandleW                       new
+    GetLocaleInfoEx                                 new         dummy       fixme
     GetLogicalProcessorInformation                  reimpl      partial
     GetNumaNodeProcessorMaskEx                      new         dummy
     GetSystemDefaultLocaleName                      new
@@ -83,6 +84,8 @@ kernel3x
     InitializeCriticalSectionEx                     new
     InitOnceExecuteOnce                             new
     InterlockedCompareExchange64                    new
+    IsValidLocaleName                               new         dummy       fixme
+    LCIDToLocaleName                                new         dummy       fixme
     LCMapStringEx                                   new         dummy
     QueryFullProcessImageNameA                      new
     QueryFullProcessImageNameW                      TODO
