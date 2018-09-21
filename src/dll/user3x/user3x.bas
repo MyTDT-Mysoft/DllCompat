@@ -118,4 +118,11 @@ extern "windows-ms"
     )
     return ret
   end function
+  
+  UndefAllParams()
+  function SetProcessDPIAware() as BOOL export
+    DEBUG_MsgNotImpl()
+    SetLastError(0)
+    return FALSE
+  end function
 end extern

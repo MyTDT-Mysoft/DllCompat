@@ -15,7 +15,6 @@
 type INT     as integer
 type BOOL    as integer
 type BOOLEAN as ubyte
-
 type WINBOOL as integer
 
 #define _In_  

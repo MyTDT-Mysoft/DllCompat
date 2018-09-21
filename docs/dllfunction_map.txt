@@ -124,6 +124,7 @@ user3x
     CloseTouchInputHandle                           new         dummy
     GetTouchInputInfo                               new         dummy
     RegisterTouchWindow                             new         dummy
+    SetProcessDPIAware                              new         dummy
     UpdateLayeredWindowIndirect                     new         partial     fixme
 uxthemx
     DrawThemeTextEx                                 new         partial     testme
