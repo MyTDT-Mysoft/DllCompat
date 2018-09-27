@@ -1,9 +1,8 @@
 @echo off
 setlocal
 
-::set old=msvcrx
-set params=advapi3x avrt credux dwmapi gdi3x iphlpapx kernel3x ntdlx opengl3x powrprox shell3x user3x uxthemx vcruntime140 ws2_3x
-rem set params=ntdlx
+set params=advapi3x avrt credux comdlg3x dwmapi gdi3x iphlpapx kernel3x ntdlx opengl3x powrprox shell3x user3x uxthemx vcruntime140 ws2_3x
+::set params=comdlg3x
 
 set settfile=compile.ini
 set binpath=bin\dll
@@ -22,7 +21,9 @@ if not "%~1" EQU "" goto :comploop
 
 :donecomp
 echo Generating TlsDeps.dll
-copy %srcpath%\kernel3x\TlsDeps\TlsDeps_Empty.dll %binpath%\TlsDeps.dll /Y
+set loc=.\%srcpath%\kernel3x\TlsDeps
+%dllc_fbcpath% -dll %loc%\TlsDeps.bas -Wl "%loc%\TlsDeps.dll.def" -x .\%binpath%\TlsDeps.dll -i .\src
+::copy %srcpath%\kernel3x\TlsDeps\TlsDeps_Empty.dll %binpath%\TlsDeps.dll /Y
 
 :cleanup
 echo Cleaning compile residue
