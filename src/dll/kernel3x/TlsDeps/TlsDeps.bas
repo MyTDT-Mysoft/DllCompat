@@ -1,6 +1,6 @@
 #define fbc -dll -Wl "TlsDeps.dll.def" 
 
-'#define NoDependencies
+#define NoDependencies
 
 #ifndef NoDependencies
   'extern TLS_OPENGL32 alias "TLS_OPENGL32" as any ptr
