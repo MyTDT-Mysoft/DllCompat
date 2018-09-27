@@ -1,0 +1,30 @@
+LIBRARY COMDLG32.dll
+EXPORTS
+    ChooseColorA    @102
+    ChooseColorW    @103
+    ChooseFontA    @104
+    ChooseFontW    @105
+    CommDlgExtendedError    @106
+    DllCanUnloadNow    @107
+    DllGetClassObject    @108
+    FindTextA    @109
+    FindTextW    @110
+    GetFileTitleA    @111
+    GetFileTitleW    @112
+    GetOpenFileNameA    @113
+    GetOpenFileNameW    @114
+    GetSaveFileNameA    @115
+    GetSaveFileNameW    @116
+    LoadAlterBitmap    @117
+    PageSetupDlgA    @118
+    PageSetupDlgW    @119
+    PrintDlgA    @120
+    PrintDlgExA    @121
+    PrintDlgExW    @122
+    PrintDlgW    @123
+    ReplaceTextA    @124
+    ReplaceTextW    @125
+    Ssync_ANSI_UNICODE_Struct_For_WOW    @126
+    WantArrows    @127
+    dwLBSubclass    @128
+    dwOKSubclass    @129
