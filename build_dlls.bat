@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set params=advapi3x avrt credux comdlg3x dwmapi gdi3x iphlpapx kernel3x ntdlx opengl3x powrprox shell3x user3x uxthemx vcruntime140 ws2_3x
+set params=advapi3x avrt credux comdlg3x dwmapi gdi3x iphlpapx kernel3x ntdlx opengl3x powrprox shell3x user3x uxthemx ws2_3x
 ::set params=comdlg3x
 
 set settfile=compile.ini
@@ -42,7 +42,7 @@ goto :cleanup
 :compile
 echo compiling %1
 pushd .\%srcpath%\%1
-%dllc_fbcpath% -dll %1.bas -Wl "%1.dll.def" -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src
+%dllc_fbcpath% -dll %1.bas -Wl "%1.dll.def" -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla
 set err=%errorlevel%
 popd
 if %err% gtr 0 goto :Failed
