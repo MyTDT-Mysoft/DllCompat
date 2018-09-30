@@ -2,7 +2,7 @@
 setlocal
 
 set params=advapi3x avrt credux comdlg3x dwmapi gdi3x iphlpapx kernel3x ntdlx opengl3x powrprox shell3x user3x uxthemx ws2_3x
-::set params=comdlg3x
+::set params=kernel3x
 
 set settfile=compile.ini
 set binpath=bin\dll

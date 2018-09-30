@@ -66,7 +66,7 @@ extern "windows-ms"
     
     csid = 0
     if kfid2clsid(rfid, @csid)=FALSE then
-      DEBUG_MsgTrace("Unimplemented KNOWNFOLDERID")
+      DEBUG_MsgTrace("Unimplemented KNOWNFOLDERID: " + str(rfid))
       return E_FAIL
     end if
     

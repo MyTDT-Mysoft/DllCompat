@@ -28,4 +28,22 @@ extern "windows-ms"
   function DllUnregisterServer() as HRESULT export
     return S_OK
   end function
+  
+  UndefAllParams()
+  #define P1 hinstDLL    as HINSTANCE
+  #define P2 fdwReason   as DWORD
+  #define P3 lpvReserved as LPVOID
+  function DllMain(P1, P2, P3) alias "DllMain" as BOOL
+    select case(fdwReason)
+     case DLL_PROCESS_ATTACH
+       __main()
+       fb_Init(0, NULL, 0)
+       DEBUG_MsgTrace("Dll attached.");
+     case DLL_PROCESS_DETACH
+     case DLL_THREAD_ATTACH
+     case DLL_THREAD_DETACH
+    end select
+
+    return 1
+ end function
 end extern

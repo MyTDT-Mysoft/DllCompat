@@ -1,9 +1,9 @@
-'"avrt",     "avrt",   _
-'"dwmapi",   "dwmapi", _
 '"TlsDeps",  "TlsDeps",_
 #define DLOAD_DLLNAMES _
 "advapi32", "advapi3x",_
+"avrt",     "avrt",    _
 "credui",   "credux",  _
+"dwmapi",   "dwmapi",  _
 "gdi32",    "gdi3x",   _
 "gdiplus",  "gdipluz", _
 "iphlpapi", "iphlpapx",_
@@ -16,7 +16,7 @@
 "user32",   "user3x",  _
 "uxtheme",  "uxthemx", _
 "ws2_32",   "ws2_3x"  
-#define DLOAD_DLLNUM 14*2
+#define DLOAD_DLLNUM 16*2
 #define DLOAD_MAXLEN 24
 static shared as zstring*DLOAD_MAXLEN dllNamesA(DLOAD_DLLNUM) = {DLOAD_DLLNAMES}
 static shared as wstring*DLOAD_MAXLEN dllNamesW(DLOAD_DLLNUM) = {DLOAD_DLLNAMES}
