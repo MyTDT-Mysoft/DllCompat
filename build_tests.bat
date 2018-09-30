@@ -2,7 +2,7 @@
 setlocal
 
 set params=vista_comFileDlg vista_credui xp_credui vista_getfinalpathnamebyhandle xp_LoadLibrarydll
-:::set params=vista_comFiledlg
+::set params=vista_comFiledlg
 set settfile=compile.ini
 set binpath=bin\test
 set srcpath=src\test
