@@ -1,20 +1,59 @@
-#define DLOAD_DLLNUM 12
-#define DLOAD_MAXLEN 24
+'"avrt",     "avrt",   _
+'"dwmapi",   "dwmapi", _
+'"TlsDeps",  "TlsDeps",_
 #define DLOAD_DLLNAMES _
-"advapi32", "credui",   "gdi32" _
-"iphlpapi", "kernel32", "msvcrt", _
-"opengl32", "powrprof", "shell32", _
-"user32",   "uxtheme",  "ws2_32"
-
+"advapi32", "advapi3x",_
+"credui",   "credux",  _
+"gdi32",    "gdi3x",   _
+"gdiplus",  "gdipluz", _
+"iphlpapi", "iphlpapx",_
+"kernel32", "kernel3x",_
+"msvcrt",   "msvcrz",  _
+"ntdll",    "ntdll",   _
+"opengl32", "opengl3x",_
+"powrprof", "powrprox",_
+"shell32",  "shell3x", _
+"user32",   "user3x",  _
+"uxtheme",  "uxthemx", _
+"ws2_32",   "ws2_3x"  
+#define DLOAD_DLLNUM 14*2
+#define DLOAD_MAXLEN 24
 static shared as zstring*DLOAD_MAXLEN dllNamesA(DLOAD_DLLNUM) = {DLOAD_DLLNAMES}
 static shared as wstring*DLOAD_MAXLEN dllNamesW(DLOAD_DLLNUM) = {DLOAD_DLLNAMES}
 
+#define NOSUBSTITUTION rem
 
+sub fixImpA(path as LPCSTR ptr)
+  dim as int i, j
+  
+  NOSUBSTITUTION return
+  for i=0 to DLOAD_DLLNUM-1 step 2
+    if StrStrIA(*path, dllNamesA(i+0)) then
+        DEBUG_MsgTrace("Dynload substitution for %s", *path)
+        *path = @dllNamesA(i+1)
+        exit for
+    end if
+  next i
+end sub
+
+sub fixImpW(path as LPCWSTR ptr)
+  dim as int i, j
+  
+  NOSUBSTITUTION return
+  for i=0 to DLOAD_DLLNUM-1 step 2
+    if StrStrIW(*path, dllNamesW(i+0)) then
+        DEBUG_MsgTrace("Dynload substitution for %ls", *path)
+        *path = @dllNamesW(i+1)
+        exit for
+    end if
+  next i
+end sub
 
 extern "windows-ms"
   UndefAllParams()
   #define P1 lpModuleName as LPCSTR
   function _GetModuleHandleA alias "GetModuleHandleA"(P1) as HMODULE export
+    fixImpA(@lpModuleName)
     DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
@@ -30,6 +69,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 lpModuleName as LPCWSTR
   function _GetModuleHandleW alias "GetModuleHandleW"(P1) as HMODULE export
+    fixImpW(@lpModuleName)
     DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
@@ -47,6 +87,7 @@ extern "windows-ms"
   #define P2 lpModuleName as LPCSTR
   #define P3 phModule as HMODULE ptr
   function _GetModuleHandleExA alias "GetModuleHandleExA"(P1, P2, P3) as BOOL export
+    fixImpA(@lpModuleName)
     DEBUG_WhoCalledInit()
     dim ret as BOOL
     
@@ -64,6 +105,7 @@ extern "windows-ms"
   #define P2 lpModuleName as LPCWSTR
   #define P3 phModule as HMODULE ptr
   function _GetModuleHandleExW alias "GetModuleHandleExW"(P1, P2, P3) as BOOL export
+    fixImpW(@lpModuleName)
     DEBUG_WhoCalledInit()
     dim ret as BOOL
     
@@ -79,6 +121,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 lpFileName as LPCSTR
   function _LoadLibraryA alias "LoadLibraryA"(P1) as HMODULE export
+    fixImpA(@lpFileName)
     DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
@@ -94,6 +137,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 lpFileName as LPCWSTR
   function _LoadLibraryW alias "LoadLibraryW"(P1) as HMODULE export
+    fixImpW(@lpFileName)
     DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
@@ -111,6 +155,7 @@ extern "windows-ms"
   #define P2 hFile as HANDLE
   #define P3 dwFlags as DWORD
   function _LoadLibraryExA alias "LoadLibraryExA"(P1, P2, P3) as HMODULE export
+    fixImpA(@lpFileName)
     DEBUG_WhoCalledInit()
     dim ret as HMODULE
     
@@ -128,6 +173,7 @@ extern "windows-ms"
   #define P2 hFile as HANDLE
   #define P3 dwFlags as DWORD
   function _LoadLibraryExW alias "LoadLibraryExW"(P1, P2, P3) as HMODULE export
+    fixImpW(@lpFileName)
     DEBUG_WhoCalledInit()
     dim ret as HMODULE
     

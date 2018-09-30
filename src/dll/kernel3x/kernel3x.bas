@@ -15,6 +15,7 @@
 #include "includes\win\winbase_fix.bi"
 #include "shared\helper.bas"
 #include "win\psapi.bi"
+#include "win\shlwapi.bi"
 
 
 #include "fiber.bas"
