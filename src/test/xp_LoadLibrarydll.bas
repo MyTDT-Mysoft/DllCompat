@@ -2,10 +2,14 @@
 #include "windows.bi"
 
 type Results
-  GetModuleHandleA as ubyte
-  GetModuleHandleExA as ubyte
-  LoadLibraryA as ubyte
-  LoadLibraryExA as ubyte
+  gmhA as ubyte
+  gmheA as ubyte
+  llA as ubyte
+  lleA as ubyte
+  e_gmhA as ubyte
+  e_gmheA as ubyte
+  e_llA as ubyte
+  e_lleA as ubyte
 end type
 
 var sAPP = "DllTest v0.1 By Mysoft"
@@ -22,22 +26,43 @@ if len(sDLL)=0 then
 end if
 
 '-----------------------------------------------
-h = GetModuleHandleA(sDLL) 'no increment
-if h then r.GetModuleHandleA = 1
-GetModuleHandleExA(0, sDLL, @h) 'increments
-if h then r.GetModuleHandleExA = 1
-FreeLibrary(h)
-h = LoadLibraryA(sDLL) 'increments
-if h then r.LoadLibraryA = 1
-FreeLibrary(h)
-h = LoadLibraryExA(sDLL,NULL,0) 'increments
-if h then r.LoadLibraryExA = 1
-FreeLibrary(h)
+h = GetModuleHandleA(sDLL)
+if h then
+  r.gmhA = 1
+  'do not FreeLibrary
+else
+  r.e_gmhA = GetLastError()
+end if
+'-----
+GetModuleHandleExA(0, sDLL, @h)
+if h then
+  r.gmheA = 1
+  FreeLibrary(h)
+else
+  r.e_gmheA = GetLastError()
+end if
+'-----
+h = LoadLibraryA(sDLL)
+if h then
+  r.llA = 1
+  FreeLibrary(h)
+else
+  r.e_llA = GetLastError()
+end if
+
+h = LoadLibraryExA(sDLL, NULL, 0)
+if h then 
+  r.lleA = 1
+  FreeLibrary(h)
+else
+  r.e_lleA = GetLastError()
+end if
+'-----
 
 var rString = _
-"GetModuleHandleA: "+str(r.GetModuleHandleA)+!"\n" _
-"GetModuleHandleExA: "+str(r.GetModuleHandleExA)+!"\n"+ _
-"LoadLibraryA: "+str(r.LoadLibraryA)+!"\n" _
-"LoadLibraryExA: "+str(r.LoadLibraryExA)+!"\n"
+"GetModuleHandleA: "  +str(r.gmhA)+  !"\nErrcode: "+hex(r.e_gmhA) +!"\n\n" _
+"GetModuleHandleExA: "+str(r.gmheA)+ !"\nErrcode: "+hex(r.e_gmheA)+!"\n\n" _
+"LoadLibraryA: "      +str(r.llA)+   !"\nErrcode: "+hex(r.e_llA)  +!"\n\n" _
+"LoadLibraryExA: "    +str(r.lleA)+  !"\nErrcode: "+hex(r.e_lleA) +!"\n\n"
 messagebox(null, rString ,!"Results for '"+sDLL+"'", MB_SYSTEMMODAL or MB_ICONINFORMATION)
 
