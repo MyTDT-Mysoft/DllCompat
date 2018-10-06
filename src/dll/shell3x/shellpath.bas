@@ -9,11 +9,10 @@ type kcmItem
   end union
 end type
 
-#define MAX_KFID 103
 #define NOWHERE &h00FF
 #define BIND &hFF00 or
 
-static shared kcMap(MAX_KFID-1) as kcmItem = {_
+static shared kcMap(...) as kcmItem = {_
   (@FOLDERID_AddNewPrograms,              NOWHERE),_
   (@FOLDERID_AdminTools,                  CSIDL_ADMINTOOLS),_
   (@FOLDERID_AppUpdates,                  NOWHERE),_
@@ -123,13 +122,13 @@ function kfid2clsid(pKfid as const REFKNOWNFOLDERID, pCsidl as INT ptr) as WINBO
   dim i as integer
   dim pkc as kcmItem ptr
   
-  for i=0 to MAX_KFID-1
+  for i=0 to ubound(kcMap)
     pkc = @kcMap(i)
     
     if pkc->isBound=0 orelse pkc->csidl=NOWHERE then continue for
     if IsEqualGUID(pKfid, pkc->pKfid) then
       'preserve flags, if any
-      *pCsidl and= pkc->csidl
+      *pCsidl = pkc->csidl or (*pCsidl and CSIDL_FLAG_MASK)
       return TRUE
     end if
   next

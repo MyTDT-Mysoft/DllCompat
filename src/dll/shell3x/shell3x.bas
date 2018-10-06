@@ -62,11 +62,13 @@ extern "windows-ms"
     dim csid as int
     dim flg as int
     dim pw as wstring ptr
+    dim clsidStr as wstring*40
     'static as zstring ptr WPATH_FIXME        = @"\_OS\FIXME"
     
     csid = 0
     if kfid2clsid(rfid, @csid)=FALSE then
-      DEBUG_MsgTrace("Unimplemented KNOWNFOLDERID")
+      StringFromGUID2(rfid, @clsidStr, sizeof(clsidStr)/2)
+      DEBUG_MsgTrace("Unimplemented KNOWNFOLDERID: %ls", @clsidStr)
       return E_FAIL
     end if
     
@@ -104,7 +106,6 @@ extern "windows-ms"
     pw = CoTaskMemAlloc(len(wtpath)*2+2)
     if pw=NULL then return E_FAIL
     *pw = wtpath: *ppszPath = pw
-    'var sTemp = exepath + *WPATH_FIXME
     return S_OK
   end function
   
