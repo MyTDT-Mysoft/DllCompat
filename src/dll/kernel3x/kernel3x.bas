@@ -47,21 +47,22 @@ end extern
 
 #ifndef SYSTEM_LOGICAL_PROCESSOR_INFORMATION
 type slpi_ProcessorCore        
-    Flags as ubyte
-  end type
-  type slpi_NumaNode
-    NodeNumber as integer
-  end type
-  type SYSTEM_LOGICAL_PROCESSOR_INFORMATION
-    as ULONG_PTR ProcessorMask
-    as integer Relationship
-    union 
-      ProcessorCore as slpi_ProcessorCore
-      NumaNode      as slpi_NumaNode        
-    end union
-    as integer Cache
-    as ulongint Reserved(2-1)
-  end type
+  Flags as ubyte
+end type
+type slpi_NumaNode
+  NodeNumber as integer
+end type
+
+type SYSTEM_LOGICAL_PROCESSOR_INFORMATION
+  as ULONG_PTR ProcessorMask
+  as integer Relationship
+  union 
+    ProcessorCore as slpi_ProcessorCore
+    NumaNode      as slpi_NumaNode        
+  end union
+  as integer Cache
+  as ulongint Reserved(2-1)
+end type
 #endif
 
 extern "windows-ms"

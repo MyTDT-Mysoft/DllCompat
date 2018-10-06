@@ -24,7 +24,7 @@ if len(sDLL)=0 then
   ,sAPP,MB_SYSTEMMODAL or MB_ICONQUESTION)
   system
 end if
-
+dim h2 as HMODULE = LoadLibraryA(sDLL)
 '-----------------------------------------------
 h = GetModuleHandleA(sDLL)
 if h then
@@ -58,6 +58,7 @@ else
   r.e_lleA = GetLastError()
 end if
 '-----
+if h2 then FreeLibrary(h2)
 
 var rString = _
 "GetModuleHandleA: "  +str(r.gmhA)+  !"\nErrcode: "+hex(r.e_gmhA) +!"\n\n" _

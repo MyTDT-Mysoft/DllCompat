@@ -240,8 +240,6 @@ FormatMessageW = kernel32.FormatMessageW @237
 FreeConsole = kernel32.FreeConsole @238
 FreeEnvironmentStringsA = kernel32.FreeEnvironmentStringsA @239
 FreeEnvironmentStringsW = kernel32.FreeEnvironmentStringsW @240
-FreeLibrary = kernel32.FreeLibrary @241
-FreeLibraryAndExitThread = kernel32.FreeLibraryAndExitThread @242
 FreeResource = kernel32.FreeResource @243
 FreeUserPhysicalPages = kernel32.FreeUserPhysicalPages @244
 FreeVirtualBuffer = kernel32.FreeVirtualBuffer @245
@@ -950,6 +948,8 @@ K32GetModuleInformation = psapi.GetModuleInformation
 K32GetModuleFileNameExA = psapi.GetModuleFileNameExA
 K32GetModuleFileNameExW = psapi.GetModuleFileNameExW
 
+FreeLibrary @241
+FreeLibraryAndExitThread @242
 GetModuleHandleA @375
 GetModuleHandleW @378
 GetModuleHandleExA @376
