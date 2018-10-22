@@ -583,6 +583,8 @@ extern "windows-ms"
     
 end extern
 
+#include "shared\defaultmain.bas"
+
 '---------------- APP SPECIFIC INCLUDES ---------------------
 'should we add a define check? 
 

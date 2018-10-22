@@ -141,11 +141,4 @@ extern "windows-ms"
   end function
 end extern
 
-
-
-
-
-
-
-
-
+#include "shared\defaultmain.bas"

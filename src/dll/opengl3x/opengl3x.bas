@@ -47,3 +47,5 @@ end extern
   open "Debug.txt" for output as #f
   close #f
 #endif
+
+#include "shared\defaultmain.bas"

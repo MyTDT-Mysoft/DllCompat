@@ -128,3 +128,4 @@ extern "windows-ms"
   
 end extern
 
+#include "shared\defaultmain.bas"

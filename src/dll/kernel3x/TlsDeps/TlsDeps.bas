@@ -30,3 +30,5 @@ extern "windows-ms"
     #endif
   end sub
 end extern
+
+#include "shared\defaultmain.bas"

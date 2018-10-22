@@ -152,3 +152,5 @@ extern "windows-ms"
     return FALSE
   end function
 end extern
+
+#include "shared\defaultmain.bas"

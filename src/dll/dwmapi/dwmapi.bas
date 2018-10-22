@@ -213,3 +213,5 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
 end extern
+
+#include "shared\defaultmain.bas"

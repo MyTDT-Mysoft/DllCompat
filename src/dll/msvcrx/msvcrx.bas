@@ -115,3 +115,5 @@ end function
 
 common shared as long _ADJUST_FDIV
 _ADJUST_FDIV = 0
+
+#include "shared\defaultmain.bas"

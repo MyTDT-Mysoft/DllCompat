@@ -184,3 +184,5 @@ if InterfaceName=0 orelse Length < WideCharToMultiByte(CP_UNIXCP, 0, @row.wszNam
     return ERROR_NOT_ENOUGH_MEMORY
   end function
 end extern
+
+#include "shared\defaultmain.bas"

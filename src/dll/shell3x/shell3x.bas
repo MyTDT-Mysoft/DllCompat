@@ -119,6 +119,8 @@ extern "windows-ms"
   end function
 end extern
 
+#include "shared\defaultmain.bas"
+
 /'
 SHGetKnownFolderPath
 https://msdn.microsoft.com/pt-br/library/windows/desktop/bb775966(v=vs.85).aspx

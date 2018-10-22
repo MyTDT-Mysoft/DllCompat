@@ -31,11 +31,8 @@ function SystemParametersInfoW_Detour(P1 as ulong,P2 as ulong,P3 as any ptr,P4 a
   return pfSystemParametersInfoW(P1,P2,P3,P4)
 end function
 
+#include "shared\defaultmain.bas"
+
 SetDetourLibrary("user32.dll")
 CreateDetour(SystemParametersInfoA)
 CreateDetour(SystemParametersInfoW)
-
-
-
-
-

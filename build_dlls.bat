@@ -42,7 +42,7 @@ goto :cleanup
 :compile
 echo compiling %1
 pushd .\%srcpath%\%1
-%dllc_fbcpath% -dll %1.bas -Wl "%1.dll.def" -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla
+%dllc_fbcpath% -dll %1.bas -Wl "%1.dll.def --entry _DLLMAIN" -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla
 set err=%errorlevel%
 popd
 if %err% gtr 0 goto :Failed

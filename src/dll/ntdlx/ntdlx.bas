@@ -13,3 +13,5 @@ extern "windows-ms"
     'return crit->OwningThread = ULongToHandle(GetCurrentThreadId()) andalso crit->RecursionCount
   end function
 end extern
+
+#include "shared\defaultmain.bas"

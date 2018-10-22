@@ -175,4 +175,5 @@ end extern
   ''/* cannot direclty use &size because of strict aliasing rules */
   'return iif(WSAAddressToString(cast(any ptr,@ss), sizeof(ss), NULL, dst, @s) = 0 , dst , NULL )
 #endif  
-  
+
+#include "shared\defaultmain.bas"
