@@ -10,7 +10,7 @@ set srcpath=src\dll
 
 for /f "delims== tokens=1,2" %%G in (%settfile%) do set %%G=%%H
 IF NOT EXIST %binpath% mkdir %binpath%
-del %binpath%\* /Q
+::del %binpath%\* /Q
 call :comploop %params%
 goto :eof
 
