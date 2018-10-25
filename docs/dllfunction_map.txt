@@ -74,7 +74,8 @@ kernel3x
     GetLocaleInfoEx                                 new         dummy       fixme
     GetLogicalProcessorInformation                  reimpl      partial
     GetNumaNodeProcessorMaskEx                      new         dummy
-    GetSystemDefaultLocaleName                      new
+    GetSystemDefaultLocaleName                      new         testme
+    GetUserDefaultLocaleName                        new         testme
     GetUserPreferredUILanguages                     new         dummy
     GetTickCount64                                  new         testme
     GetUserPreferredUILanguages                     new         dummy

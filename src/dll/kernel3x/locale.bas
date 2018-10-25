@@ -1,23 +1,34 @@
+function getLocaleName(Locale as LCID, lpLocaleName as LPWSTR, cchLocaleName as int) as int
+  if lpLocaleName=null or cchLocaleName <= 1 then
+    SetLastError(ERROR_INSUFFICIENT_BUFFER): return 0
+  end if
+  dim as wstring*85 wLocale = any
+  var iPos = GetLocaleInfoW(Locale, LOCALE_SISO639LANGNAME,@wLocale, 32)
+  if iPos = 0 or iPos > cchLocaleName then
+    SetLastError(ERROR_INSUFFICIENT_BUFFER): return 0
+  end if
+  wLocale[iPos-1] = asc("-")
+  var iPos2 = GetLocaleInfoW(Locale,LOCALE_SISO3166CTRYNAME,@wLocale+iPos,16)
+  iPos += iPos2
+  if iPos2 = 0 or iPos > cchLocaleName then
+    SetLastError(ERROR_INSUFFICIENT_BUFFER): return 0
+  end if
+  return iPos
+end function
+
 extern "windows-ms"
   UndefAllParams()
   #define P1 lpLocaleName  as _Out_ LPWSTR
   #define P2 cchLocaleName as _In_  int
   function GetSystemDefaultLocaleName(P1, P2) as int export
-    if lpLocaleName=null or cchLocaleName <= 1 then
-      SetLastError(ERROR_INSUFFICIENT_BUFFER): return 0
-    end if
-    dim as wstring*85 wLocale = any
-    var iPos = GetLocaleInfoW(LOCALE_SYSTEM_DEFAULT, LOCALE_SISO639LANGNAME,@wLocale, 32)
-    if iPos = 0 or iPos > cchLocaleName then
-      SetLastError(ERROR_INSUFFICIENT_BUFFER): return 0
-    end if
-    wLocale[iPos-1] = asc("-")
-    var iPos2 = GetLocaleInfoW(LOCALE_SYSTEM_DEFAULT,LOCALE_SISO3166CTRYNAME,@wLocale+iPos,16)
-    iPos += iPos2
-    if iPos2 = 0 or iPos > cchLocaleName then
-      SetLastError(ERROR_INSUFFICIENT_BUFFER): return 0
-    end if
-    return iPos
+    return getLocaleName(LOCALE_SYSTEM_DEFAULT, lpLocaleName, cchLocaleName)
+  end function
+  
+  UndefAllParams()
+  #define P1 lpLocaleName  as _Out_ LPWSTR
+  #define P2 cchLocaleName as _In_  int
+  function GetUserDefaultLocaleName(P1, P2) as int export
+    return getLocaleName(LOCALE_USER_DEFAULT, lpLocaleName, cchLocaleName)
   end function
   
   UndefAllParams()
