@@ -563,6 +563,28 @@ extern "windows-ms"
 
   end function
   
+  UndefAllParams()
+  #define P1 lpEventAttributes as LPSECURITY_ATTRIBUTES
+  #define P2 lpName            as LPCSTR
+  #define P3 dwFlags           as DWORD
+  #define P4 dwDesiredAccess   as DWORD
+  function CreateEventExA(P1,P2,P3,P4) as HANDLE export
+    dim isManualReset as byte = iif(dwFlags and CREATE_EVENT_MANUAL_RESET, TRUE, FALSE)
+    dim isSignaled as byte    = iif(dwFlags and CREATE_EVENT_INITIAL_SET, TRUE, FALSE)
+    return CreateEventA(lpEventAttributes, isManualReset, isSignaled, lpName)
+  end function
+  
+  UndefAllParams()
+  #define P1 lpEventAttributes as LPSECURITY_ATTRIBUTES
+  #define P2 lpName            as LPCWSTR
+  #define P3 dwFlags           as DWORD
+  #define P4 dwDesiredAccess   as DWORD
+  function CreateEventExW(P1,P2,P3,P4) as HANDLE export
+    dim isManualReset as byte = iif(dwFlags and CREATE_EVENT_MANUAL_RESET, TRUE, FALSE)
+    dim isSignaled as byte    = iif(dwFlags and CREATE_EVENT_INITIAL_SET, TRUE, FALSE)
+    return CreateEventW(lpEventAttributes, isManualReset, isSignaled, lpName)
+  end function
+  
   #ifdef DebugDisableExceptions
   'experimental... the other exception functions need to be added...
   'but it will help with programs that crashes and are " internally handled to be 'safe' "

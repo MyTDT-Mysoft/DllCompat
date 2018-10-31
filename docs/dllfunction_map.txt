@@ -65,6 +65,8 @@ iphlpapx
 kernel3x
     GetThreadId                                     new
     CancelIoEx                                      new         dummy       fixme
+    CreateEventExA                                  new         full
+    CreateEventExW                                  new         full
     FlsAlloc                                        new         dummy       fixme
     FlsFree                                         new         dummy       fixme
     FlsGetValue                                     new         dummy       fixme
