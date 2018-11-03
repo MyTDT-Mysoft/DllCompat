@@ -63,7 +63,7 @@ extern "windows-ms"
     dim flg as int
     dim pw as wstring ptr
     dim clsidStr as wstring*40
-    'static as zstring ptr WPATH_FIXME        = @"\_OS\FIXME"
+    'static as wstring*16 WPATH_FIXME = wstr(".\_OS\FIXME")
     
     csid = 0
     if kfid2clsid(rfid, @csid)=FALSE then
@@ -79,7 +79,6 @@ extern "windows-ms"
     'if dwFlags and KF_FLAG_DEFAULT then
     'if dwFlags and KF_FLAG_SIMPLE_IDLIST then
     'if dwFlags and KF_FLAG_NOT_PARENT_RELATIVE then
-    'if dwFlags and KF_FLAG_INIT then
     'if dwFlags and KF_FLAG_ALIAS_ONLY then
     if dwFlags and KF_FLAG_DEFAULT_PATH then
       flg = SHGFP_TYPE_DEFAULT
@@ -95,6 +94,9 @@ extern "windows-ms"
     end if
     if dwFlags and KF_FLAG_CREATE then
       csid or= CSIDL_FLAG_CREATE
+    end if
+    if dwFlags and KF_FLAG_INIT then
+      csid or= CSIDL_FLAG_PER_USER_INIT
     end if
     'win10 and win8 specific flags
     'KF_FLAG_NO_PACKAGE_REDIRECTION, KF_FLAG_FORCE_PACKAGE_REDIRECTION, KF_FLAG_RETURN_FILTER_REDIRECTION_TARGET, KF_FLAG_FORCE_APP_DATA_REDIRECTION
