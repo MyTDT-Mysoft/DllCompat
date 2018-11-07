@@ -947,6 +947,8 @@ K32EnumProcessModules   = psapi.EnumProcessModules
 K32GetModuleInformation = psapi.GetModuleInformation
 K32GetModuleFileNameExA = psapi.GetModuleFileNameExA
 K32GetModuleFileNameExW = psapi.GetModuleFileNameExW
+K32GetProcessMemoryInfo = psapi.GetProcessMemoryInfo
+K32QueryWorkingSet      = psapi.QueryWorkingSet
 
 FreeLibrary @241
 FreeLibraryAndExitThread @242
