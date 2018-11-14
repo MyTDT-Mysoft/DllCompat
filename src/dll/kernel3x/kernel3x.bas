@@ -21,6 +21,7 @@
 #include "fiber.bas"
 #include "dynload.bas"
 #include "locale.bas"
+#include "console.bas"
 
 dim shared as any ptr pInitMutex
 dim shared as handle hKernel

@@ -71,6 +71,7 @@ kernel3x
     FlsFree                                         new         dummy       fixme
     FlsGetValue                                     new         dummy       fixme
     FlsSetValue                                     new         dummy       fixme
+    GetConsoleScreenBufferInfoEx                    new         partial     testme
     GetFileInformationByHandleEx                    new         partial     testme
     GetFinalPathNameByHandleW                       new
     GetLocaleInfoEx                                 new         dummy       fixme
@@ -92,6 +93,7 @@ kernel3x
     LCMapStringEx                                   new         dummy
     QueryFullProcessImageNameA                      new
     QueryFullProcessImageNameW                      TODO
+    SetConsoleScreenBufferInfoEx                    new         partial     testme
     SetFileInformationByHandle                      new         dummy
     SetThreadGroupAffinity                          new         dummy
     SetThreadStackGuarantee                         new         dummy
