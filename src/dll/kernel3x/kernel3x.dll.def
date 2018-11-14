@@ -944,6 +944,8 @@ lstrlenA = kernel32.lstrlenA @953
 lstrlenW = kernel32.lstrlenW @954
 
 K32EnumProcessModules   = psapi.EnumProcessModules
+K32GetModuleBaseNameA   = psapi.GetModuleBaseNameA
+K32GetModuleBaseNameW   = psapi.GetModuleBaseNameW
 K32GetModuleInformation = psapi.GetModuleInformation
 K32GetModuleFileNameExA = psapi.GetModuleFileNameExA
 K32GetModuleFileNameExW = psapi.GetModuleFileNameExW
