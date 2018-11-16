@@ -1,6 +1,5 @@
 *.o
 *.s
-bin/test/*.exe
 *.dll.a
 */Thumbs.db
 
