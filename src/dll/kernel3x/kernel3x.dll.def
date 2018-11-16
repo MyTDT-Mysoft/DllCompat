@@ -943,14 +943,33 @@ lstrlen = kernel32.lstrlen @952
 lstrlenA = kernel32.lstrlenA @953
 lstrlenW = kernel32.lstrlenW @954
 
-K32EnumProcessModules   = psapi.EnumProcessModules
-K32GetModuleBaseNameA   = psapi.GetModuleBaseNameA
-K32GetModuleBaseNameW   = psapi.GetModuleBaseNameW
-K32GetModuleInformation = psapi.GetModuleInformation
-K32GetModuleFileNameExA = psapi.GetModuleFileNameExA
-K32GetModuleFileNameExW = psapi.GetModuleFileNameExW
-K32GetProcessMemoryInfo = psapi.GetProcessMemoryInfo
-K32QueryWorkingSet      = psapi.QueryWorkingSet
+K32EmptyWorkingSet             = psapi.EmptyWorkingSet
+K32EnumDeviceDrivers           = psapi.EnumDeviceDrivers
+K32EnumPageFilesA              = psapi.EnumPageFilesA
+K32EnumPageFilesW              = psapi.EnumPageFilesW
+K32EnumProcesses               = psapi.EnumProcesses
+K32EnumProcessModules          = psapi.EnumProcessModules
+K32GetDeviceDriverBaseNameA    = psapi.GetDeviceDriverBaseNameA
+K32GetDeviceDriverBaseNameW    = psapi.GetDeviceDriverBaseNameW
+K32GetDeviceDriverFileNameA    = psapi.GetDeviceDriverFileNameA
+K32GetDeviceDriverFileNameW    = psapi.GetDeviceDriverFileNameW
+K32GetMappedFileNameA          = psapi.GetMappedFileNameA
+K32GetMappedFileNameW          = psapi.GetMappedFileNameW
+K32GetModuleBaseNameA          = psapi.GetModuleBaseNameA
+K32GetModuleBaseNameW          = psapi.GetModuleBaseNameW
+K32GetModuleFileNameExA        = psapi.GetModuleFileNameExA
+K32GetModuleFileNameExW        = psapi.GetModuleFileNameExW
+K32GetModuleInformation        = psapi.GetModuleInformation
+K32GetPerformanceInfo          = psapi.GetPerformanceInfo
+K32GetProcessImageFileNameA    = psapi.GetProcessImageFileNameA
+K32GetProcessImageFileNameW    = psapi.GetProcessImageFileNameW
+K32GetProcessMemoryInfo        = psapi.GetProcessMemoryInfo
+K32GetWsChanges                = psapi.GetWsChanges
+K32InitializeProcessForWsWatch = psapi.InitializeProcessForWsWatch
+K32QueryWorkingSet             = psapi.QueryWorkingSet
+;EnumProcessModulesEx
+;GetWsChangesEx
+;QueryWorkingSetEx
 
 FreeLibrary @241
 FreeLibraryAndExitThread @242
