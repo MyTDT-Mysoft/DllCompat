@@ -114,11 +114,11 @@ extern "windows-ms"
   #define P1 TaskName  as _In_    LPCWSTR
   #define P2 TaskIndex as _Inout_ LPDWORD
   function AvSetMmThreadCharacteristicsW(P1, P2) as HANDLE
-    if not TaskName then
+    if TaskName=NULL then
         SetLastError(ERROR_INVALID_TASK_NAME)
         return null
     endif
-    if not TaskIndex then
+    if TaskIndex=NULL then
         SetLastError(ERROR_INVALID_HANDLE)
         return null
     endif
@@ -134,7 +134,7 @@ extern "windows-ms"
     if TaskName then
       dim as DWORD lenny = (lstrlenA(TaskName)+1)
       strn = HeapAlloc(GetProcessHeap(), 0, lenny*sizeof(WCHAR))
-      if not strn then
+      if strn=NULL then
         SetLastError(ERROR_OUTOFMEMORY)
         return null
       endif

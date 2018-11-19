@@ -108,6 +108,8 @@ extern "windows-ms"
     pw = CoTaskMemAlloc(len(wtpath)*2+2)
     if pw=NULL then return E_FAIL
     *pw = wtpath: *ppszPath = pw
+    
+    SetLastError(S_OK)
     return S_OK
   end function
   

@@ -12,10 +12,14 @@
 #undef BOOL
 #undef BOOLEAN
 #undef WINBOOL
+#undef TRUE
+#undef FALSE
 type INT     as integer
 type BOOL    as integer
 type BOOLEAN as ubyte
 type WINBOOL as integer
+const TRUE = 1
+const FALSE = 0
 
 #define _In_  
 #define _In_opt_
@@ -42,6 +46,14 @@ type WINBOOL as integer
   #undef P15
   #undef P16
 #endmacro
+
+enum STR_TYPE
+  T_ANSI, T_WIDE
+end enum
+
+' **************************************************************************
+
+
 
 ' **************************************************************************
 #define DEBUG_MAXSTR 512
@@ -110,10 +122,6 @@ end sub
   #endif
 #endmacro
 
-' **************************************************************************
-
-#define AsGuid(_N,_l,_w1,_w2,_bw,_ll) as const GUID _N = type( (&h##_l), (&h##_w1), (&h##_w2), { ((&h##_bw) shr 8) and &hFF, (&h##_bw) and &hFF,  (((&h##_ll) shr 40) and &hFF),  (((&h##_ll) shr 32) and &hFF),  (((&h##_ll) shr 24) and &hFF),  (((&h##_ll) shr 16) and &hFF),  (((&h##_ll) shr 8) and &hFF),(((&h##_ll) shr 0) and &hFF) } )
-
 sub hexdump(mem as any ptr, lenny as UInteger, elemsize as UInteger)
   'Courtesy of Grapus
   'http://grapsus.net/blog/post/Hexadecimal-dump-in-C
@@ -150,3 +158,7 @@ sub hexdump(mem as any ptr, lenny as UInteger, elemsize as UInteger)
     end if
   next
 end sub
+
+' **************************************************************************
+
+#define AsGuid(_N,_l,_w1,_w2,_bw,_ll) as const GUID _N = type( (&h##_l), (&h##_w1), (&h##_w2), { ((&h##_bw) shr 8) and &hFF, (&h##_bw) and &hFF,  (((&h##_ll) shr 40) and &hFF),  (((&h##_ll) shr 32) and &hFF),  (((&h##_ll) shr 24) and &hFF),  (((&h##_ll) shr 16) and &hFF),  (((&h##_ll) shr 8) and &hFF),(((&h##_ll) shr 0) and &hFF) } )

@@ -1,3 +1,7 @@
+type kcmItemInit
+  pkfid as REFKNOWNFOLDERID
+  _16 as WORD
+end type
 type kcmItem
   pKfid as REFKNOWNFOLDERID
   union
@@ -12,7 +16,7 @@ end type
 #define NOWHERE &h00FF
 #define BIND &hFF00 or
 
-static shared kcMap(...) as kcmItem = {_
+static shared kcMap(...) as kcmItemInit = {_
   (@FOLDERID_AddNewPrograms,              NOWHERE),_
   (@FOLDERID_AdminTools,                  CSIDL_ADMINTOOLS),_
   (@FOLDERID_AppUpdates,                  NOWHERE),_
@@ -117,14 +121,16 @@ static shared kcMap(...) as kcmItem = {_
   (@FOLDERID_VideosLibrary,               NOWHERE),_
   (@FOLDERID_Windows,                     CSIDL_WINDOWS)_
 }
+#if sizeof(kcmItemInit) <> sizeof(kcmItem)
+  #error "kcmItemInit/kcmItem sizes does not match!!!"
+#endif
 
 function kfid2clsid(pKfid as const REFKNOWNFOLDERID, pCsidl as INT ptr) as WINBOOL
   dim i as integer
   dim pkc as kcmItem ptr
   
   for i=0 to ubound(kcMap)
-    pkc = @kcMap(i)
-    
+    pkc = cast(kcmItem ptr, @kcMap(i))
     if pkc->isBound=0 orelse pkc->csidl=NOWHERE then continue for
     if IsEqualGUID(pKfid, pkc->pKfid) then
       'preserve flags, if any

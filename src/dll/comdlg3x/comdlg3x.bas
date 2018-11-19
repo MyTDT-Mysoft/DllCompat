@@ -2,7 +2,9 @@
 
 #include "windows.bi"
 #include "win\objbase.bi"
+#include "win\shlobj.bi"
 #include "includes\win\float.bi"
+#include "includes\win\shlobj_fix.bi"
 #include "shared\helper.bas"
 
 function WinverCompare(mask as BYTE, vMaj as WORD, vMin as WORD, vSPMaj as WORD) as BOOL
@@ -31,11 +33,11 @@ type IExample
   lpVtbl as IExampleVtbl ptr
 end type
 type IExampleVtbl_
-  QueryInterface as function(thus as IExample ptr, vTableGuid as REFIID, ppv as LPVOID ptr) as HRESULT
-  AddRef as function(thus as IExample ptr) as ULONG
-  Release as function(thus as IExample ptr) as ULONG
+  QueryInterface as function(this as IExample ptr, vTableGuid as REFIID, ppv as LPVOID ptr) as HRESULT
+  AddRef as function(this as IExample ptr) as ULONG
+  Release as function(this as IExample ptr) as ULONG
   'other methods
-  ExampleFunc as function(thus as IExample ptr) as DWORD
+  ExampleFunc as function(this as IExample ptr) as DWORD
 end type
 
 
@@ -46,28 +48,28 @@ type MyRealIExample
 end type
 
 extern "windows"
-function QueryInterface(thus as IExample ptr, vTableGuid as REFIID, ppv as LPVOID ptr) as HRESULT
+function QueryInterface(this as IExample ptr, vTableGuid as REFIID, ppv as LPVOID ptr) as HRESULT
   if (IsEqualIID(vTableGuid, @IID_IUnknown)=FALSE and IsEqualIID(vTableGuid, @IID_IExample)=FALSE) then
     *ppv = NULL
     return E_NOINTERFACE
   end if
   
-  *ppv = thus
-  thus->lpVtbl->AddRef(thus)
+  *ppv = this
+  this->lpVtbl->AddRef(this)
   return NOERROR
 end function
 
-  function AddRef(thus as IExample ptr) as ULONG
-    dim count as DWORD ptr = @cast(MyRealIExample ptr, thus)->count
+  function AddRef(this as IExample ptr) as ULONG
+    dim count as DWORD ptr = @cast(MyRealIExample ptr, this)->count
     *count = *count+1
     return *count
   end function
   
-  function Release(thus as IExample ptr) as ULONG
-    dim count as DWORD ptr = @cast(MyRealIExample ptr, thus)->count
+  function Release(this as IExample ptr) as ULONG
+    dim count as DWORD ptr = @cast(MyRealIExample ptr, this)->count
     *count=*count-1
     if *count=0 then
-      GlobalFree(thus)
+      GlobalFree(this)
       InterlockedDecrement(@OutstandingObjects)
       return(0)
     end if
@@ -75,7 +77,7 @@ end function
   end function
   
   'own functions
-  function ExampleFunc(thus as IExample ptr) as DWORD
+  function ExampleFunc(this as IExample ptr) as DWORD
     return 42
   end function
   
@@ -89,16 +91,16 @@ end extern
 extern "windows"
   static shared as IClassFactory MyIClassFactoryObj
   
-  function classAddRef(thus as IClassFactory ptr) as ULONG
+  function classAddRef(this as IClassFactory ptr) as ULONG
     InterlockedIncrement(@OutstandingObjects)
     return 1
   end function
   
-  function classQueryInterface(thus as IClassFactory ptr, factoryGuid as REFIID, ppv as LPVOID ptr) as HRESULT
+  function classQueryInterface(this as IClassFactory ptr, factoryGuid as REFIID, ppv as LPVOID ptr) as HRESULT
     'IClassFactory masquerades as an IUnknown
     if (IsEqualIID(factoryGuid, @IID_IUnknown) or IsEqualIID(factoryGuid, @IID_IClassFactory)) then
-        thus->lpVtbl->AddRef(thus)
-        *ppv = thus
+        this->lpVtbl->AddRef(this)
+        *ppv = this
         return NOERROR
     end if
     
@@ -106,11 +108,11 @@ extern "windows"
     return E_NOINTERFACE
   end function
   
-  function classRelease(thus as IClassFactory ptr) as ULONG
+  function classRelease(this as IClassFactory ptr) as ULONG
     return(InterlockedDecrement(@OutstandingObjects))
   end function
   
-  function classCreateInstance(thus as IClassFactory ptr, punkOuter as IUnknown ptr, vTableGuid as REFIID, objHandle as LPVOID ptr) as HRESULT
+  function classCreateInstance(this as IClassFactory ptr, punkOuter as IUnknown ptr, vTableGuid as REFIID, objHandle as LPVOID ptr) as HRESULT
     dim hr as HRESULT
     dim thisobj as IExample ptr
     
@@ -135,7 +137,7 @@ extern "windows"
     return(hr)
   end function
   
-  function classLockServer(thus as IClassFactory ptr, flock as BOOL) as HRESULT
+  function classLockServer(this as IClassFactory ptr, flock as BOOL) as HRESULT
     if flock then 
       InterlockedIncrement(@LockCount)
     else
