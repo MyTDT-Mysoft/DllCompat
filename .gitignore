@@ -2,5 +2,6 @@
 *.s
 *.dll.a
 */Thumbs.db
+/_crud/*
 
 /check_EOL.bat
