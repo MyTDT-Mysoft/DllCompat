@@ -971,6 +971,12 @@ K32QueryWorkingSet             = psapi.QueryWorkingSet
 ;GetWsChangesEx
 ;QueryWorkingSetEx
 
+IdnToAscii           = normaliz.IdnToAscii
+IdnToNameprepUnicode = normaliz.IdnToNameprepUnicode
+IdnToUnicode         = normaliz.IdnToUnicode
+IsNormalizedString   = normaliz.IsNormalizedString
+NormalizeString      = normaliz.NormalizeString
+
 FreeLibrary @241
 FreeLibraryAndExitThread @242
 GetModuleHandleA @375
