@@ -128,7 +128,9 @@ shell3x
 user3x
     CloseTouchInputHandle                           new         dummy
     GetTouchInputInfo                               new         dummy
+    IsTouchWindow                                   new         dummy
     RegisterTouchWindow                             new         dummy
+    UnregisterTouchWindow                           new         dummy
     SetProcessDPIAware                              new         dummy
     UpdateLayeredWindowIndirect                     new         partial     fixme
 uxthemx

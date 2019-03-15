@@ -82,6 +82,20 @@ extern "windows-ms"
     return TRUE
   end function
   
+  UndefAllParams()
+  #define P1 hWnd     as HWND
+  #define P2 pulFlags as PULONG
+  function IsTouchWindow(P1, P2) as BOOL export
+    return FALSE
+  end function
+  
+  UndefAllParams()
+  #define P1 hwnd as HWND
+  function UnregisterTouchWindow(P1) as BOOL export
+    return TRUE
+  end function
+
+  
   #undef UpdateLayeredWindowIndirect
   UndefAllParams()
   #define P1 hwnd     as _In_ HWND
