@@ -48,8 +48,8 @@ extern "windows-ms"
     case else
       DEBUG_MsgTrace("Locale:'%ls'",lpLocaleName)
     end select
-    'DEBUG_AlertNotImpl()
-    'SetLastError(ERROR_OUT_OF_PAPER)
+    DEBUG_MsgNotImpl()
+    SetLastError(ERROR_OUT_OF_PAPER)
     return 0
   end function
   
@@ -104,5 +104,23 @@ extern "windows-ms"
     SetLastError(ERROR_OUT_OF_PAPER)
     return 0
   end function
+  
+  UndefAllParams()
+  #define P1 lpLocaleName           as LPCWSTR
+  #define P2 dwCmpFlags             as DWORD
+  #define P3 lpString1              as LPCWCH
+  #define P4 cchCount1              as int
+  #define P5 lpString2              as LPCWCH
+  #define P6 cchCount2              as int
+  #define P7 lpVersionInformation   as LPNLSVERSIONINFO
+  #define P8 lpReserved             as LPVOID
+  #define P9 lParam                 as LPARAM
+  function CompareStringEx(P1, P2, P3, P4, P5, P6, P7, P8, P9) as int export
+    'WARN: no locale handling
+    DEBUG_MsgTrace("CompareStringEx called.")
+    return CompareStringW(LOCALE_USER_DEFAULT, dwCmpFlags, lpString1, cchCount1, lpString2, cchCount2)
+  end function
+  
+  
   
 end extern
