@@ -63,8 +63,8 @@ iphlpapx
     ConvertInterfaceNameToLuidA                     new         dummy       fixme
     ConvertInterfaceNameToLuidW                     new         dummy       fixme
 kernel3x
-    GetThreadId                                     new
     CancelIoEx                                      new         dummy       fixme
+    CompareStringEx                                 new         partial     fixme
     CreateEventExA                                  new         full
     CreateEventExW                                  new         full
     FlsAlloc                                        new         dummy       fixme
@@ -80,6 +80,7 @@ kernel3x
     GetSystemDefaultLocaleName                      new         testme
     GetUserDefaultLocaleName                        new         testme
     GetUserPreferredUILanguages                     new         dummy
+    GetThreadId                                     new
     GetTickCount64                                  new         testme
     GetUserPreferredUILanguages                     new         dummy
     GetVersionExW                                   reimpl
@@ -91,8 +92,10 @@ kernel3x
     IsValidLocaleName                               new         dummy       fixme
     LCIDToLocaleName                                new         dummy       fixme
     LCMapStringEx                                   new         dummy
+    LocaleNameToLCID                                new         dummy       fixme
     QueryFullProcessImageNameA                      new
     QueryFullProcessImageNameW                      TODO
+    RaiseFailFastException                          new         dummy
     SetConsoleScreenBufferInfoEx                    new         partial     testme
     SetFileInformationByHandle                      new         dummy
     SetThreadGroupAffinity                          new         dummy

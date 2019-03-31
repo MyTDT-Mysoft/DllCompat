@@ -199,7 +199,7 @@ extern "windows-ms"
   function InitializeCriticalSectionEx(P1, P2, P3) as BOOL export
     return InitializeCriticalSectionAndSpinCount(lpCriticalSection,dwSpinCount)    
   end function
-
+  
   UndefAllParams()
   #define P1 lpVersionInfo as _Inout_ LPOSVERSIONINFOEXW 'LPOSVERSIONINFOW
   function fnGetVersionExW alias "GetVersionExW"(P1) as BOOL export
@@ -467,7 +467,7 @@ extern "windows-ms"
   #define P3 lpFileInformation    as _In_ LPVOID
   #define P4 dwBufferSize         as _In_ DWORD
   function SetFileInformationByHandle(P1, P2, P3, P4) as BOOL export
-    DEBUG_AlertNotImpl()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return 0
   end function
@@ -476,7 +476,7 @@ extern "windows-ms"
   #define P1 StackSizeInBytes as _Inout_ PULONG
   #undef SetThreadStackGuarantee
   function SetThreadStackGuarantee(P1) as BOOL export
-    DEBUG_AlertNotImpl()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return 0
   end function
@@ -585,6 +585,16 @@ extern "windows-ms"
     dim isSignaled as byte    = iif(dwFlags and CREATE_EVENT_INITIAL_SET, TRUE, FALSE)
     return CreateEventW(lpEventAttributes, isManualReset, isSignaled, lpName)
   end function
+  
+
+  UndefAllParams()
+  #define P1 pExceptionRecord   as _In_opt_ LPSECURITY_ATTRIBUTES
+  #define P2 pContextRecord     as _In_opt_ PCONTEXT
+  #define P3 dwFlags            as _In_     DWORD
+  sub _RaiseFailFastException alias "RaiseFailFastException"(P1,P2,P3) export
+    ExitProcess(1)
+  end sub
+
   
   #ifdef DebugDisableExceptions
   'experimental... the other exception functions need to be added...
