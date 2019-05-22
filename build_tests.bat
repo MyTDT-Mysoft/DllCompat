@@ -10,8 +10,8 @@ set binpath=bin\test
 set srcpath=src\test
 
 for /f "delims== tokens=1,2" %%G in (%settfile%) do set %%G=%%H
+path=%path%;%dllc_fbcpath%;%dllc_gccpath%
 IF NOT EXIST %binpath% mkdir %binpath%
-del %binpath%\* /Q
 call :comploop %params%
 goto :eof
 
@@ -38,10 +38,10 @@ goto :cleanup
 echo compiling %1
 pushd .\%srcpath%
 IF NOT EXIST res\%1.rc goto :hasnores
-%dllc_fbcpath% %1.bas -x ..\..\%binpath%\%1.exe -s gui res\%1.rc -i ..\..\src
+fbc %1.bas -x ..\..\%binpath%\%1.exe -s gui res\%1.rc -i ..\..\src
 goto :postcomp
 :hasnores
-%dllc_fbcpath% %1.bas -x ..\..\%binpath%\%1.exe -i ..\..\src
+fbc %1.bas -x ..\..\%binpath%\%1.exe -i ..\..\src
 :postcomp
 set err=%errorlevel%
 popd

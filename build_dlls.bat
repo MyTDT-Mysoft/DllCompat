@@ -9,6 +9,7 @@ set binpath=bin\dll
 set srcpath=src\dll
 
 for /f "delims== tokens=1,2" %%G in (%settfile%) do set %%G=%%H
+path=%path%;%dllc_fbcpath%;%dllc_gccpath%
 IF NOT EXIST %binpath% mkdir %binpath%
 ::del %binpath%\* /Q
 call :comploop %params%
@@ -22,7 +23,7 @@ if not "%~1" EQU "" goto :comploop
 :donecomp
 echo Generating TlsDeps.dll
 set loc=.\%srcpath%\kernel3x\TlsDeps
-%dllc_fbcpath% -dll %loc%\TlsDeps.bas -Wl "%loc%\TlsDeps.dll.def" -x .\%binpath%\TlsDeps.dll -i .\src
+fbc -dll %loc%\TlsDeps.bas -Wl "%loc%\TlsDeps.dll.def --entry _DLLMAIN" -x .\%binpath%\TlsDeps.dll -i .\src -m blabla
 ::copy %srcpath%\kernel3x\TlsDeps\TlsDeps_Empty.dll %binpath%\TlsDeps.dll /Y
 
 :cleanup
@@ -42,7 +43,8 @@ goto :cleanup
 :compile
 echo compiling %1
 pushd .\%srcpath%\%1
-%dllc_fbcpath% -dll %1.bas -Wl "%1.dll.def --entry _DLLMAIN" -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla
+::set gengcc=-gen gcc -O 3 -asm intel
+fbc -dll %1.bas %gengcc% -Wl "%1.dll.def --entry _DLLMAIN" -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla
 set err=%errorlevel%
 popd
 if %err% gtr 0 goto :Failed
