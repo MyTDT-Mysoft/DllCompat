@@ -19,7 +19,7 @@ extern "windows-ms"
     if lpszProc = 0 then return 0
     var hResu = wglGetProcAddress(lpszProc)
     if hResu = 0 then      
-      select case lcase$(*lpszProc)
+      select case lcase(*lpszProc)
       case "glgenbuffers": zAlt = "glGenBuffersARB"
       case "glisbuffer": zAlt = "glIsBufferARB"
       case else: zAlt = *lpszProc+"ARB"
@@ -32,7 +32,7 @@ extern "windows-ms"
     #ifdef DebugAddress
     var f = freefile()
     open "Debug.txt" for append as #f
-    print #f,"(" & *lpszProc & ")[" & zAlt & "] = 0x"+hex$(hResu,8)
+    print #f,"(" & *lpszProc & ")[" & zAlt & "] = 0x"+hex(hResu,8)
     close #f
     #endif
     

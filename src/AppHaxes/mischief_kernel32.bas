@@ -1,7 +1,7 @@
 dim shared as any ptr OrgProc
 dim shared as hwnd SplashWnd
 function MyProc( hwnd as hwnd , msg as integer , wparam as wparam , lparam as lparam ) as lresult
-  'OutputDebugString("msg=0x"+hex$(msg,8))
+  'OutputDebugString("msg=0x"+hex(msg,8))
   
   static as integer N = 1
   

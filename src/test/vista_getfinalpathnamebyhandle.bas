@@ -36,7 +36,7 @@ dim as FILE_NAME_INFORMATION2 tFileInfo
 var iResu = NtQueryInformationFile( hTemp , @tStatBlock ,  @tFileInfo , _ 
 sizeof(FILE_NAME_INFORMATION2) , FileNameInformation )
 if iResu <> STATUS_SUCCESS then
-  print "NtQueryInformationFile Error 0x"+hex$(iResu)
+  print "NtQueryInformationFile Error 0x"+hex(iResu)
 end if
 
 type OBJECT_NAME_INFORMATION2 
@@ -47,7 +47,7 @@ dim as OBJECT_NAME_INFORMATION2 tObjInf
 var size = sizeof(tObjInf)
 iResu = NtQueryObject(hTemp, ObjectNameInformation, @tObjInf , size , @size )
 if iResu <> STATUS_SUCCESS then
-  print "NtQueryObject Error 0x"+hex$(iResu)
+  print "NtQueryObject Error 0x"+hex(iResu)
 end if
 
 print tFileInfo.FileName

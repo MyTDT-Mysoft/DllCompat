@@ -12,7 +12,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 hConsoleOutput              as _In_  HANDLE
   #define P2 lpConsoleScreenBufferInfoEx as _Out_ PCONSOLE_SCREEN_BUFFER_INFOEX
-  function fnGetConsoleScreenBufferInfoEx alias "GetConsoleScreenBufferInfoEx"(P1, P2) as BOOL export
+  function _GetConsoleScreenBufferInfoEx alias "GetConsoleScreenBufferInfoEx"(P1, P2) as BOOL export
     dim as BOOL ret
     dim as CONSOLE_SCREEN_BUFFER_INFO inf = any
     
@@ -40,7 +40,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 hConsoleOutput              as _In_  HANDLE
   #define P2 lpConsoleScreenBufferInfoEx as _In_  PCONSOLE_SCREEN_BUFFER_INFOEX
-  function fnSetConsoleScreenBufferInfoEx alias "SetConsoleScreenBufferInfoEx"(P1, P2) as BOOL export
+  function _SetConsoleScreenBufferInfoEx alias "SetConsoleScreenBufferInfoEx"(P1, P2) as BOOL export
     dim as BOOL ret
     
     if lpConsoleScreenBufferInfoEx->cbSize<>sizeof(CONSOLE_SCREEN_BUFFER_INFOEX) then

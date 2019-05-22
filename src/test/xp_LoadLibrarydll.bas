@@ -13,7 +13,7 @@ type Results
 end type
 
 var sAPP = "DllTest v0.1 By Mysoft"
-var sDLL = command$
+var sDLL = command
 dim h as HMODULE = NULL
 dim r as Results
 

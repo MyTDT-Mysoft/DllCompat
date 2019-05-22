@@ -287,7 +287,7 @@ extern "windows-ms"
     dim as DWORD dwResu = any
     if GetExitCodeThread(Thread,@dwResu)=0 then 
       var iErr = GetLastError()
-      messagebox(null,"GetThreadId ERROR = " & hex$(iErr),null,MB_SYSTEMMODAL or MB_ICONERROR)
+      messagebox(null,"GetThreadId ERROR = " & hex(iErr),null,MB_SYSTEMMODAL or MB_ICONERROR)
       return 0    
     end if
     
@@ -298,7 +298,7 @@ extern "windows-ms"
     ThreadBasicInformation , @tInfo , sizeof(tInfo), null )
     
     if ntResu then 
-      messagebox(null,"GetThreadId NTSTATUS = " & hex$(ntResu),null,MB_SYSTEMMODAL or MB_ICONERROR)
+      messagebox(null,"GetThreadId NTSTATUS = " & hex(ntResu),null,MB_SYSTEMMODAL or MB_ICONERROR)
       return 0 'NTSTATUS with error
     else
       messagebox(null,"GetThreadId TID = " & tInfo.ClientId.UniqueThread,null,MB_SYSTEMMODAL or MB_ICONERROR)
@@ -386,7 +386,7 @@ extern "windows-ms"
       var iResu = NtQueryObject(hFile, ObjectNameInformation, pTemp , iTempSz , @iTempSz )
       if iResu <> STATUS_SUCCESS then
         #ifdef DebugFailedCalls
-          DebugBox("NtQueryInformationFile Error 0x" & hex$(iResu))
+          DebugBox("NtQueryInformationFile Error 0x" & hex(iResu))
         #endif
         SetLastError(ERROR_PATH_NOT_FOUND) 'need better error handling?
       end if
@@ -412,7 +412,7 @@ extern "windows-ms"
       var iResu = NtQueryInformationFile( hFile , @tStatBlock ,  pTemp , iTempSz , FileNameInformation )
       if iResu <> STATUS_SUCCESS then
         #ifdef DebugFailedCalls
-          DebugBox("NtQueryInformationFile Error 0x" & hex$(iResu))
+          DebugBox("NtQueryInformationFile Error 0x" & hex(iResu))
         #endif
         SetLastError(ERROR_PATH_NOT_FOUND) 'need better error handling?
         return 0
@@ -423,7 +423,7 @@ extern "windows-ms"
         memcpy( lpszFilePath , @(pTemp->FileName) , iFilePathSz ) 'copy what fits
         lpszFilePath[cchFilePath] = 0 'set the null char
         #ifdef DebugFailedCalls
-          DebugBox("NtQueryInformationFile ERROR_INSUFFICIENT_BUFFER" & hex$(iResu))
+          DebugBox("NtQueryInformationFile ERROR_INSUFFICIENT_BUFFER" & hex(iResu))
         #endif
         SetLastError( ERROR_INSUFFICIENT_BUFFER )
         return iSz

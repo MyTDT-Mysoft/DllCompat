@@ -48,7 +48,7 @@ extern "windows-ms"
       var iResu = RegOpenKeyW( hKey , lpSubKey , @hSubKey )      
       if iResu <> ERROR_SUCCESS then 
         #ifdef DebugFailedCalls
-          DebugBox( "RegOpenKeyW failed Error: 0x"+hex$(iResu) )
+          DebugBox( "RegOpenKeyW failed Error: 0x"+hex(iResu) )
         #endif
         if pvData andalso (dwFlags and RRF_ZEROONFAILURE) then
           memset( pvData , 0 , *pcbData )
@@ -68,7 +68,7 @@ extern "windows-ms"
     
     if iResu <> ERROR_SUCCESS then
       #ifdef DebugFailedCalls
-        DebugBox( "RegQueryValueExW failed Error: 0x"+hex$(iResu) )
+        DebugBox( "RegQueryValueExW failed Error: 0x"+hex(iResu) )
       #endif
       if pvData andalso (dwFlags and RRF_ZEROONFAILURE) then
         memset( pvData , 0 , *pcbData )
