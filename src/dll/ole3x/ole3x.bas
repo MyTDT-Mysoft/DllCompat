@@ -4,15 +4,14 @@
 #include "win\ole2.bi"
 #include "shared\helper.bas"
 
-sub IsCLSIDReg(pGuid as REFCLSID, hr as HRESULT)
-  if hr = REGDB_E_CLASSNOTREG orelse hr = REGDB_E_CLASSNOTREG then
-    dim guidStr as wstring*40
-    StringFromGUID2(pGuid, @guidStr, sizeof(guidStr)/2)
-    if hr = REGDB_E_CLASSNOTREG then
-      DEBUG_MsgTrace("COM fail: Class not registered %ls", @guidStr)
-    elseif hr = REGDB_E_IIDNOTREG then 
-      DEBUG_MsgTrace("COM fail: Interface not registered %ls", @guidStr)
-    end if
+sub checkCLSID(pclsid as REFCLSID, hr as HRESULT)
+  dim guidStr as wstring*40
+  if hr = REGDB_E_CLASSNOTREG then
+    StringFromGUID2(pclsid, @guidStr, sizeof(guidStr)/2)
+    DEBUG_MsgTrace("COM fail: Class not registered %ls", @guidStr)
+  elseif hr = REGDB_E_IIDNOTREG then
+    StringFromGUID2(pclsid, @guidStr, sizeof(guidStr)/2)
+    DEBUG_MsgTrace("COM fail: Interface not registered %ls", @guidStr)
   end if
 end sub
 
@@ -23,9 +22,9 @@ extern "windows-ms"
   #define P3 dwClsContext as DWORD
   #define P4 riid         as REFIID
   #define P5 ppv          as LPVOID ptr
-  function fnCoCreateInstance alias "CoCreateInstance"(P1, P2, P3, P4, P5) as HRESULT export
+  function _CoCreateInstance alias "CoCreateInstance"(P1, P2, P3, P4, P5) as HRESULT export
     dim hr as HRESULT = CoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv)
-    IsCLSIDReg(rclsid, hr)
+    checkCLSID(rclsid, hr)
     return hr
   end function
   
@@ -36,9 +35,9 @@ extern "windows-ms"
   #define P4 pServerInfo as COSERVERINFO ptr
   #define P5 dwCount     as DWORD
   #define P6 pResults    as MULTI_QI ptr
-  function fnCoCreateInstanceEx alias "CoCreateInstanceEx"(P1, P2, P3, P4, P5, P6) as HRESULT export
+  function _CoCreateInstanceEx alias "CoCreateInstanceEx"(P1, P2, P3, P4, P5, P6) as HRESULT export
     dim hr as HRESULT = CoCreateInstanceEx(Clsid, punkOuter, dwClsCtx, pServerInfo, dwCount, pResults)
-    IsCLSIDReg(Clsid, hr)
+    checkCLSID(Clsid, hr)
     return hr
   end function
   
@@ -48,9 +47,9 @@ extern "windows-ms"
   #define P3 pvReserved   as LPVOID
   #define P4 riid         as REFIID
   #define P5 ppv          as LPVOID ptr
-  function fnCoGetClassObject alias "CoGetClassObject"(P1, P2, P3, P4, P5) as HRESULT export
+  function _CoGetClassObject alias "CoGetClassObject"(P1, P2, P3, P4, P5) as HRESULT export
     dim hr as HRESULT = CoGetClassObject(rclsid, dwClsContext, pvReserved, riid, ppv)
-    IsCLSIDReg(rclsid, hr)
+    checkCLSID(rclsid, hr)
     return hr
   end function
 end extern
