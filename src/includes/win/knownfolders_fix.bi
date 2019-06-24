@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shared\helper.bas"
+#include "shared\COMhelper.bas"
 
 #undef FOLDERID_AddNewPrograms
 #undef FOLDERID_AdminTools

@@ -53,7 +53,19 @@ end enum
 
 ' **************************************************************************
 
+function WinverCompare(mask as BYTE, vMaj as WORD, vMin as WORD, vSPMaj as WORD) as BOOL
+    'masks are in winnt.bi
+    dim as OSVERSIONINFOEXW osvi
+    osvi.dwOSVersionInfoSize = sizeof(osvi)
+    dim as DWORDLONG dwlConditionMask = VerSetConditionMask(VerSetConditionMask(VerSetConditionMask(0, VER_MAJORVERSION, mask), _
+        VER_MINORVERSION, mask), _
+        VER_SERVICEPACKMAJOR, mask)
+    osvi.dwMajorVersion = vMaj
+    osvi.dwMinorVersion = vMin
+    osvi.wServicePackMajor = vSPMaj
 
+    return VerifyVersionInfoW(@osvi, VER_MAJORVERSION or VER_MINORVERSION or VER_SERVICEPACKMAJOR, dwlConditionMask) <> FALSE
+end function
 
 ' **************************************************************************
 #define DEBUG_MAXSTR 512
@@ -160,5 +172,3 @@ sub hexdump(mem as any ptr, lenny as UInteger, elemsize as UInteger)
 end sub
 
 ' **************************************************************************
-
-#define AsGuid(_N,_l,_w1,_w2,_bw,_ll) as const GUID _N = type( (&h##_l), (&h##_w1), (&h##_w2), { ((&h##_bw) shr 8) and &hFF, (&h##_bw) and &hFF,  (((&h##_ll) shr 40) and &hFF),  (((&h##_ll) shr 32) and &hFF),  (((&h##_ll) shr 24) and &hFF),  (((&h##_ll) shr 16) and &hFF),  (((&h##_ll) shr 8) and &hFF),(((&h##_ll) shr 0) and &hFF) } )

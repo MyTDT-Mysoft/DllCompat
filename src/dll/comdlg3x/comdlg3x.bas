@@ -6,22 +6,7 @@
 #include "includes\win\float.bi"
 #include "includes\win\shlobj_fix.bi"
 #include "shared\helper.bas"
-
-function WinverCompare(mask as BYTE, vMaj as WORD, vMin as WORD, vSPMaj as WORD) as BOOL
-    'masks are in winnt.bi
-    dim as OSVERSIONINFOEXW osvi
-    osvi.dwOSVersionInfoSize = sizeof(osvi)
-    dim as DWORDLONG dwlConditionMask = VerSetConditionMask(VerSetConditionMask(VerSetConditionMask(0, VER_MAJORVERSION, mask), _
-        VER_MINORVERSION, mask), _
-        VER_SERVICEPACKMAJOR, mask)
-    osvi.dwMajorVersion = vMaj
-    osvi.dwMinorVersion = vMin
-    osvi.wServicePackMajor = vSPMaj
-
-    return VerifyVersionInfoW(@osvi, VER_MAJORVERSION or VER_MINORVERSION or VER_SERVICEPACKMAJOR, dwlConditionMask) <> FALSE
-end function
-
-
+#include "shared\COMhelper.bas"
 
 static shared as DWORD OutstandingObjects
 static shared as DWORD LockCount

@@ -1,3 +1,6 @@
+#pragma once
+
+#include "shared\COMhelper.bas"
 #undef KNOWN_FOLDER_FLAG
 
 type KNOWN_FOLDER_FLAG as long
