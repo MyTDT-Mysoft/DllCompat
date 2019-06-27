@@ -619,7 +619,7 @@ OpenJobObjectA = kernel32.OpenJobObjectA @628
 OpenJobObjectW = kernel32.OpenJobObjectW @629
 OpenMutexA = kernel32.OpenMutexA @630
 OpenMutexW = kernel32.OpenMutexW @631
-OpenProcess = kernel32.OpenProcess @632
+;OpenProcess = kernel32.OpenProcess @632
 OpenProfileUserMapping = kernel32.OpenProfileUserMapping @633
 OpenSemaphoreA = kernel32.OpenSemaphoreA @634
 OpenSemaphoreW = kernel32.OpenSemaphoreW @635
@@ -942,6 +942,8 @@ lstrcpynW = kernel32.lstrcpynW @951
 lstrlen = kernel32.lstrlen @952
 lstrlenA = kernel32.lstrlenA @953
 lstrlenW = kernel32.lstrlenW @954
+
+OpenProcess @632
 
 K32EmptyWorkingSet             = psapi.EmptyWorkingSet
 K32EnumDeviceDrivers           = psapi.EnumDeviceDrivers

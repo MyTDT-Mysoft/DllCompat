@@ -93,6 +93,7 @@ kernel3x
     LCIDToLocaleName                                new         dummy       fixme
     LCMapStringEx                                   new         dummy
     LocaleNameToLCID                                new         dummy       fixme
+    OpenProcess                                     reimpl      full
     QueryFullProcessImageNameA                      new
     QueryFullProcessImageNameW                      TODO
     RaiseFailFastException                          new         dummy

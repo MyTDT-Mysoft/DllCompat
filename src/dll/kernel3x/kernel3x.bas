@@ -73,6 +73,19 @@ extern "windows-ms"
   end sub
   
   UndefAllParams()
+  #define P1 dwDesiredAccess as DWORD
+  #define P2 bInheritHandle  as BOOL
+  #define P3 dwProcessId     as DWORD
+  function _OpenProcess alias "OpenProcess"(P1, P2, P3) as HANDLE
+    'PROCESS_QUERY_LIMITED_INFORMATION flag is invalid in XP
+    'so we turn it to closest valid flag
+    if (dwDesiredAccess and PROCESS_QUERY_LIMITED_INFORMATION) then
+      dwDesiredAccess = (dwDesiredAccess and (not PROCESS_QUERY_LIMITED_INFORMATION)) or PROCESS_QUERY_INFORMATION
+    end if
+    return OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId)
+  end function
+  
+  UndefAllParams()
   #define P1 InitOnce  as _Inout_     PINIT_ONCE
   #define P2 InitFn    as _In_        PINIT_ONCE_FN
   #define P3 Parameter as _Inout_opt_ PVOID
@@ -542,7 +555,7 @@ extern "windows-ms"
   #define P3 lpExeName _Out_   as LPSTR
   #define P4 lpdwSize  _Inout_ as PDWORD 
   function QueryFullProcessImageNameA(P1,P2,P3,P4) as WINBOOL export
-    dim as WINBOOL iResu = 0
+    dim as DWORD iResu = 0
     
     if lpdwSize=0 then 
       SetLastError(ERROR_INVALID_PARAMETER)
