@@ -44,7 +44,15 @@ goto :cleanup
 echo compiling %1
 pushd .\%srcpath%\%1
 ::set gengcc=-gen gcc -O 3 -asm intel
+::ugly hack to get linker to cooperate
+::copy "%1.dll.def" "..\..\..\%binpath%\%1.def"
+set dlltool=dummy
+echo ' > dummy.bas
+fbc dummy.bas
 fbc -dll %1.bas %gengcc% -Wl "%1.dll.def --entry _DLLMAIN" -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla
+del dummy.bas
+del dummy.exe
+set dlltool=
 set err=%errorlevel%
 popd
 if %err% gtr 0 goto :Failed
