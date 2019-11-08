@@ -4,16 +4,16 @@
 #include "win\ole2.bi"
 #include "shared\helper.bas"
 
-sub checkCLSID(pclsid as REFCLSID, hr as HRESULT)
+#macro checkCLSID(_PCLSID, _HR)
   dim guidStr as wstring*40
-  if hr = REGDB_E_CLASSNOTREG then
-    StringFromGUID2(pclsid, @guidStr, sizeof(guidStr)/2)
+  if _HR = REGDB_E_CLASSNOTREG then
+    StringFromGUID2(_PCLSID, @guidStr, sizeof(guidStr)/2)
     DEBUG_MsgTrace("COM fail: Class not registered %ls", @guidStr)
-  elseif hr = REGDB_E_IIDNOTREG then
-    StringFromGUID2(pclsid, @guidStr, sizeof(guidStr)/2)
+  elseif _HR = REGDB_E_IIDNOTREG then
+    StringFromGUID2(_PCLSID, @guidStr, sizeof(guidStr)/2)
     DEBUG_MsgTrace("COM fail: Interface not registered %ls", @guidStr)
   end if
-end sub
+#endmacro
 
 extern "windows-ms"
   UndefAllParams()
