@@ -122,7 +122,7 @@ static shared kcMap(...) as kcmItemInit = {_
   (@FOLDERID_Windows,                     CSIDL_WINDOWS)_
 }
 #if sizeof(kcmItemInit) <> sizeof(kcmItem)
-  #error "kcmItemInit/kcmItem sizes does not match!!!"
+  #error "kcmItemInit/kcmItem sizes do not match!!!"
 #endif
 
 function kfid2clsid(pKfid as const REFKNOWNFOLDERID, pCsidl as INT ptr) as WINBOOL

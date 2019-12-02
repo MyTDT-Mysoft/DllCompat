@@ -75,7 +75,7 @@ extern "windows-ms"
       return ret
     end if
 
-if InterfaceName=0 orelse Length < WideCharToMultiByte(CP_UNIXCP, 0, @row.wszName, -1, NULL, 0, NULL, NULL) then
+    if InterfaceName=0 orelse Length < WideCharToMultiByte(CP_UNIXCP, 0, @row.wszName, -1, NULL, 0, NULL, NULL) then
       return ERROR_NOT_ENOUGH_MEMORY
     end if
     

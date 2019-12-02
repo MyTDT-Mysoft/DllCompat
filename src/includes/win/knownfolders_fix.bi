@@ -1,7 +1,5 @@
 #pragma once
 
-#include "shared\COMhelper.bas"
-
 #undef FOLDERID_AddNewPrograms
 #undef FOLDERID_AdminTools
 #undef FOLDERID_AppUpdates
