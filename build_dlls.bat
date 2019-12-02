@@ -1,61 +1,65 @@
 @echo off
 setlocal
-
-set params=advapi3x avrt credux comdlg3x dwmapi gdi3x iphlpapx kernel3x ntdlx opengl3x powrprox shell3x user3x uxthemx ws2_3x
+set params=advapi3x avrt credux comdlg3x dwmapi gdi3x iphlpapx kernel3x ntdlx ole3x opengl3x powrprox shell3x user3x uxthemx ws2_3x
 ::set params=comdlg3x
 
 set settfile=compile.ini
+set libpath=bin\lib
 set binpath=bin\dll
 set srcpath=src\dll
+set logpath=logs
 
 for /f "delims== tokens=1,2" %%G in (%settfile%) do set %%G=%%H
 path=%path%;%dllc_fbcpath%;%dllc_gccpath%
 IF NOT EXIST %binpath% mkdir %binpath%
-::del %binpath%\* /Q
-call :comploop %params%
-goto :eof
+IF NOT EXIST %logpath% mkdir %logpath%
 
-:comploop
-call :compile %1
-shift /1
-if not "%~1" EQU "" goto :comploop
-
-:donecomp
+call :compile_all %params%
+echo.
 echo Generating TlsDeps.dll
 set loc=.\%srcpath%\kernel3x\TlsDeps
 fbc -dll %loc%\TlsDeps.bas -Wl "%loc%\TlsDeps.dll.def --entry _DLLMAIN" -x .\%binpath%\TlsDeps.dll -i .\src -m blabla
 ::copy %srcpath%\kernel3x\TlsDeps\TlsDeps_Empty.dll %binpath%\TlsDeps.dll /Y
 
+call :cleanup
+IF DEFINED compilehasfailed pause
+endlocal
+exit /B 0
+
+
+
+::------------------------------
+:compile_all
+if "%1" EQU "" exit /B 0
+echo Compiling %1
+
+pushd .\%srcpath%\%1
+set complog=..\..\..\%logpath%\dll_%1.log
+::ugly hack to get linker to cooperate
+set dlltool=dummy
+echo ' > dummy.bas
+fbc dummy.bas
+::set gengcc=-gen gcc -O 3 -asm intel
+if exist extraparams.txt (set /p exprm=<extraparams.txt) else (set exprm=) 
+fbc -dll %1.bas %gengcc% -Wl "%1.dll.def --entry _DLLMAIN  -L ..\..\..\%libpath%" %exprm% -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla > %complog%
+set err=%errorlevel%
+del dummy.bas
+del dummy.exe
+set dlltool=
+for %%R in (%complog%) do if %%~zR lss 1 del %complog%
+popd
+
+if not %err% gtr 0 goto :l_nocomperr
+set compilehasfailed=yes
+echo Failed compiling %1
+:l_nocomperr
+shift /1
+goto compile_all
+
+::------------------------------
 :cleanup
 echo Cleaning compile residue
 del %binpath%\*.dll.a /Q
 del %binpath%\*.o /Q
 del %binpath%\*.s /Q
-endlocal
-pause
-goto :eof
-
-:failed
-echo Compilation Failed...
-rem pause >nul
-goto :cleanup
-
-:compile
-echo compiling %1
-pushd .\%srcpath%\%1
-::set gengcc=-gen gcc -O 3 -asm intel
-::ugly hack to get linker to cooperate
-::copy "%1.dll.def" "..\..\..\%binpath%\%1.def"
-set dlltool=dummy
-echo ' > dummy.bas
-fbc dummy.bas
-fbc -dll %1.bas %gengcc% -Wl "%1.dll.def --entry _DLLMAIN" -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla
-del dummy.bas
-del dummy.exe
-set dlltool=
-set err=%errorlevel%
-popd
-if %err% gtr 0 goto :Failed
-goto :eof
-
-:eof
+exit /B 0
