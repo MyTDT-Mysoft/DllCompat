@@ -1,209 +1,412 @@
-#define fbc -dll -Wl "comdlg3x.dll.def" -x ..\..\bin\dll\comdlg3x.dll -i ..\..\
-
 #include "windows.bi"
+#include "win\winbase.bi"
 #include "win\objbase.bi"
 #include "win\shlobj.bi"
-#include "includes\win\float.bi"
-#include "includes\win\shlobj_fix.bi"
+#include "win\commdlg.bi"
+
 #include "shared\helper.bas"
-#include "shared\COMhelper.bas"
+#include "includes\comhelper.bi"
+'#include "includes\win\shellapi_fix.bi"
+#include "comdlg3x.bi"
 
-static shared as DWORD OutstandingObjects
-static shared as DWORD LockCount
+static shared AsGuid(IID_IFileOperationProgressSink, 04B0F1A7,9490,44BC,96E1,4296A31252E2)
+static shared AsGuid(IID_IFileDialogEvents,          973510DB,7D7F,452B,8975,74A85828D354)
+static shared AsGuid(IID_IFileDialog,                42F85136,DB7E,439C,85F1,E4075D135FC8)
+static shared AsGuid(IID_IFileOpenDialog,            D57C7288,D4AD,4768,BE02,9D969532D960)
+static shared AsGuid(IID_IFileSaveDialog,            84BCCD23,5FDE,4CDB,AEA4,AF64B83D78AB)
+static shared AsGuid(CLSID_FileOpenDialog,           DC1C5A9C,E88A,4DDE,A5A1,60F82A20AEF7)
+static shared AsGuid(CLSID_FileSaveDialog,           C0B4E2F3,BA21,4773,8DBA,335EC946EB8B)
 
-static shared AsGuid(CLSID_IExample, 6899A2A3,405B,44d4,A415,E08CEE2A97CB)
-static shared AsGuid(IID_IExample, 74666CAC,C2B1,4fa8,A049,97F3214802F0)
-type IExampleVtbl as IExampleVtbl_
-type IExample
-  lpVtbl as IExampleVtbl ptr
-end type
-type IExampleVtbl_
-  QueryInterface as function(this as IExample ptr, vTableGuid as REFIID, ppv as LPVOID ptr) as HRESULT
-  AddRef as function(this as IExample ptr) as ULONG
-  Release as function(this as IExample ptr) as ULONG
-  'other methods
-  ExampleFunc as function(this as IExample ptr) as DWORD
-end type
+static shared vt_FileDialog as IFileDialogVtbl = type( _
+  @cbase_UnkQueryInterface, _
+  @cbase_UnkAddRef, _
+  @cbase_UnkRelease, _
+  _
+  @FileDialog_Show, _
+  @FileDialog_SetFileTypes, _
+  @FileDialog_SetFileTypeIndex, _
+  @FileDialog_GetFileTypeIndex, _
+  @FileDialog_Advise, _
+  @FileDialog_Unadvise, _
+  @FileDialog_SetOptions, _
+  @FileDialog_GetOptions, _
+  @FileDialog_SetDefaultFolder, _
+  @FileDialog_SetFolder, _
+  @FileDialog_GetFolder, _
+  @FileDialog_GetCurrentSelection, _
+  @FileDialog_SetFileName, _
+  @FileDialog_GetFileName, _
+  @FileDialog_SetTitle, _
+  @FileDialog_SetOkButtonLabel, _
+  @FileDialog_SetFileNameLabel, _
+  @FileDialog_GetResult, _
+  @FileDialog_AddPlace, _
+  @FileDialog_SetDefaultExtension, _
+  @FileDialog_Close, _
+  @FileDialog_SetClientGuid, _
+  @FileDialog_ClearClientData, _
+  @FileDialog_SetFilter _
+)
 
+static shared vt_FileOpenDialog as IFileOpenDialogVtbl = type( _
+  @cbase_UnkQueryInterface, _
+  @cbase_UnkAddRef, _
+  @cbase_UnkRelease, _
+  _
+  @FileDialog_Show, _
+  @FileDialog_SetFileTypes, _
+  @FileDialog_SetFileTypeIndex, _
+  @FileDialog_GetFileTypeIndex, _
+  @FileDialog_Advise, _
+  @FileDialog_Unadvise, _
+  @FileDialog_SetOptions, _
+  @FileDialog_GetOptions, _
+  @FileDialog_SetDefaultFolder, _
+  @FileDialog_SetFolder, _
+  @FileDialog_GetFolder, _
+  @FileDialog_GetCurrentSelection, _
+  @FileDialog_SetFileName, _
+  @FileDialog_GetFileName, _
+  @FileDialog_SetTitle, _
+  @FileDialog_SetOkButtonLabel, _
+  @FileDialog_SetFileNameLabel, _
+  @FileDialog_GetResult, _
+  @FileDialog_AddPlace, _
+  @FileDialog_SetDefaultExtension, _
+  @FileDialog_Close, _
+  @FileDialog_SetClientGuid, _
+  @FileDialog_ClearClientData, _
+  @FileDialog_SetFilter, _
+  _
+  @FileOpenDialog_GetResults, _
+  @FileOpenDialog_GetSelectedItems _
+)
 
-type MyRealIExample
-  lpVtbl as IExampleVtbl
-  'private
-  count as DWORD
-end type
-
-extern "windows"
-function QueryInterface(this as IExample ptr, vTableGuid as REFIID, ppv as LPVOID ptr) as HRESULT
-  if (IsEqualIID(vTableGuid, @IID_IUnknown)=FALSE and IsEqualIID(vTableGuid, @IID_IExample)=FALSE) then
-    *ppv = NULL
-    return E_NOINTERFACE
-  end if
-  
-  *ppv = this
-  this->lpVtbl->AddRef(this)
-  return NOERROR
-end function
-
-  function AddRef(this as IExample ptr) as ULONG
-    dim count as DWORD ptr = @cast(MyRealIExample ptr, this)->count
-    *count = *count+1
-    return *count
-  end function
-  
-  function Release(this as IExample ptr) as ULONG
-    dim count as DWORD ptr = @cast(MyRealIExample ptr, this)->count
-    *count=*count-1
-    if *count=0 then
-      GlobalFree(this)
-      InterlockedDecrement(@OutstandingObjects)
-      return(0)
-    end if
-    return *count
-  end function
-  
-  'own functions
-  function ExampleFunc(this as IExample ptr) as DWORD
-    return 42
-  end function
-  
-  static shared as IExampleVtbl IExample_Vtbl = type( _
-    @QueryInterface, @AddRef, @Release, _
-    @ExampleFunc _
-  )
-end extern
-
-
-extern "windows"
-  static shared as IClassFactory MyIClassFactoryObj
-  
-  function classAddRef(this as IClassFactory ptr) as ULONG
-    InterlockedIncrement(@OutstandingObjects)
-    return 1
-  end function
-  
-  function classQueryInterface(this as IClassFactory ptr, factoryGuid as REFIID, ppv as LPVOID ptr) as HRESULT
-    'IClassFactory masquerades as an IUnknown
-    if (IsEqualIID(factoryGuid, @IID_IUnknown) or IsEqualIID(factoryGuid, @IID_IClassFactory)) then
-        this->lpVtbl->AddRef(this)
-        *ppv = this
-        return NOERROR
-    end if
-    
-    *ppv = NULL
-    return E_NOINTERFACE
-  end function
-  
-  function classRelease(this as IClassFactory ptr) as ULONG
-    return(InterlockedDecrement(@OutstandingObjects))
-  end function
-  
-  function classCreateInstance(this as IClassFactory ptr, punkOuter as IUnknown ptr, vTableGuid as REFIID, objHandle as LPVOID ptr) as HRESULT
-    dim hr as HRESULT
-    dim thisobj as IExample ptr
-    
-    *objHandle = 0
-    
-    'aggregation not supported
-    if punkOuter then
-      hr = CLASS_E_NOAGGREGATION
-    else
-        thisobj = cast(IExample ptr, GlobalAlloc(GMEM_FIXED, sizeof(MyRealIExample)))
-      if thisobj = null then
-        hr = E_OUTOFMEMORY
-      else
-        thisobj->lpVtbl = cast(IExampleVtbl ptr, @IExample_Vtbl)
-        cast(MyRealIExample ptr, thisobj)->count = 1
-        hr = IExample_Vtbl.QueryInterface(thisobj, vTableGuid, objHandle)
-        IExample_Vtbl.Release(thisobj)
-        if hr = NULL then InterlockedIncrement(@OutstandingObjects)
-      end if
-    end if
-    
-    return(hr)
-  end function
-  
-  function classLockServer(this as IClassFactory ptr, flock as BOOL) as HRESULT
-    if flock then 
-      InterlockedIncrement(@LockCount)
-    else
-      InterlockedDecrement(@LockCount)
-    end if
-    return NOERROR
-  end function
-  
-  static shared as IClassFactoryVtbl IClassFactory_Vtbl = type( _
-    @classQueryInterface, @classAddRef, @classRelease, _
-    @classCreateInstance, @classLockServer _
-  )
-end extern
-
-
-
-
+static shared vt_FileSaveDialog as IFileSaveDialogVtbl = type( _
+  @cbase_UnkQueryInterface, _
+  @cbase_UnkAddRef, _
+  @cbase_UnkRelease, _
+  _
+  @FileDialog_Show, _
+  @FileDialog_SetFileTypes, _
+  @FileDialog_SetFileTypeIndex, _
+  @FileDialog_GetFileTypeIndex, _
+  @FileDialog_Advise, _
+  @FileDialog_Unadvise, _
+  @FileDialog_SetOptions, _
+  @FileDialog_GetOptions, _
+  @FileDialog_SetDefaultFolder, _
+  @FileDialog_SetFolder, _
+  @FileDialog_GetFolder, _
+  @FileDialog_GetCurrentSelection, _
+  @FileDialog_SetFileName, _
+  @FileDialog_GetFileName, _
+  @FileDialog_SetTitle, _
+  @FileDialog_SetOkButtonLabel, _
+  @FileDialog_SetFileNameLabel, _
+  @FileDialog_GetResult, _
+  @FileDialog_AddPlace, _
+  @FileDialog_SetDefaultExtension, _
+  @FileDialog_Close, _
+  @FileDialog_SetClientGuid, _
+  @FileDialog_ClearClientData, _
+  @FileDialog_SetFilter, _
+  _
+  @FileSaveDialog_SetSaveAsItem, _
+  @FileSaveDialog_SetProperties, _
+  @FileSaveDialog_SetCollectedProperties, _
+  @FileSaveDialog_GetProperties, _
+  @FileSaveDialog_ApplyProperties _
+)
 
 extern "windows-ms"
-  'combaseapi.bi defines the first two as extern "windows", which we don't want
+  
+'-------------------------------------------------------------------------------------------
+'FileDialog
+  
+  function FileDialog_Show                       (self as FileDialogImpl ptr, hwndOwner as HWND) as HRESULT
+    dim ret as BOOL
+    
+    self->ofnw.hwndOwner = hwndOwner
+    ret = iif(self->isSaveDialog, GetSaveFileNameW(@self->ofnw), GetOpenFileNameW(@self->ofnw))
+    'TODO: check advanced error
+    return iif(ret, S_OK, HRESULT_FROM_WIN32(ERROR_CANCELLED))
+  end function
+  
+  function FileDialog_SetFileTypes               (self as FileDialogImpl ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
+    dim size as DWORD = 1 'list is double-NULL terminated
+    dim strArr as LPCWSTR ptr = cast(LPCWSTR ptr, rgFilterSpec)
+    dim dat as BYTE ptr
+    
+    for i as integer = 0 to (cFileTypes*2)-1
+      size += lstrlenW(strArr[i]) * 2 + 2
+    next
+    
+    self->ofnw.lpstrFilter = GlobalAlloc(GMEM_FIXED, size)
+    if self->ofnw.lpstrFilter = NULL then return E_OUTOFMEMORY
+    
+    dat = cast(BYTE ptr, self->ofnw.lpstrFilter)
+    
+    for i as integer = 0 to (cFileTypes*2)-1
+      size = lstrlenW(strArr[i]) * 2 + 2
+      memcpy(dat, strArr[i], size)
+      dat += size
+    next
+    
+    dat[0] = 0
+    dat[1] = 0
+    
+    return S_OK
+  end function
+  
+  function FileDialog_SetFileTypeIndex           (self as FileDialogImpl ptr, iFileType as UINT) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_GetFileTypeIndex           (self as FileDialogImpl ptr, piFileType as UINT ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_Advise                     (self as FileDialogImpl ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_Unadvise                   (self as FileDialogImpl ptr, dwCookie as DWORD) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_SetOptions                 (self as FileDialogImpl ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_GetOptions                 (self as FileDialogImpl ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_SetDefaultFolder           (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_SetFolder                  (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_GetFolder                  (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_GetCurrentSelection        (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_SetFileName                (self as FileDialogImpl ptr, pszName as LPCWSTR) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_GetFileName                (self as FileDialogImpl ptr, pszName as LPWSTR ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_SetTitle                   (self as FileDialogImpl ptr, pszTitle as LPCWSTR) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_SetOkButtonLabel           (self as FileDialogImpl ptr, pszText as LPCWSTR) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_SetFileNameLabel           (self as FileDialogImpl ptr, pszLabel as LPCWSTR) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_GetResult                  (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
+    dim pidl as PIDLIST_ABSOLUTE
+    dim hr as HRESULT = SHParseDisplayName(self->ofnw.lpstrFile, 0, @pidl, SFGAO_FILESYSTEM, 0)
+    
+    if SUCCEEDED(hr) then
+      dim psi as IShellItem ptr
+      
+      hr = SHCreateShellItem(NULL, NULL, pidl, @psi)
+      ILFree(pidl)
+      if SUCCEEDED(hr) then *ppsi = psi
+    end if
+    
+    return hr
+    return E_FAIL
+  end function
+  
+  function FileDialog_AddPlace                   (self as FileDialogImpl ptr, psi as IShellItem ptr, fdap as FDAP) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_SetDefaultExtension        (self as FileDialogImpl ptr, pszDefaultExtension as LPCWSTR) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_Close                      (self as FileDialogImpl ptr, hr as HRESULT) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_SetClientGuid              (self as FileDialogImpl ptr, guid as GUID ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_ClearClientData            (self as FileDialogImpl ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileDialog_SetFilter                  (self as FileDialogImpl ptr, pFilter as IShellItemFilter ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+'-------------------------------------------------------------------------------------------
+'FileOpenDialog
+  
+  function FileOpenDialog_GetResults             (self as FileDialogImpl ptr, ppenum as IShellItemArray ptr ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileOpenDialog_GetSelectedItems       (self as FileDialogImpl ptr, ppsai as IShellItemArray ptr ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+'-------------------------------------------------------------------------------------------
+'FileSaveDialog
+  
+  function FileSaveDialog_SetSaveAsItem          (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileSaveDialog_SetProperties          (self as FileDialogImpl ptr, pStore as IPropertyStore ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileSaveDialog_SetCollectedProperties (self as FileDialogImpl ptr, pList as IPropertyDescriptionList ptr, fAppendDefault as WINBOOL) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileSaveDialog_GetProperties          (self as FileDialogImpl ptr, ppStore as IPropertyStore ptr ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+  function FileSaveDialog_ApplyProperties        (self as FileDialogImpl ptr, psi as IShellItem ptr, pStore as IPropertyStore ptr, hwnd as HWND, pSink as IFileOperationProgressSink ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_FAIL
+  end function
+  
+
+
+
+
+
+  function FileDialogDestructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+    #define IF_FREE(x) if (x) <> NULL then GlobalFree(cast(HGLOBAL, x))
+
+    IF_FREE(self->ofnw.lpstrFilter)
+    
+    return S_OK
+    #undef IF_FREE
+  end function
+  
+  function FileDialogConstructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+    self->ofnw.lStructSize = sizeof(OPENFILENAMEW)
+    self->ofnw.nFilterIndex = 1
+    self->ofnw.lpstrFile = @self->filePath
+    self->ofnw.nMaxFile = MAX_FILEPATH
+    
+    if IsEqualGUID(rclsid, @CLSID_FileOpenDialog) then
+      self->isSaveDialog = FALSE
+    elseif IsEqualGUID(rclsid, @CLSID_FileSaveDialog) then
+      self->isSaveDialog = TRUE
+    else
+      return E_FAIL
+    end if
+    
+    return S_OK
+  end function
+end extern
+
+'-------------------------------------------------------------------------------------------
+'Rest of DLL
+
+'configuration
+
+static shared iidOpenDialog(...) as REFIID = { @IID_IFileOpenDialog, @IID_IFileDialog, @IID_IUnknown }
+static shared iidSaveDialog(...) as REFIID = { @IID_IFileSaveDialog, @IID_IFileDialog, @IID_IUnknown }
+static shared confOpenDialog as COMDesc = type( _
+    @CLSID_FileOpenDialog, @iidOpenDialog(0), 3, _
+    @vt_FileOpenDialog, sizeof(FileDialogImpl), _
+    @FileDialogConstructor, @FileDialogDestructor, _
+    @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Open Dialog(DLLCompat)" _
+)
+static shared confSaveDialog as COMDesc = type( _
+    @CLSID_FileSaveDialog, @iidSaveDialog(0), 3, _
+    @vt_FileSaveDialog, sizeof(FileDialogImpl), _
+    @FileDialogConstructor, @FileDialogDestructor, _
+    @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Save Dialog(DLLCompat)" _
+)
+static shared config(...) as COMDesc ptr = {@confOpenDialog, @confSaveDialog}
+
+declare function fbMain alias "DllMainCRTStartup" (handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as integer
+extern "windows-ms"
   #undef DllGetClassObject
   #undef DllCanUnloadNow
-  #undef DllRegisterServer
   #undef DllUnregisterServer
+  #undef DllRegisterServer
   
-  UndefAllParams()
-  #define P1 rclsid as REFCLSID
-  #define P2 riid   as REFIID
-  #define P3 ppv    as LPVOID ptr
-  function DllGetClassObject(P1, P2, P3) as HRESULT export
-    dim hr as HRESULT
-    if IsEqualCLSID(rclsid, @CLSID_IExample) then
-      hr = classQueryInterface(@MyIClassFactoryObj, riid, ppv)
-    else
-      *ppv = NULL
-      hr = CLASS_E_CLASSNOTAVAILABLE
-  end if
-  return hr
-  end function
-  
-  UndefAllParams()
-  function DllCanUnloadNow() as HRESULT export
-    return iif((OutstandingObjects or LockCount), S_FALSE, S_OK)
-  end function
-  
-  UndefAllParams()
-  function DllRegisterServer() as HRESULT export
-    if WinverCompare(VER_LESS, 6,0,0) then
-      'uninstall here
-      return S_OK
-    else
-      return E_FAIL
-    end if
-  end function
-  
-  UndefAllParams()
-  function DllUnregisterServer() as HRESULT export
-    if WinverCompare(VER_LESS, 6,0,0) then
-      'install here
-      return S_OK
-    else
-      return E_FAIL
-    end if
-  end function
-end extern
-
-extern "windows-ms"
-  function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as LPVOID) as integer
+  function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as BOOL
     select case uReason
       case DLL_PROCESS_ATTACH
-        dim fpuState as DWORD = _control87(0, 0)
-        fb_Init(0, NULL, 0)
-        _control87(fpuState, &hFFFF)
+        DEBUG_MsgTrace("_WIN32_WINNT %X", _WIN32_WINNT)
+        cbase_init(handle, @config(0), 2)
         DisableThreadLibraryCalls(handle)
-        
-        OutstandingObjects = LockCount = 0
-        MyIClassFactoryObj.lpVtbl = cast(IClassFactoryVtbl ptr, @IClassFactory_Vtbl)
       case DLL_PROCESS_DETACH
       case DLL_THREAD_ATTACH
       case DLL_THREAD_DETACH
-    end select     
-    return 1
+    end select
+    return fbMain(handle, uReason, Reserved)
+  end function
+  
+  function DllGetClassObject(rclsid as REFCLSID, riid as REFIID, ppv as any ptr ptr) as HRESULT export
+    return cbase_DllGetClassObject(rclsid, riid, ppv)
+  end function
+  
+  function DllCanUnloadNow() as HRESULT export
+    return cbase_DllCanUnloadNow()
+  end function
+      
+  function DllUnregisterServer() as HRESULT export
+    return cbase_DllUnregisterServer()
+  end function
+
+  function DllRegisterServer() as HRESULT export
+      return cbase_DllRegisterServer()
   end function
 end extern

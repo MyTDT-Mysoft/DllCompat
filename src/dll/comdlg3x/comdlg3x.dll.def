@@ -26,3 +26,8 @@ Ssync_ANSI_UNICODE_Struct_For_WOW = comdlg32.Ssync_ANSI_UNICODE_Struct_For_WOW @
 WantArrows = comdlg32.WantArrows @124
 dwLBSubclass = comdlg32.dwLBSubclass @125
 dwOKSubclass = comdlg32.dwOKSubclass @126
+
+DllGetClassObject
+DllCanUnloadNow
+DllUnregisterServer
+DllRegisterServer
