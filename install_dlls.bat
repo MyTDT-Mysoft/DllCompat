@@ -1,9 +1,13 @@
 @echo off
 
-echo Copying DLLs to windir
-copy bin\dll\*.dll %windir% /Y
-copy bin\guest_dll\*.dll %windir% /Y
+set settfile=compile.ini
+for /f "delims== tokens=1,2" %%G in (%settfile%) do set %%G=%%H
 
-::for %%I in (%windir%\appcompat\*.dll) do bin\util\makelink.exe /H %windir%\%%~nxI %windir%\appcompat\%%~nxI
+echo Copying DLLs to %install_path%
+copy bin\dll\*.dll %install_path% /Y
+copy bin\guest_dll\*.dll %install_path% /Y
+
+echo Installing COM servers
+regsvr32 /i %install_path%\comdlg3x.dll
 
 pause

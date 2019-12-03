@@ -40,8 +40,8 @@ set dlltool=dummy
 echo ' > dummy.bas
 fbc dummy.bas
 ::set gengcc=-gen gcc -O 3 -asm intel
-if exist extraparams.txt (set /p exprm=<extraparams.txt) else (set exprm=) 
-fbc -dll %1.bas %gengcc% -Wl "%1.dll.def --entry _DLLMAIN  -L ..\..\..\%libpath%" %exprm% -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla > %complog%
+if exist extraparams.txt (set /p exprm=<extraparams.txt) else (set exprm=)
+fbc -dll %1.bas %gengcc% -d _WIN32_WINNT=^&h0501 -Wl "%1.dll.def --entry _DLLMAIN  -L ..\..\..\%libpath%" %exprm% -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla > %complog%
 set err=%errorlevel%
 del dummy.bas
 del dummy.exe
