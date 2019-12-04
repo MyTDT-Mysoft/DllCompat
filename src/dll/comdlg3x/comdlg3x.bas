@@ -119,6 +119,24 @@ static shared vt_FileSaveDialog as IFileSaveDialogVtbl = type( _
   @FileSaveDialog_ApplyProperties _
 )
 
+#define IF_HFREE(x) if x <> NULL then HeapFree(GetProcessHeap(), 0, cast(LPVOID, x)) : x = NULL
+function lazyHeapAlloc(pOut as LPVOID ptr, flags as DWORD, size as SIZE_T) as LPVOID
+  dim hand as HANDLE = GetProcessHeap()
+  dim mem as LPVOID
+  
+  if *pOut=NULL orelse HeapSize(hand, 0, *pOut) < size then
+    mem = HeapAlloc(hand, flags, size)
+    if mem <> NULL then
+      HeapFree(hand, 0, *pOut)
+      *pOut = mem
+    end if
+  else
+    mem = *pOut
+  end if
+  
+  return mem
+end function
+
 extern "windows-ms"
   
 '-------------------------------------------------------------------------------------------
@@ -142,8 +160,7 @@ extern "windows-ms"
       size += lstrlenW(strArr[i]) * 2 + 2
     next
     
-    self->ofnw.lpstrFilter = GlobalAlloc(GMEM_FIXED, size)
-    if self->ofnw.lpstrFilter = NULL then return E_OUTOFMEMORY
+    if lazyHeapAlloc(cast(LPVOID, @self->ofnw.lpstrFilter), 0, size) = NULL then return E_OUTOFMEMORY
     
     dat = cast(BYTE ptr, self->ofnw.lpstrFilter)
     
@@ -327,12 +344,9 @@ extern "windows-ms"
 
 
   function FileDialogDestructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
-    #define IF_FREE(x) if (x) <> NULL then GlobalFree(cast(HGLOBAL, x))
-
-    IF_FREE(self->ofnw.lpstrFilter)
+    IF_HFREE(self->ofnw.lpstrFilter)
     
     return S_OK
-    #undef IF_FREE
   end function
   
   function FileDialogConstructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
@@ -384,7 +398,6 @@ extern "windows-ms"
   function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as BOOL
     select case uReason
       case DLL_PROCESS_ATTACH
-        DEBUG_MsgTrace("_WIN32_WINNT %X", _WIN32_WINNT)
         cbase_init(handle, @config(0), 2)
         DisableThreadLibraryCalls(handle)
       case DLL_PROCESS_DETACH
