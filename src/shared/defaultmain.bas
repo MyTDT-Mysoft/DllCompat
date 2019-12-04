@@ -6,14 +6,16 @@
 declare function fbMain alias "DllMainCRTStartup" (handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as integer
 
 extern "windows-ms"
-  function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as integer
-    dim as integer ret
+  function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as HRESULT
     select case uReason
       case DLL_PROCESS_ATTACH
-        '_fpreset()
-        'dim fpuState as DWORD = _control87(0, 0) 
-        '_control87(fpuState, &hFFFF)
-        'DisableThreadLibraryCalls(handle)
+        dim as DWORD fpuState = _controlfp(0, 0)
+        dim as integer ret = fbMain(handle, uReason, Reserved)
+        #ifndef ENABLE_THREADCALLS
+          DisableThreadLibraryCalls(handle)
+        #endif
+        _controlfp(fpuState, &hFFFFFFFF)
+        return ret
       case DLL_PROCESS_DETACH
       case DLL_THREAD_ATTACH
       case DLL_THREAD_DETACH

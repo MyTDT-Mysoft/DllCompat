@@ -629,6 +629,7 @@ extern "windows-ms"
     
 end extern
 
+#define ENABLE_THREADCALLS
 #include "shared\defaultmain.bas"
 
 '---------------- APP SPECIFIC INCLUDES ---------------------

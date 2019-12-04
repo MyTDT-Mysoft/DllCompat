@@ -24,7 +24,8 @@
 #define	_PC_64		&h00000000
 
 extern "C"
-	declare function _control87 (unNew as uinteger, unMask as uinteger) as uinteger
+  declare function _control87 (unNew as uinteger, unMask as uinteger) as uinteger
+  declare function _controlfp (unNew as uinteger, unMask as uinteger) as uinteger
   declare function _clearfp() as uinteger
   declare function _statusfp() as uinteger
   #define _clear87 _clearfp

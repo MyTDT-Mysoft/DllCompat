@@ -57,17 +57,16 @@ end enum
 ' **************************************************************************
 
 function WinverCompare(mask as BYTE, vMaj as WORD, vMin as WORD, vSPMaj as WORD) as BOOL
-    'masks are in winnt.bi
-    dim as OSVERSIONINFOEXW osvi
-    osvi.dwOSVersionInfoSize = sizeof(osvi)
-    dim as DWORDLONG dwlConditionMask = VerSetConditionMask(VerSetConditionMask(VerSetConditionMask(0, VER_MAJORVERSION, mask), _
-        VER_MINORVERSION, mask), _
-        VER_SERVICEPACKMAJOR, mask)
-    osvi.dwMajorVersion = vMaj
-    osvi.dwMinorVersion = vMin
-    osvi.wServicePackMajor = vSPMaj
-
-    return VerifyVersionInfoW(@osvi, VER_MAJORVERSION or VER_MINORVERSION or VER_SERVICEPACKMAJOR, dwlConditionMask) <> FALSE
+  'masks are in winnt.bi
+  dim as OSVERSIONINFOEXW osvi
+  osvi.dwOSVersionInfoSize = sizeof(osvi)
+  dim as DWORDLONG dwlConditionMask = VerSetConditionMask(VerSetConditionMask(VerSetConditionMask(0, VER_MAJORVERSION, mask), _
+      VER_MINORVERSION, mask), VER_SERVICEPACKMAJOR, mask)
+  osvi.dwMajorVersion = vMaj
+  osvi.dwMinorVersion = vMin
+  osvi.wServicePackMajor = vSPMaj
+  
+  return VerifyVersionInfoW(@osvi, VER_MAJORVERSION or VER_MINORVERSION or VER_SERVICEPACKMAJOR, dwlConditionMask) <> FALSE
 end function
 
 ' **************************************************************************
@@ -81,8 +80,8 @@ sub DebugOutputCalledResult(__pCaller as any ptr, pzFunction as zstring ptr)
   var iSz = sprintf(zResult, "DLLC_WHOCALL: %s was called by ", pzFunction)
 
   const cFlags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS or GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT    
-  if GetModuleHandleEx(cFlags, __pCaller, @hCallerModule) andalso hCallerModule then
-    GetModuleFileName(hCallerModule, @zResult+iSz , DEBUG_MAXSTR-iSz)
+  if GetModuleHandleExA(cFlags, __pCaller, @hCallerModule) andalso hCallerModule then
+    GetModuleFileNameA(hCallerModule, @zResult+iSz , DEBUG_MAXSTR-iSz)
   else
     sprintf(@zResult+iSz, "Unknown (0x%08X)", __pCaller)
   end if
