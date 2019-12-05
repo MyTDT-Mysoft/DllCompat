@@ -9,18 +9,41 @@
 #include "includes\comhelper.bi"
 
 'placeholders
-type IFileDialogEvents as any ptr
 type IFileOperationProgressSink as any ptr
 type FILEOPENDIALOGOPTIONS as any ptr
 type FDAP as any ptr
+type FDE_SHAREVIOLATION_RESPONSE as any ptr
+type FDE_OVERWRITE_RESPONSE as any ptr
 
-type FileDialogImpl as FileDialogImpl_
-
-'-------------------------------------------------------------------------------------------
-'FileDialog
 
 
 extern "windows-ms"
+
+'-------------------------------------------------------------------------------------------
+type IFileDialogEvents as IFileDialogEvents_
+type FileDialogImpl as FileDialogImpl_
+
+'FileDialogEvents
+'client-side
+  type IFileDialogEventsVtbl
+    QueryInterface    as function(self as IFileDialogEvents ptr, riid as const IID const ptr, ppvObject as any ptr ptr) as HRESULT
+    AddRef            as function(self as IFileDialogEvents ptr) as ULONG
+    Release           as function(self as IFileDialogEvents ptr) as ULONG
+    OnFileOk          as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr) as HRESULT
+    OnFolderChanging  as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr, psiFolder as IShellItem ptr) as HRESULT
+    OnFolderChange    as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr) as HRESULT
+    OnSelectionChange as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr) as HRESULT
+    OnShareViolation  as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr, psi as IShellItem ptr, pResponse as FDE_SHAREVIOLATION_RESPONSE ptr) as HRESULT
+    OnTypeChange      as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr) as HRESULT
+    OnOverwrite       as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr, psi as IShellItem ptr, pResponse as FDE_OVERWRITE_RESPONSE ptr) as HRESULT
+  end type
+  type IFileDialogEvents_
+    lpVtbl as const IFileDialogEventsVtbl ptr
+  end type
+
+
+'FileSaveDialog, FileOpenDialog, FileDialog
+'server-side
   type IFileDialogVtbl
     QueryInterface         as function (self as FileDialogImpl ptr, riid as REFIID, ppv as any ptr ptr) as HRESULT
     AddRef                 as function (self as FileDialogImpl ptr) as ULONG
@@ -156,20 +179,39 @@ extern "windows-ms"
   declare function FileSaveDialog_SetCollectedProperties (self as FileDialogImpl ptr, pList as IPropertyDescriptionList ptr, fAppendDefault as WINBOOL) as HRESULT
   declare function FileSaveDialog_GetProperties          (self as FileDialogImpl ptr, ppStore as IPropertyStore ptr ptr) as HRESULT
   declare function FileSaveDialog_ApplyProperties        (self as FileDialogImpl ptr, psi as IShellItem ptr, pStore as IPropertyStore ptr, hwnd as HWND, pSink as IFileOperationProgressSink ptr) as HRESULT
-
 end extern
 
-'Objects
+extern "C"
+  declare function FileDialogDestructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+  declare function FileDialogConstructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+end extern
+
+'-------------------------------------------------------------------------------------------
+
+type PrivEventHandler
+  pfde as IFileDialogEvents ptr
+  'pDialog as FileDialogImpl ptr
+  cookie as DWORD
+end type
+
+'FileDialog
+#define COOK_INVAL &hFFFFFFFF
 #define MAX_FILEPATH 2048
+#define MAX_HANDLERS 128
 type FileDialogImpl_
-    union
-        baseObj as COMGenerObj
-        fd_lpvtbl  as const IFileDialogVtbl ptr
-        fod_lpvtbl as const IFileOpenDialogVtbl ptr
-        fsd_lpvtbl as const IFileSaveDialogVtbl ptr
-    end union
-    filePath as WSTRING*MAX_FILEPATH
-    ofnw as OPENFILENAMEW
-    isDialogOpen as BOOL
-    isSaveDialog as BOOL
+  union
+    baseObj as COMGenerObj
+    fd_lpvtbl  as const IFileDialogVtbl ptr
+    fod_lpvtbl as const IFileOpenDialogVtbl ptr
+    fsd_lpvtbl as const IFileSaveDialogVtbl ptr
+  end union
+  filePath as WSTRING*MAX_FILEPATH
+  ofnw as OPENFILENAMEW
+  
+  isDialogOpen as BOOL
+  isSaveDialog as BOOL
+  
+  nextCookie as DWORD
+  usedArrSlots as int
+  handlerArr(MAX_HANDLERS) as PrivEventHandler ptr
 end type

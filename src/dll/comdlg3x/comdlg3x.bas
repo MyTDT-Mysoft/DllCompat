@@ -118,7 +118,26 @@ static shared vt_FileSaveDialog as IFileSaveDialogVtbl = type( _
   @FileSaveDialog_GetProperties, _
   @FileSaveDialog_ApplyProperties _
 )
+'configuration
+static shared iidOpenDialog(...) as REFIID = { @IID_IFileOpenDialog, @IID_IFileDialog, @IID_IUnknown }
+static shared confOpenDialog as COMDesc = type( _
+    @CLSID_FileOpenDialog, @iidOpenDialog(0), COUNTOF(iidOpenDialog), _
+    @vt_FileOpenDialog, sizeof(FileDialogImpl), _
+    @FileDialogConstructor, @FileDialogDestructor, _
+    @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Open Dialog(DLLCompat)" _
+)
+static shared iidSaveDialog(...) as REFIID = { @IID_IFileSaveDialog, @IID_IFileDialog, @IID_IUnknown }
 
+static shared confSaveDialog as COMDesc = type( _
+    @CLSID_FileSaveDialog, @iidSaveDialog(0), COUNTOF(iidSaveDialog), _
+    @vt_FileSaveDialog, sizeof(FileDialogImpl), _
+    @FileDialogConstructor, @FileDialogDestructor, _
+    @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Save Dialog(DLLCompat)" _
+)
+static shared serverConfig(...) as COMDesc ptr = {@confOpenDialog, @confSaveDialog}
+
+
+'-------------------------------------------------------------------------------------------
 #define IF_HFREE(x) if x <> NULL then HeapFree(GetProcessHeap(), 0, cast(LPVOID, x)) : x = NULL
 function lazyHeapAlloc(pOut as LPVOID ptr, flags as DWORD, size as SIZE_T) as LPVOID
   dim hand as HANDLE = GetProcessHeap()
@@ -138,7 +157,7 @@ function lazyHeapAlloc(pOut as LPVOID ptr, flags as DWORD, size as SIZE_T) as LP
 end function
 
 extern "windows-ms"
-  
+
 '-------------------------------------------------------------------------------------------
 'FileDialog
   
@@ -160,7 +179,7 @@ extern "windows-ms"
       size += lstrlenW(strArr[i]) * 2 + 2
     next
     
-    if lazyHeapAlloc(cast(LPVOID, @self->ofnw.lpstrFilter), 0, size) = NULL then return E_OUTOFMEMORY
+    if lazyHeapAlloc(cast(LPVOID, @self->ofnw.lpstrFilter), 0, size)=NULL then return E_OUTOFMEMORY
     
     dat = cast(BYTE ptr, self->ofnw.lpstrFilter)
     
@@ -189,11 +208,46 @@ extern "windows-ms"
   function FileDialog_Advise                     (self as FileDialogImpl ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
     DEBUG_MsgNotImpl()
     return E_FAIL
+    'Before enabling, we must at least respond to open/save and cancel buttons
+    if pfde=NULL orelse pdwCookie=NULL then return E_INVALIDARG
+    
+    for i as integer = 0 to MAX_HANDLERS-1
+      dim hdlr as PrivEventHandler ptr = self->handlerArr(i)
+      
+      if hdlr=NULL then
+        hdlr = HeapAlloc(GetProcessHeap(), 0, sizeof(PrivEventHandler))
+        if hdlr<>NULL then exit for
+        
+        hdlr->pfde = pfde
+        hdlr->cookie = self->nextCookie
+        'hdlr->pDialog = self
+        
+        self->nextCookie += 1
+        if self->usedArrSlots < i then self->usedArrSlots = i
+        pfde->lpVtbl->AddRef(pfde)
+        return S_OK
+      end if
+    next
+    
+    return E_OUTOFMEMORY
   end function
   
   function FileDialog_Unadvise                   (self as FileDialogImpl ptr, dwCookie as DWORD) as HRESULT
     DEBUG_MsgNotImpl()
     return E_FAIL
+    'Before enabling, we must at least respond to open/save and cancel buttons
+    
+    for i as integer = 0 to self->usedArrSlots
+      dim hdlr as PrivEventHandler ptr = self->handlerArr(i)
+      
+      if hdlr<>NULL andalso hdlr->cookie=dwCookie then 
+        hdlr->pfde->lpVtbl->Release(hdlr->pfde)
+        HeapFree(GetProcessHeap(), 0, hdlr)
+        return S_OK
+      end if
+    next
+    
+    return E_INVALIDARG
   end function
   
   function FileDialog_SetOptions                 (self as FileDialogImpl ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
@@ -337,12 +391,9 @@ extern "windows-ms"
     DEBUG_MsgNotImpl()
     return E_FAIL
   end function
-  
+end extern
 
-
-
-
-
+extern "C"
   function FileDialogDestructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
     IF_HFREE(self->ofnw.lpstrFilter)
     
@@ -368,25 +419,7 @@ extern "windows-ms"
 end extern
 
 '-------------------------------------------------------------------------------------------
-'Rest of DLL
-
-'configuration
-
-static shared iidOpenDialog(...) as REFIID = { @IID_IFileOpenDialog, @IID_IFileDialog, @IID_IUnknown }
-static shared iidSaveDialog(...) as REFIID = { @IID_IFileSaveDialog, @IID_IFileDialog, @IID_IUnknown }
-static shared confOpenDialog as COMDesc = type( _
-    @CLSID_FileOpenDialog, @iidOpenDialog(0), 3, _
-    @vt_FileOpenDialog, sizeof(FileDialogImpl), _
-    @FileDialogConstructor, @FileDialogDestructor, _
-    @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Open Dialog(DLLCompat)" _
-)
-static shared confSaveDialog as COMDesc = type( _
-    @CLSID_FileSaveDialog, @iidSaveDialog(0), 3, _
-    @vt_FileSaveDialog, sizeof(FileDialogImpl), _
-    @FileDialogConstructor, @FileDialogDestructor, _
-    @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Save Dialog(DLLCompat)" _
-)
-static shared config(...) as COMDesc ptr = {@confOpenDialog, @confSaveDialog}
+'Main exports
 
 declare function fbMain alias "DllMainCRTStartup" (handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as integer
 extern "windows-ms"
@@ -398,7 +431,7 @@ extern "windows-ms"
   function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as BOOL
     select case uReason
       case DLL_PROCESS_ATTACH
-        cbase_init(handle, @config(0), 2)
+        cbase_init(handle, @serverConfig(0), 2)
         DisableThreadLibraryCalls(handle)
       case DLL_PROCESS_DETACH
       case DLL_THREAD_ATTACH

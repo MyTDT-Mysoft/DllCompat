@@ -51,6 +51,8 @@ enum STR_TYPE
   T_ANSI, T_WIDE
 end enum
 
+#define COUNTOF(X) (sizeof(X) \ sizeof(X(0)))
+
 #define DLLC_COM_MARK "DLLCompat"
 #define AsGuid(_N,_l,_w1,_w2,_bw,_ll) as const GUID _N = type( (&h##_l), (&h##_w1), (&h##_w2), { ((&h##_bw) shr 8) and &hFF, (&h##_bw) and &hFF,  (((&h##_ll) shr 40) and &hFF),  (((&h##_ll) shr 32) and &hFF),  (((&h##_ll) shr 24) and &hFF),  (((&h##_ll) shr 16) and &hFF),  (((&h##_ll) shr 8) and &hFF),(((&h##_ll) shr 0) and &hFF) } )
 
