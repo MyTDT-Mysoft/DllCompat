@@ -30,4 +30,18 @@ extern "windows-ms"
   end sub
 end extern
 
-'#include "shared\defaultmain.bas"
+#define CUSTOM_MAIN
+#define NO_OTHER_MAIN
+#include "shared\defaultmain.bas"
+
+extern "windows-ms"
+  function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as BOOL
+    select case uReason
+      case DLL_PROCESS_ATTACH
+      case DLL_PROCESS_DETACH
+      case DLL_THREAD_ATTACH
+      case DLL_THREAD_DETACH
+    end select
+    return TRUE
+  end function
+end extern

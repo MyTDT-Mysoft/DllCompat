@@ -9,7 +9,7 @@
 #undef DllUnregisterServer
 #undef DllRegisterServer
 
-'available defines: ENABLE_THREADCALLS, CUSTOM_MAIN
+'available defines: ENABLE_THREADCALLS, CUSTOM_MAIN, NO_OTHER_MAIN
 'be sure to call renamed DLLMAIN from your own, when using CUSTOM_MAIN
 
 #ifdef CUSTOM_MAIN
@@ -20,6 +20,7 @@
 
 declare function fbMain alias "DllMainCRTStartup" (handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as integer
 
+#ifndef NO_OTHER_MAIN
 extern "windows-ms"
   function _MAINNAME(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as HRESULT
     select case uReason
@@ -38,3 +39,4 @@ extern "windows-ms"
     return fbMain(handle, uReason, Reserved)
   end function
 end extern
+#endif
