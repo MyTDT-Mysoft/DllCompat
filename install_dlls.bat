@@ -8,6 +8,6 @@ copy bin\dll\*.dll %install_path% /Y
 copy bin\guest_dll\*.dll %install_path% /Y
 
 echo Installing COM servers
-regsvr32 /i %install_path%\comdlg3x.dll
+regsvr32 /s %install_path%\comdlg3x.dll
 
 pause
