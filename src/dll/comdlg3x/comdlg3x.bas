@@ -5,7 +5,7 @@
 #include "win\commdlg.bi"
 
 #include "shared\helper.bas"
-#include "includes\comhelper.bi"
+#include "includes\comhelper.h"
 '#include "includes\win\shellapi_fix.bi"
 #include "comdlg3x.bi"
 
@@ -421,23 +421,22 @@ end extern
 '-------------------------------------------------------------------------------------------
 'Main exports
 
-declare function fbMain alias "DllMainCRTStartup" (handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as integer
+#define CUSTOM_MAIN
+#include "shared\defaultmain.bas"
+
 extern "windows-ms"
-  #undef DllGetClassObject
-  #undef DllCanUnloadNow
-  #undef DllUnregisterServer
-  #undef DllRegisterServer
-  
   function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as BOOL
     select case uReason
       case DLL_PROCESS_ATTACH
+        InitializeCriticalSection(@csWhnd)
         cbase_init(handle, @serverConfig(0), 2)
-        DisableThreadLibraryCalls(handle)
       case DLL_PROCESS_DETACH
+        DeleteCriticalSection(@csWhnd)
+        cbase_destroy()
       case DLL_THREAD_ATTACH
       case DLL_THREAD_DETACH
     end select
-    return fbMain(handle, uReason, Reserved)
+    return DLLMAIN_DEFAULT(handle, uReason, Reserved)
   end function
   
   function DllGetClassObject(rclsid as REFCLSID, riid as REFIID, ppv as any ptr ptr) as HRESULT export
