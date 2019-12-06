@@ -123,8 +123,8 @@ powrprox
     PowerGetActiveScheme                            new         dummy
     PowerSetActiveScheme                            new         dummy
 shell3x
-    SHCreateItemFromIDList                          new         dummy       fixme
-    SHCreateItemFromParsingName                     new         dummy       fixme
+    SHCreateItemFromIDList                          new         partial
+    SHCreateItemFromParsingName                     new         full
     Shell_NotifyIconGetRect                         new         dummy
     SHGetKnownFolderIDList                          new         dummy       fixme
     SHGetKnownFolderPath                            new         partial     fixme

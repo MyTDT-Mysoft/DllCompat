@@ -8,6 +8,7 @@
 #include "win\ole2.bi"
 
 #include "shared\helper.bas"
+#include "includes\comhelper.h"
 #include "includes\win\shellapi_fix.bi"
 #include "includes\win\shlobj_fix.bi"
 #include "includes\win\knownfolders_fix.bi"
@@ -20,8 +21,17 @@ extern "windows-ms"
   #define P2 riid as _In_  REFIID
   #define P3 ppv  as _Out_ any ptr ptr
   function SHCreateItemFromIDList(P1, P2, P3) as HRESULT export
-    DEBUG_MsgNotImpl()
-    return E_INVALIDARG
+    if IsEqualGUID(riid, @IID_IShellItem) then
+      dim psi as IShellItem ptr
+      
+      return SHCreateShellItem(NULL, NULL, pidl, @psi)
+    else
+      dim guidstr as zstring*(GUIDSTR_SIZE+1)
+      
+      chelp_GUID2strA(guidstr, riid)
+      DEBUG_MsgTrace("IID of %s not recognized yet.", guidstr)
+      return E_INVALIDARG
+    end if
   end function
   
   UndefAllParams()
@@ -30,8 +40,15 @@ extern "windows-ms"
   #define P3 riid    as _In_     REFIID
   #define P4 ppv     as _Out_    any ptr ptr
   function SHCreateItemFromParsingName(P1, P2, P3, P4) as HRESULT export
-    DEBUG_MsgNotImpl()
-    return E_INVALIDARG
+    dim pidl as PIDLIST_ABSOLUTE
+    dim hr as HRESULT = SHParseDisplayName(pszPath, pbc, @pidl, 0, NULL)
+    
+    if SUCCEEDED(hr) then
+      hr = SHCreateItemFromIDList(pidl, riid, ppv)
+      ILFree(pidl)
+    end if
+    
+    return hr
   end function
   
   UndefAllParams()
