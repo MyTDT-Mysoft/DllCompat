@@ -5,8 +5,8 @@
 #include "win\commdlg.bi"
 
 #include "shared\helper.bas"
-#include "includes\comhelper.h"
 '#include "includes\win\shellapi_fix.bi"
+#include "includes\lib\comhelper.h"
 #include "comdlg3x.bi"
 
 static shared AsGuid(IID_IFileOperationProgressSink, 04B0F1A7,9490,44BC,96E1,4296A31252E2)

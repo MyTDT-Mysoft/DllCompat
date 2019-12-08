@@ -15,13 +15,13 @@
 //COM helper functions
 
 //convert GUID to ANSI string
-void chelp_GUID2strA(LPSTR buf, GUID* ri);
+void chelp_GUID2strA(LPSTR buf, const GUID* ri);
 
 //convert GUID to UTF16 string
-void chelp_GUID2strW(LPWSTR buf, GUID* ri);
+void chelp_GUID2strW(LPWSTR buf, const GUID* ri);
 
 //check GUID identity against multiple GUIDs
-BOOL chelp_cmpMultGUID(GUID* p1, GUID** pp2, int count);
+BOOL chelp_cmpMultGUID(const GUID* p1, const GUID** pp2, int count);
 
 //remove registry info for COM Object
 BOOL chelp_unregisterCOM(LPCSTR ownershipMark, REFCLSID pGuid);
@@ -106,9 +106,9 @@ HRESULT WINAPI cbase_DllRegisterServer();
 #include "win\objbase.bi"
 
 extern "C"
-  declare sub chelp_GUID2strA(buf as LPSTR, ri as GUID ptr)
-  declare sub chelp_GUID2strW(buf as LPWSTR, ri as GUID ptr)
-  declare function chelp_cmpMultGUID(p1 as GUID ptr, pp2 as GUID ptr ptr, count as long) as BOOL
+  declare sub chelp_GUID2strA(buf as LPSTR, ri as const GUID ptr)
+  declare sub chelp_GUID2strW(buf as LPWSTR, ri as const GUID ptr)
+  declare function chelp_cmpMultGUID(p1 as const GUID ptr, pp2 as const GUID ptr ptr, count as long) as BOOL
   declare function chelp_unregisterCOM(ownershipMark as LPCSTR, pGuid as REFCLSID) as BOOL
   declare function chelp_registerCOM(ownershipMark as LPCSTR, pGuid as REFCLSID, pszDllPath as LPCSTR, isExpandable as BOOL, pszThreadModel as LPCSTR, pszDescription as LPCSTR) as BOOL
   

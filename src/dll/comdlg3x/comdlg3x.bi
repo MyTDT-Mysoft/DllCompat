@@ -6,7 +6,7 @@
 #include "win\shlobj.bi"
 #include "win\commdlg.bi"
 
-#include "includes\comhelper.h"
+#include "includes\lib\comhelper.h"
 
 'placeholders
 type IFileOperationProgressSink as any ptr

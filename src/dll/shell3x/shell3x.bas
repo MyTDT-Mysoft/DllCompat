@@ -8,7 +8,7 @@
 #include "win\ole2.bi"
 
 #include "shared\helper.bas"
-#include "includes\comhelper.h"
+#include "includes\lib\comhelper.h"
 #include "includes\win\shellapi_fix.bi"
 #include "includes\win\shlobj_fix.bi"
 #include "includes\win\knownfolders_fix.bi"
