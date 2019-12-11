@@ -1,4 +1,0 @@
-#pragma once
-
-#define ERROR_INVALID_TASK_NAME     1550L
-#define ERROR_INVALID_TASK_INDEX    1551L

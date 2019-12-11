@@ -1,9 +1,11 @@
 #define fbc -dll -Wl "avrt.dll.def" -x ..\..\..\bin\dll\avrt.dll -i ..\..\
 
 #include "windows.bi"
-#include "includes\win\avrt.bi"
-#include "includes\win\extraerrs.bi"
+#include "includes\win\fix_avrt.bi"
 #include "shared\helper.bas"
+
+#define ERROR_INVALID_TASK_NAME     1550L
+#define ERROR_INVALID_TASK_INDEX    1551L
 
 extern "windows-ms"
   UndefAllParams()

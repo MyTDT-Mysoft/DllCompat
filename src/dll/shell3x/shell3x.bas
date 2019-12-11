@@ -9,13 +9,22 @@
 
 #include "shared\helper.bas"
 #include "includes\lib\comhelper.h"
-#include "includes\win\shellapi_fix.bi"
-#include "includes\win\shlobj_fix.bi"
-#include "includes\win\knownfolders_fix.bi"
+#include "includes\win\fix_shellapi.bi"
+#include "includes\win\fix_shlobj.bi"
+#include "includes\win\fix_shobjidl.bi"
+#include "includes\win\fix_knownfolders.bi"
 
 #include "shellpath.bas"
 
 extern "windows-ms"
+  UndefAllParams()
+  #define P1 identifier   as _In_  const NOTIFYICONIDENTIFIER ptr
+  #define P2 iconLocation as _Out_ RECT ptr
+  function Shell_NotifyIconGetRect(P1, P2) as HRESULT export
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
+  end function
+  
   UndefAllParams()
   #define P1 pidl as _In_  PCIDLIST_ABSOLUTE
   #define P2 riid as _In_  REFIID
@@ -49,14 +58,6 @@ extern "windows-ms"
     end if
     
     return hr
-  end function
-  
-  UndefAllParams()
-  #define P1 identifier   as _In_  const NOTIFYICONIDENTIFIER ptr
-  #define P2 iconLocation as _Out_ RECT ptr
-  function Shell_NotifyIconGetRect(P1, P2) as HRESULT export
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
   end function
   
   UndefAllParams()

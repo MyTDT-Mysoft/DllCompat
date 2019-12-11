@@ -4,8 +4,8 @@
 #include "win\winbase.bi"
 #include "win\iphlpapi.bi"
 #include "win\ifdef.bi"
-#include "includes\win\netioapi_fix.bi"
-#include "includes\win\ifdef_fix.bi"
+#include "includes\win\fix_netioapi.bi"
+#include "includes\win\fix_ifdef.bi"
 #include "shared\helper.bas"
 
 extern "windows-ms"

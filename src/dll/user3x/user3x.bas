@@ -2,7 +2,7 @@
 
 #include "windows.bi"
 #include "shared\helper.bas"
-#include "includes\win\user32_fix.bi"
+#include "includes\win\fix_user32.bi"
 
 extern "windows-ms"
   UndefAllParams()

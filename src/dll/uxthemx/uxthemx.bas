@@ -4,7 +4,7 @@
 #include "win\tmschema.bi"
 #include "win\uxtheme.bi"
 #include "shared\helper.bas"
-#include "includes\win\uxtheme_fix.bi"
+#include "includes\win\fix_uxtheme.bi"
 
 extern "windows-ms"
   UndefAllParams()

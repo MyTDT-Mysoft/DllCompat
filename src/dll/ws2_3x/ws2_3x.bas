@@ -2,7 +2,7 @@
 
 #include "win\winsock2.bi"
 #Include "win\ws2tcpip.bi"
-#include "includes\win\winsock2_fix.bi"
+#include "includes\win\fix_winsock2.bi"
 #include "shared\helper.bas"
 
 extern "windows-ms"

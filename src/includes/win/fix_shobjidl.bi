@@ -1,6 +1,7 @@
 #pragma once
 
-#define EXTERN_GUID(x) extern as const GUID x alias #x
+#include "windows.bi"
+
 extern "C"
 extern as const GUID IID_IFileDialogEvents
 extern as const GUID IID_IFileOperationProgressSink
@@ -11,21 +12,7 @@ extern as const GUID CLSID_FileOpenDialog
 extern as const GUID CLSID_FileSaveDialog
 end extern
 
-type KNOWN_FOLDER_FLAG as long
-enum
-  KF_FLAG_DEFAULT = &h00000000
-  KF_FLAG_NO_APPCONTAINER_REDIRECTION = &h00010000
-  KF_FLAG_CREATE = &h00008000
-  KF_FLAG_DONT_VERIFY = &h00004000
-  KF_FLAG_DONT_UNEXPAND = &h00002000
-  KF_FLAG_NO_ALIAS = &h00001000
-  KF_FLAG_INIT = &h00000800
-  KF_FLAG_DEFAULT_PATH = &h00000400
-  KF_FLAG_NOT_PARENT_RELATIVE = &h00000200
-  KF_FLAG_SIMPLE_IDLIST = &h00000100
-  KF_FLAG_ALIAS_ONLY = &h80000000
-end enum
-
+extern "windows-ms"
   type FDE_OVERWRITE_RESPONSE as long
   enum
     FDEOR_DEFAULT = 0
@@ -490,3 +477,4 @@ end enum
     CDCS_ENABLEDVISIBLE = &h3
  end enum
 #endif
+end extern
