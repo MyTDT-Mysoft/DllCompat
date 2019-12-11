@@ -8,182 +8,50 @@
 
 #include "includes\lib\comhelper.h"
 
-'placeholders
-type IFileOperationProgressSink as any ptr
-type FILEOPENDIALOGOPTIONS as any ptr
-type FDAP as any ptr
-type FDE_SHAREVIOLATION_RESPONSE as any ptr
-type FDE_OVERWRITE_RESPONSE as any ptr
-
-
-
 extern "windows-ms"
 
 '-------------------------------------------------------------------------------------------
-type IFileDialogEvents as IFileDialogEvents_
-type FileDialogImpl as FileDialogImpl_
-
-'FileDialogEvents
-'client-side
-  type IFileDialogEventsVtbl
-    QueryInterface    as function(self as IFileDialogEvents ptr, riid as const IID const ptr, ppvObject as any ptr ptr) as HRESULT
-    AddRef            as function(self as IFileDialogEvents ptr) as ULONG
-    Release           as function(self as IFileDialogEvents ptr) as ULONG
-    OnFileOk          as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr) as HRESULT
-    OnFolderChanging  as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr, psiFolder as IShellItem ptr) as HRESULT
-    OnFolderChange    as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr) as HRESULT
-    OnSelectionChange as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr) as HRESULT
-    OnShareViolation  as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr, psi as IShellItem ptr, pResponse as FDE_SHAREVIOLATION_RESPONSE ptr) as HRESULT
-    OnTypeChange      as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr) as HRESULT
-    OnOverwrite       as function(self as IFileDialogEvents ptr, pfd as FileDialogImpl ptr, psi as IShellItem ptr, pResponse as FDE_OVERWRITE_RESPONSE ptr) as HRESULT
-  end type
-  type IFileDialogEvents_
-    lpVtbl as const IFileDialogEventsVtbl ptr
-  end type
-
-
-'FileSaveDialog, FileOpenDialog, FileDialog
-'server-side
-  type IFileDialogVtbl
-    QueryInterface         as function (self as FileDialogImpl ptr, riid as REFIID, ppv as any ptr ptr) as HRESULT
-    AddRef                 as function (self as FileDialogImpl ptr) as ULONG
-    Release                as function (self as FileDialogImpl ptr) as ULONG
-    
-    Show                   as function (self as FileDialogImpl ptr, hwndOwner as HWND) as HRESULT
-    SetFileTypes           as function (self as FileDialogImpl ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
-    SetFileTypeIndex       as function (self as FileDialogImpl ptr, iFileType as UINT) as HRESULT
-    GetFileTypeIndex       as function (self as FileDialogImpl ptr, piFileType as UINT ptr) as HRESULT
-    Advise                 as function (self as FileDialogImpl ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
-    Unadvise               as function (self as FileDialogImpl ptr, dwCookie as DWORD) as HRESULT
-    SetOptions             as function (self as FileDialogImpl ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
-    GetOptions             as function (self as FileDialogImpl ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
-    SetDefaultFolder       as function (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-    SetFolder              as function (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-    GetFolder              as function (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    GetCurrentSelection    as function (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    SetFileName            as function (self as FileDialogImpl ptr, pszName as LPCWSTR) as HRESULT
-    GetFileName            as function (self as FileDialogImpl ptr, pszName as LPWSTR ptr) as HRESULT
-    SetTitle               as function (self as FileDialogImpl ptr, pszTitle as LPCWSTR) as HRESULT
-    SetOkButtonLabel       as function (self as FileDialogImpl ptr, pszText as LPCWSTR) as HRESULT
-    SetFileNameLabel       as function (self as FileDialogImpl ptr, pszLabel as LPCWSTR) as HRESULT
-    GetResult              as function (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    AddPlace               as function (self as FileDialogImpl ptr, psi as IShellItem ptr, fdap as FDAP) as HRESULT
-    SetDefaultExtension    as function (self as FileDialogImpl ptr, pszDefaultExtension as LPCWSTR) as HRESULT
-    Close                  as function (self as FileDialogImpl ptr, hr as HRESULT) as HRESULT
-    SetClientGuid          as function (self as FileDialogImpl ptr, guid as GUID ptr) as HRESULT
-    ClearClientData        as function (self as FileDialogImpl ptr) as HRESULT
-    SetFilter              as function (self as FileDialogImpl ptr, pFilter as IShellItemFilter ptr) as HRESULT
-  end type
-
-  type IFileOpenDialogVtbl
-    QueryInterface         as function (self as FileDialogImpl ptr, riid as REFIID, ppv as any ptr ptr) as HRESULT
-    AddRef                 as function (self as FileDialogImpl ptr) as ULONG
-    Release                as function (self as FileDialogImpl ptr) as ULONG
-    
-    Show                   as function (self as FileDialogImpl ptr, hwndOwner as HWND) as HRESULT
-    SetFileTypes           as function (self as FileDialogImpl ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
-    SetFileTypeIndex       as function (self as FileDialogImpl ptr, iFileType as UINT) as HRESULT
-    GetFileTypeIndex       as function (self as FileDialogImpl ptr, piFileType as UINT ptr) as HRESULT
-    Advise                 as function (self as FileDialogImpl ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
-    Unadvise               as function (self as FileDialogImpl ptr, dwCookie as DWORD) as HRESULT
-    SetOptions             as function (self as FileDialogImpl ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
-    GetOptions             as function (self as FileDialogImpl ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
-    SetDefaultFolder       as function (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-    SetFolder              as function (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-    GetFolder              as function (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    GetCurrentSelection    as function (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    SetFileName            as function (self as FileDialogImpl ptr, pszName as LPCWSTR) as HRESULT
-    GetFileName            as function (self as FileDialogImpl ptr, pszName as LPWSTR ptr) as HRESULT
-    SetTitle               as function (self as FileDialogImpl ptr, pszTitle as LPCWSTR) as HRESULT
-    SetOkButtonLabel       as function (self as FileDialogImpl ptr, pszText as LPCWSTR) as HRESULT
-    SetFileNameLabel       as function (self as FileDialogImpl ptr, pszLabel as LPCWSTR) as HRESULT
-    GetResult              as function (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    AddPlace               as function (self as FileDialogImpl ptr, psi as IShellItem ptr, fdap as FDAP) as HRESULT
-    SetDefaultExtension    as function (self as FileDialogImpl ptr, pszDefaultExtension as LPCWSTR) as HRESULT
-    Close                  as function (self as FileDialogImpl ptr, hr as HRESULT) as HRESULT
-    SetClientGuid          as function (self as FileDialogImpl ptr, guid as GUID ptr) as HRESULT
-    ClearClientData        as function (self as FileDialogImpl ptr) as HRESULT
-    SetFilter              as function (self as FileDialogImpl ptr, pFilter as IShellItemFilter ptr) as HRESULT
-    
-    GetResults             as function (self as FileDialogImpl ptr, ppenum as IShellItemArray ptr ptr) as HRESULT
-    GetSelectedItems       as function (self as FileDialogImpl ptr, ppsai as IShellItemArray ptr ptr) as HRESULT
-  end type
-
-  type IFileSaveDialogVtbl
-    QueryInterface         as function (self as FileDialogImpl ptr, riid as REFIID, ppv as any ptr ptr) as HRESULT
-    AddRef                 as function (self as FileDialogImpl ptr) as ULONG
-    Release                as function (self as FileDialogImpl ptr) as ULONG
-    
-    Show                   as function (self as FileDialogImpl ptr, hwndOwner as HWND) as HRESULT
-    SetFileTypes           as function (self as FileDialogImpl ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
-    SetFileTypeIndex       as function (self as FileDialogImpl ptr, iFileType as UINT) as HRESULT
-    GetFileTypeIndex       as function (self as FileDialogImpl ptr, piFileType as UINT ptr) as HRESULT
-    Advise                 as function (self as FileDialogImpl ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
-    Unadvise               as function (self as FileDialogImpl ptr, dwCookie as DWORD) as HRESULT
-    SetOptions             as function (self as FileDialogImpl ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
-    GetOptions             as function (self as FileDialogImpl ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
-    SetDefaultFolder       as function (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-    SetFolder              as function (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-    GetFolder              as function (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    GetCurrentSelection    as function (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    SetFileName            as function (self as FileDialogImpl ptr, pszName as LPCWSTR) as HRESULT
-    GetFileName            as function (self as FileDialogImpl ptr, pszName as LPWSTR ptr) as HRESULT
-    SetTitle               as function (self as FileDialogImpl ptr, pszTitle as LPCWSTR) as HRESULT
-    SetOkButtonLabel       as function (self as FileDialogImpl ptr, pszText as LPCWSTR) as HRESULT
-    SetFileNameLabel       as function (self as FileDialogImpl ptr, pszLabel as LPCWSTR) as HRESULT
-    GetResult              as function (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    AddPlace               as function (self as FileDialogImpl ptr, psi as IShellItem ptr, fdap as FDAP) as HRESULT
-    SetDefaultExtension    as function (self as FileDialogImpl ptr, pszDefaultExtension as LPCWSTR) as HRESULT
-    Close                  as function (self as FileDialogImpl ptr, hr as HRESULT) as HRESULT
-    SetClientGuid          as function (self as FileDialogImpl ptr, guid as GUID ptr) as HRESULT
-    ClearClientData        as function (self as FileDialogImpl ptr) as HRESULT
-    SetFilter              as function (self as FileDialogImpl ptr, pFilter as IShellItemFilter ptr) as HRESULT
-    
-    SetSaveAsItem          as function (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-    SetProperties          as function (self as FileDialogImpl ptr, pStore as IPropertyStore ptr) as HRESULT
-    SetCollectedProperties as function (self as FileDialogImpl ptr, pList as IPropertyDescriptionList ptr, fAppendDefault as WINBOOL) as HRESULT
-    GetProperties          as function (self as FileDialogImpl ptr, ppStore as IPropertyStore ptr ptr) as HRESULT
-    ApplyProperties        as function (self as FileDialogImpl ptr, psi as IShellItem ptr, pStore as IPropertyStore ptr, hwnd as HWND, pSink as IFileOperationProgressSink ptr) as HRESULT
-  end type
-
-  declare function FileDialog_Show                       (self as FileDialogImpl ptr, hwndOwner as HWND) as HRESULT
-  declare function FileDialog_SetFileTypes               (self as FileDialogImpl ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
-  declare function FileDialog_SetFileTypeIndex           (self as FileDialogImpl ptr, iFileType as UINT) as HRESULT
-  declare function FileDialog_GetFileTypeIndex           (self as FileDialogImpl ptr, piFileType as UINT ptr) as HRESULT
-  declare function FileDialog_Advise                     (self as FileDialogImpl ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
-  declare function FileDialog_Unadvise                   (self as FileDialogImpl ptr, dwCookie as DWORD) as HRESULT
-  declare function FileDialog_SetOptions                 (self as FileDialogImpl ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
-  declare function FileDialog_GetOptions                 (self as FileDialogImpl ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
-  declare function FileDialog_SetDefaultFolder           (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-  declare function FileDialog_SetFolder                  (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-  declare function FileDialog_GetFolder                  (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-  declare function FileDialog_GetCurrentSelection        (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-  declare function FileDialog_SetFileName                (self as FileDialogImpl ptr, pszName as LPCWSTR) as HRESULT
-  declare function FileDialog_GetFileName                (self as FileDialogImpl ptr, pszName as LPWSTR ptr) as HRESULT
-  declare function FileDialog_SetTitle                   (self as FileDialogImpl ptr, pszTitle as LPCWSTR) as HRESULT
-  declare function FileDialog_SetOkButtonLabel           (self as FileDialogImpl ptr, pszText as LPCWSTR) as HRESULT
-  declare function FileDialog_SetFileNameLabel           (self as FileDialogImpl ptr, pszLabel as LPCWSTR) as HRESULT
-  declare function FileDialog_GetResult                  (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-  declare function FileDialog_AddPlace                   (self as FileDialogImpl ptr, psi as IShellItem ptr, fdap as FDAP) as HRESULT
-  declare function FileDialog_SetDefaultExtension        (self as FileDialogImpl ptr, pszDefaultExtension as LPCWSTR) as HRESULT
-  declare function FileDialog_Close                      (self as FileDialogImpl ptr, hr as HRESULT) as HRESULT
-  declare function FileDialog_SetClientGuid              (self as FileDialogImpl ptr, guid as GUID ptr) as HRESULT
-  declare function FileDialog_ClearClientData            (self as FileDialogImpl ptr) as HRESULT
-  declare function FileDialog_SetFilter                  (self as FileDialogImpl ptr, pFilter as IShellItemFilter ptr) as HRESULT
+  type FileDialogImpl as FileDialogImpl_
   
-  declare function FileOpenDialog_GetResults             (self as FileDialogImpl ptr, ppenum as IShellItemArray ptr ptr) as HRESULT
-  declare function FileOpenDialog_GetSelectedItems       (self as FileDialogImpl ptr, ppsai as IShellItemArray ptr ptr) as HRESULT
-  
-  declare function FileSaveDialog_SetSaveAsItem          (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-  declare function FileSaveDialog_SetProperties          (self as FileDialogImpl ptr, pStore as IPropertyStore ptr) as HRESULT
-  declare function FileSaveDialog_SetCollectedProperties (self as FileDialogImpl ptr, pList as IPropertyDescriptionList ptr, fAppendDefault as WINBOOL) as HRESULT
-  declare function FileSaveDialog_GetProperties          (self as FileDialogImpl ptr, ppStore as IPropertyStore ptr ptr) as HRESULT
-  declare function FileSaveDialog_ApplyProperties        (self as FileDialogImpl ptr, psi as IShellItem ptr, pStore as IPropertyStore ptr, hwnd as HWND, pSink as IFileOperationProgressSink ptr) as HRESULT
+  'FileDialog
+  declare function FileDialog_Show                       (_self as IFileDialog ptr, hwndOwner as HWND) as HRESULT
+  declare function FileDialog_SetFileTypes               (_self as IFileDialog ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
+  declare function FileDialog_SetFileTypeIndex           (_self as IFileDialog ptr, iFileType as UINT) as HRESULT
+  declare function FileDialog_GetFileTypeIndex           (_self as IFileDialog ptr, piFileType as UINT ptr) as HRESULT
+  declare function FileDialog_Advise                     (_self as IFileDialog ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
+  declare function FileDialog_Unadvise                   (_self as IFileDialog ptr, dwCookie as DWORD) as HRESULT
+  declare function FileDialog_SetOptions                 (_self as IFileDialog ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
+  declare function FileDialog_GetOptions                 (_self as IFileDialog ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
+  declare function FileDialog_SetDefaultFolder           (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
+  declare function FileDialog_SetFolder                  (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
+  declare function FileDialog_GetFolder                  (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
+  declare function FileDialog_GetCurrentSelection        (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
+  declare function FileDialog_SetFileName                (_self as IFileDialog ptr, pszName as LPCWSTR) as HRESULT
+  declare function FileDialog_GetFileName                (_self as IFileDialog ptr, pszName as LPWSTR ptr) as HRESULT
+  declare function FileDialog_SetTitle                   (_self as IFileDialog ptr, pszTitle as LPCWSTR) as HRESULT
+  declare function FileDialog_SetOkButtonLabel           (_self as IFileDialog ptr, pszText as LPCWSTR) as HRESULT
+  declare function FileDialog_SetFileNameLabel           (_self as IFileDialog ptr, pszLabel as LPCWSTR) as HRESULT
+  declare function FileDialog_GetResult                  (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
+  declare function FileDialog_AddPlace                   (_self as IFileDialog ptr, psi as IShellItem ptr, fdap as FDAP) as HRESULT
+  declare function FileDialog_SetDefaultExtension        (_self as IFileDialog ptr, pszDefaultExtension as LPCWSTR) as HRESULT
+  declare function FileDialog_Close                      (_self as IFileDialog ptr, hr as HRESULT) as HRESULT
+  declare function FileDialog_SetClientGuid              (_self as IFileDialog ptr, guid as GUID ptr) as HRESULT
+  declare function FileDialog_ClearClientData            (_self as IFileDialog ptr) as HRESULT
+  declare function FileDialog_SetFilter                  (_self as IFileDialog ptr, pFilter as IShellItemFilter ptr) as HRESULT
+  'FileOpenDialog
+  declare function FileOpenDialog_GetResults             (_self as IFileOpenDialog ptr, ppenum as IShellItemArray ptr ptr) as HRESULT
+  declare function FileOpenDialog_GetSelectedItems       (_self as IFileOpenDialog ptr, ppsai as IShellItemArray ptr ptr) as HRESULT
+  'FileSaveDialog
+  declare function FileSaveDialog_SetSaveAsItem          (_self as IFileSaveDialog ptr, psi as IShellItem ptr) as HRESULT
+  declare function FileSaveDialog_SetProperties          (_self as IFileSaveDialog ptr, pStore as IPropertyStore ptr) as HRESULT
+  declare function FileSaveDialog_SetCollectedProperties (_self as IFileSaveDialog ptr, pList as IPropertyDescriptionList ptr, fAppendDefault as WINBOOL) as HRESULT
+  declare function FileSaveDialog_GetProperties          (_self as IFileSaveDialog ptr, ppStore as IPropertyStore ptr ptr) as HRESULT
+  declare function FileSaveDialog_ApplyProperties        (_self as IFileSaveDialog ptr, psi as IShellItem ptr, pStore as IPropertyStore ptr, hwnd as HWND, pSink as IFileOperationProgressSink ptr) as HRESULT
 end extern
 
 extern "C"
-  declare function FileDialogDestructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
-  declare function FileDialogConstructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+  declare function FileDialogDestructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+  declare function FileDialogConstructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
 end extern
 
 '-------------------------------------------------------------------------------------------
@@ -195,7 +63,6 @@ type PrivEventHandler
 end type
 
 'FileDialog
-#define COOK_INVAL &hFFFFFFFF
 #define MAX_FILEPATH 2048
 #define MAX_HANDLERS 128
 type FileDialogImpl_
@@ -208,10 +75,10 @@ type FileDialogImpl_
   filePath as WSTRING*MAX_FILEPATH
   ofnw as OPENFILENAMEW
   
-  isDialogOpen as BOOL
   isSaveDialog as BOOL
   
+  dialogHwnd as HWND
   nextCookie as DWORD
-  usedArrSlots as int
+  usedArrSlots as int 'inclusive
   handlerArr(MAX_HANDLERS) as PrivEventHandler ptr
 end type

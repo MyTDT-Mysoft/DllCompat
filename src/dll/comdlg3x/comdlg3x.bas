@@ -11,13 +11,13 @@
 #include "includes\win\dll_shell3x.bi"
 #include "comdlg3x.bi"
 
-static shared AsGuid(IID_IFileOperationProgressSink, 04B0F1A7,9490,44BC,96E1,4296A31252E2)
-static shared AsGuid(IID_IFileDialogEvents,          973510DB,7D7F,452B,8975,74A85828D354)
-static shared AsGuid(IID_IFileDialog,                42F85136,DB7E,439C,85F1,E4075D135FC8)
-static shared AsGuid(IID_IFileOpenDialog,            D57C7288,D4AD,4768,BE02,9D969532D960)
-static shared AsGuid(IID_IFileSaveDialog,            84BCCD23,5FDE,4CDB,AEA4,AF64B83D78AB)
-static shared AsGuid(CLSID_FileOpenDialog,           DC1C5A9C,E88A,4DDE,A5A1,60F82A20AEF7)
-static shared AsGuid(CLSID_FileSaveDialog,           C0B4E2F3,BA21,4773,8DBA,335EC946EB8B)
+'static shared AsGuid(IID_IFileOperationProgressSink, 04B0F1A7,9490,44BC,96E1,4296A31252E2)
+'static shared AsGuid(IID_IFileDialogEvents,          973510DB,7D7F,452B,8975,74A85828D354)
+'static shared AsGuid(IID_IFileDialog,                42F85136,DB7E,439C,85F1,E4075D135FC8)
+'static shared AsGuid(IID_IFileOpenDialog,            D57C7288,D4AD,4768,BE02,9D969532D960)
+'static shared AsGuid(IID_IFileSaveDialog,            84BCCD23,5FDE,4CDB,AEA4,AF64B83D78AB)
+'static shared AsGuid(CLSID_FileOpenDialog,           DC1C5A9C,E88A,4DDE,A5A1,60F82A20AEF7)
+'static shared AsGuid(CLSID_FileSaveDialog,           C0B4E2F3,BA21,4773,8DBA,335EC946EB8B)
 
 static shared vt_FileDialog as IFileDialogVtbl = type( _
   @cbase_UnkQueryInterface, _
@@ -140,6 +140,52 @@ static shared serverConfig(...) as COMDesc ptr = {@confOpenDialog, @confSaveDial
 
 
 '-------------------------------------------------------------------------------------------
+
+#define MAX_DIALOGS 32
+static shared csWhnd as CRITICAL_SECTION
+static shared dialogArr(MAX_DIALOGS) as FileDialogImpl ptr
+
+sub bindHwnd2Dialog(hwnd as HWND, pdlg as FileDialogImpl ptr)
+  EnterCriticalSection(@csWhnd)
+  for i as integer = 0 to MAX_DIALOGS
+    if dialogArr(i)=NULL then
+      pdlg->dialogHwnd = hwnd
+      dialogArr(i) = pdlg
+    end if
+  next
+  LeaveCriticalSection(@csWhnd)
+end sub
+
+function unbindHwndAndDialog(hwnd as HWND) as FileDialogImpl ptr
+  dim pdlg as FileDialogImpl ptr = NULL
+  
+  EnterCriticalSection(@csWhnd)
+  for i as integer = 0 to MAX_DIALOGS
+    if dialogArr(i)<>NULL andalso dialogArr(i)->dialogHwnd=hwnd then
+      pdlg = dialogArr(i)
+      dialogArr(i)->dialogHwnd = NULL
+      dialogArr(i) = NULL
+      exit for
+    end if
+  next
+  LeaveCriticalSection(@csWhnd)
+  return pdlg
+end function
+
+function getDialogFromHwnd(hwnd as HWND) as FileDialogImpl ptr
+  dim pdlg as FileDialogImpl ptr = NULL
+  
+  EnterCriticalSection(@csWhnd)
+  for i as integer = 0 to MAX_DIALOGS
+    if dialogArr(i)<>NULL andalso dialogArr(i)->dialogHwnd=hwnd then
+      pdlg = dialogArr(i)
+      exit for
+    end if
+  next
+  LeaveCriticalSection(@csWhnd)
+  return pdlg
+end function
+
 #define IF_HFREE(x) if x <> NULL then HeapFree(GetProcessHeap(), 0, cast(LPVOID, x)) : x = NULL
 function lazyHeapAlloc(pOut as LPVOID ptr, flags as DWORD, size as SIZE_T) as LPVOID
   dim hand as HANDLE = GetProcessHeap()
@@ -158,21 +204,58 @@ function lazyHeapAlloc(pOut as LPVOID ptr, flags as DWORD, size as SIZE_T) as LP
   return mem
 end function
 
+#define SELF cast(FileDialogImpl ptr, _self)
 extern "windows-ms"
-
 '-------------------------------------------------------------------------------------------
 'FileDialog
   
-  function FileDialog_Show                       (self as FileDialogImpl ptr, hwndOwner as HWND) as HRESULT
+  function dialogEventCB(hwnd as HANDLE, uiMsg as UINT, WPARAM as wParam, lParam as LPARAM) as UINT_PTR
+    select case uiMsg
+      case WM_INITDIALOG
+        dim pOfnw as OPENFILENAMEW ptr = cast(OPENFILENAMEW ptr, lParam)
+        dim pdlg as FileDialogImpl ptr = cast(FileDialogImpl ptr, pOfnw->lCustData)
+        DEBUG_MsgTrace("WM_INITDIALOG")
+        
+        bindHwnd2Dialog(hwnd, pdlg)
+      case WM_DESTROY
+        DEBUG_MsgTrace("WM_DESTROY")
+        unbindHwndAndDialog(hwnd)
+      case WM_NOTIFY
+        dim ofn as OFNOTIFYW ptr = cast(OFNOTIFYW ptr, lparam)
+        
+        select case ofn->hdr.code
+          case CDN_FILEOK
+            DEBUG_MsgTrace("CDN_FILEOK")
+            dim pdlg as FileDialogImpl ptr = getDialogFromHwnd(hwnd)
+            dim evIface as IFileDialogEvents ptr
+            
+            for i as integer = 0 to pdlg->usedArrSlots
+              evIface = iif(pdlg->handlerArr(i)<>NULL, pdlg->handlerArr(i)->pfde, NULL)
+              if evIface<>NULL then evIface->lpVtbl->OnFileOk(evIface, pdlg)
+            next
+          case IDCANCEL
+            'dim pdlg as FileDialogImpl ptr = getDialogFromHwnd(hwnd)
+        end select
+    end select
+    
+    return 0
+  end function
+  
+  
+  
+  function FileDialog_Show                       (_self as IFileDialog ptr, hwndOwner as HWND) as HRESULT
     dim ret as BOOL
     
-    self->ofnw.hwndOwner = hwndOwner
-    ret = iif(self->isSaveDialog, GetSaveFileNameW(@self->ofnw), GetOpenFileNameW(@self->ofnw))
+    SELF->ofnw.hwndOwner = hwndOwner
+    
+    if SELF->dialogHwnd<>NULL then return E_FAIL 'TODO: check how windows likes this
+    ret = iif(SELF->isSaveDialog, GetSaveFileNameW(@SELF->ofnw), GetOpenFileNameW(@SELF->ofnw))
+    
     'TODO: check advanced error
     return iif(ret, S_OK, HRESULT_FROM_WIN32(ERROR_CANCELLED))
   end function
   
-  function FileDialog_SetFileTypes               (self as FileDialogImpl ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
+  function FileDialog_SetFileTypes               (_self as IFileDialog ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
     dim size as DWORD = 1 'list is double-NULL terminated
     dim strArr as LPCWSTR ptr = cast(LPCWSTR ptr, rgFilterSpec)
     dim dat as BYTE ptr
@@ -181,9 +264,9 @@ extern "windows-ms"
       size += lstrlenW(strArr[i]) * 2 + 2
     next
     
-    if lazyHeapAlloc(cast(LPVOID, @self->ofnw.lpstrFilter), 0, size)=NULL then return E_OUTOFMEMORY
+    if lazyHeapAlloc(cast(LPVOID, @SELF->ofnw.lpstrFilter), 0, size)=NULL then return E_OUTOFMEMORY
     
-    dat = cast(BYTE ptr, self->ofnw.lpstrFilter)
+    dat = cast(BYTE ptr, SELF->ofnw.lpstrFilter)
     
     for i as integer = 0 to (cFileTypes*2)-1
       size = lstrlenW(strArr[i]) * 2 + 2
@@ -197,35 +280,34 @@ extern "windows-ms"
     return S_OK
   end function
   
-  function FileDialog_SetFileTypeIndex           (self as FileDialogImpl ptr, iFileType as UINT) as HRESULT
+  function FileDialog_SetFileTypeIndex           (_self as IFileDialog ptr, iFileType as UINT) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileDialog_GetFileTypeIndex           (self as FileDialogImpl ptr, piFileType as UINT ptr) as HRESULT
+  function FileDialog_GetFileTypeIndex           (_self as IFileDialog ptr, piFileType as UINT ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileDialog_Advise                     (self as FileDialogImpl ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
+  function FileDialog_Advise                     (_self as IFileDialog ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
     'Before enabling, we must at least respond to open/save and cancel buttons
     if pfde=NULL orelse pdwCookie=NULL then return E_INVALIDARG
     
     for i as integer = 0 to MAX_HANDLERS-1
-      dim hdlr as PrivEventHandler ptr = self->handlerArr(i)
+      dim hdlr as PrivEventHandler ptr = SELF->handlerArr(i)
       
       if hdlr=NULL then
         hdlr = HeapAlloc(GetProcessHeap(), 0, sizeof(PrivEventHandler))
-        if hdlr<>NULL then exit for
+        if hdlr=NULL then exit for
+        SELF->handlerArr(i) = hdlr
         
         hdlr->pfde = pfde
-        hdlr->cookie = self->nextCookie
-        'hdlr->pDialog = self
+        hdlr->cookie = SELF->nextCookie
+        'hdlr->pDialog = SELF
         
-        self->nextCookie += 1
-        if self->usedArrSlots < i then self->usedArrSlots = i
+        SELF->nextCookie += 1
+        if SELF->usedArrSlots < i then SELF->usedArrSlots = i
         pfde->lpVtbl->AddRef(pfde)
         return S_OK
       end if
@@ -234,13 +316,11 @@ extern "windows-ms"
     return E_OUTOFMEMORY
   end function
   
-  function FileDialog_Unadvise                   (self as FileDialogImpl ptr, dwCookie as DWORD) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
+  function FileDialog_Unadvise                   (_self as IFileDialog ptr, dwCookie as DWORD) as HRESULT
     'Before enabling, we must at least respond to open/save and cancel buttons
     
-    for i as integer = 0 to self->usedArrSlots
-      dim hdlr as PrivEventHandler ptr = self->handlerArr(i)
+    for i as integer = 0 to SELF->usedArrSlots
+      dim hdlr as PrivEventHandler ptr = SELF->handlerArr(i)
       
       if hdlr<>NULL andalso hdlr->cookie=dwCookie then 
         hdlr->pfde->lpVtbl->Release(hdlr->pfde)
@@ -252,166 +332,212 @@ extern "windows-ms"
     return E_INVALIDARG
   end function
   
-  function FileDialog_SetOptions                 (self as FileDialogImpl ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_GetOptions                 (self as FileDialogImpl ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_SetDefaultFolder           (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_SetFolder                  (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_GetFolder                  (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_GetCurrentSelection        (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_SetFileName                (self as FileDialogImpl ptr, pszName as LPCWSTR) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_GetFileName                (self as FileDialogImpl ptr, pszName as LPWSTR ptr) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_SetTitle                   (self as FileDialogImpl ptr, pszTitle as LPCWSTR) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_SetOkButtonLabel           (self as FileDialogImpl ptr, pszText as LPCWSTR) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_SetFileNameLabel           (self as FileDialogImpl ptr, pszLabel as LPCWSTR) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_FAIL
-  end function
-  
-  function FileDialog_GetResult                  (self as FileDialogImpl ptr, ppsi as IShellItem ptr ptr) as HRESULT
-    dim pidl as PIDLIST_ABSOLUTE
-    dim hr as HRESULT = SHParseDisplayName(self->ofnw.lpstrFile, 0, @pidl, SFGAO_FILESYSTEM, 0)
+  function FileDialog_SetOptions                 (_self as IFileDialog ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
     
-    if SUCCEEDED(hr) then
-      dim psi as IShellItem ptr
-      
-      hr = SHCreateShellItem(NULL, NULL, pidl, @psi)
-      ILFree(pidl)
-      if SUCCEEDED(hr) then *ppsi = psi
-    end if
     
-    return hr
-    return E_FAIL
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
   end function
   
-  function FileDialog_AddPlace                   (self as FileDialogImpl ptr, psi as IShellItem ptr, fdap as FDAP) as HRESULT
+  function FileDialog_GetOptions                 (_self as IFileDialog ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileDialog_SetDefaultExtension        (self as FileDialogImpl ptr, pszDefaultExtension as LPCWSTR) as HRESULT
+  function FileDialog_SetDefaultFolder           (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileDialog_Close                      (self as FileDialogImpl ptr, hr as HRESULT) as HRESULT
+  function FileDialog_SetFolder                  (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileDialog_SetClientGuid              (self as FileDialogImpl ptr, guid as GUID ptr) as HRESULT
+  function FileDialog_GetFolder                  (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileDialog_ClearClientData            (self as FileDialogImpl ptr) as HRESULT
+  function FileDialog_GetCurrentSelection        (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileDialog_SetFilter                  (self as FileDialogImpl ptr, pFilter as IShellItemFilter ptr) as HRESULT
+  function FileDialog_SetFileName                (_self as IFileDialog ptr, pszName as LPCWSTR) as HRESULT
+    
+    
+    
+    
+    
+    
+    
+    
+    
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
+  end function
+  
+  function FileDialog_GetFileName                (_self as IFileDialog ptr, pszName as LPWSTR ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
+  end function
+  
+  function FileDialog_SetTitle                   (_self as IFileDialog ptr, pszTitle as LPCWSTR) as HRESULT
+    
+    'this->ofnw.lpstrFileTitle
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
+  end function
+  
+  function FileDialog_SetOkButtonLabel           (_self as IFileDialog ptr, pszText as LPCWSTR) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
+  end function
+  
+  function FileDialog_SetFileNameLabel           (_self as IFileDialog ptr, pszLabel as LPCWSTR) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
+  end function
+  
+  function FileDialog_GetResult                  (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
+    return SHCreateItemFromParsingName(SELF->ofnw.lpstrFile, NULL, @IID_IShellItem, ppsi)
+  end function
+  
+  function FileDialog_AddPlace                   (_self as IFileDialog ptr, psi as IShellItem ptr, fdap as FDAP) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
+  end function
+  
+  function FileDialog_SetDefaultExtension        (_self as IFileDialog ptr, pszDefaultExtension as LPCWSTR) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
+  end function
+  
+  function FileDialog_Close                      (_self as IFileDialog ptr, hr as HRESULT) as HRESULT
+    '
+    if SELF->dialogHwnd<>NULL then PostMessageA(SELF->dialogHwnd, WM_CLOSE , 0, 0)
+    return S_OK
+  end function
+  
+  function FileDialog_SetClientGuid              (_self as IFileDialog ptr, guid as GUID ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
+  end function
+  
+  function FileDialog_ClearClientData            (_self as IFileDialog ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
+  end function
+  
+  function FileDialog_SetFilter                  (_self as IFileDialog ptr, pFilter as IShellItemFilter ptr) as HRESULT
+    DEBUG_MsgNotImpl()
+    return E_NOTIMPL
   end function
   
 '-------------------------------------------------------------------------------------------
 'FileOpenDialog
   
-  function FileOpenDialog_GetResults             (self as FileDialogImpl ptr, ppenum as IShellItemArray ptr ptr) as HRESULT
+  function FileOpenDialog_GetResults             (_self as IFileOpenDialog ptr, ppenum as IShellItemArray ptr ptr) as HRESULT
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileOpenDialog_GetSelectedItems       (self as FileDialogImpl ptr, ppsai as IShellItemArray ptr ptr) as HRESULT
+  function FileOpenDialog_GetSelectedItems       (_self as IFileOpenDialog ptr, ppsai as IShellItemArray ptr ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
 '-------------------------------------------------------------------------------------------
 'FileSaveDialog
   
-  function FileSaveDialog_SetSaveAsItem          (self as FileDialogImpl ptr, psi as IShellItem ptr) as HRESULT
+  function FileSaveDialog_SetSaveAsItem          (_self as IFileSaveDialog ptr, psi as IShellItem ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileSaveDialog_SetProperties          (self as FileDialogImpl ptr, pStore as IPropertyStore ptr) as HRESULT
+  function FileSaveDialog_SetProperties          (_self as IFileSaveDialog ptr, pStore as IPropertyStore ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileSaveDialog_SetCollectedProperties (self as FileDialogImpl ptr, pList as IPropertyDescriptionList ptr, fAppendDefault as WINBOOL) as HRESULT
+  function FileSaveDialog_SetCollectedProperties (_self as IFileSaveDialog ptr, pList as IPropertyDescriptionList ptr, fAppendDefault as WINBOOL) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileSaveDialog_GetProperties          (self as FileDialogImpl ptr, ppStore as IPropertyStore ptr ptr) as HRESULT
+  function FileSaveDialog_GetProperties          (_self as IFileSaveDialog ptr, ppStore as IPropertyStore ptr ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
   
-  function FileSaveDialog_ApplyProperties        (self as FileDialogImpl ptr, psi as IShellItem ptr, pStore as IPropertyStore ptr, hwnd as HWND, pSink as IFileOperationProgressSink ptr) as HRESULT
+  function FileSaveDialog_ApplyProperties        (_self as IFileSaveDialog ptr, psi as IShellItem ptr, pStore as IPropertyStore ptr, hwnd as HWND, pSink as IFileOperationProgressSink ptr) as HRESULT
     DEBUG_MsgNotImpl()
-    return E_FAIL
+    return E_NOTIMPL
   end function
 end extern
 
 extern "C"
-  function FileDialogDestructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
-    IF_HFREE(self->ofnw.lpstrFilter)
+  function FileDialogDestructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+    IF_HFREE(SELF->ofnw.lpstrFilter)
     
     return S_OK
   end function
   
-  function FileDialogConstructor(self as FileDialogImpl ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
-    self->ofnw.lStructSize = sizeof(OPENFILENAMEW)
-    self->ofnw.nFilterIndex = 1
-    self->ofnw.lpstrFile = @self->filePath
-    self->ofnw.nMaxFile = MAX_FILEPATH
+  function FileDialogConstructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+    SELF->ofnw.lStructSize = sizeof(OPENFILENAMEW)
+    SELF->ofnw.nFilterIndex = 1
+    SELF->ofnw.lpstrFile = @SELF->filePath
+    SELF->ofnw.nMaxFile = MAX_FILEPATH
+    SELF->ofnw.lCustData = SELF
+    SELF->ofnw.lpfnHook = @dialogEventCB
+    'SELF->ofnw.hInstance = GetModuleHandle(NULL)
+    SELF->ofnw.Flags = OFN_ENABLEHOOK or OFN_HIDEREADONLY or OFN_LONGNAMES or OFN_EXPLORER
     
     if IsEqualGUID(rclsid, @CLSID_FileOpenDialog) then
-      self->isSaveDialog = FALSE
+      SELF->isSaveDialog = FALSE
     elseif IsEqualGUID(rclsid, @CLSID_FileSaveDialog) then
-      self->isSaveDialog = TRUE
+      SELF->isSaveDialog = TRUE
     else
       return E_FAIL
     end if
@@ -419,6 +545,7 @@ extern "C"
     return S_OK
   end function
 end extern
+#undef SELF
 
 '-------------------------------------------------------------------------------------------
 'Main exports

@@ -1,1 +1,1 @@
--l comhelper
+-l comhelper -l shell3x
