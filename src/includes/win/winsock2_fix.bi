@@ -1,10 +1,5 @@
 #pragma once
 
-#undef pollfd
-#undef WSAPOLLFD
-#undef PWSAPOLLFD
-#undef LPWSAPOLLFD
-
 type pollfd
   fd as SOCKET
   events as short

@@ -1,28 +1,6 @@
 #pragma once
 '#include once "commctrl.bi"
 
-#undef HTHEME
-#undef DTT_TEXTCOLOR
-#undef DTT_BORDERCOLOR
-#undef DTT_SHADOWCOLOR
-#undef DTT_SHADOWTYPE
-#undef DTT_SHADOWOFFSET
-#undef DTT_BORDERSIZE
-#undef DTT_FONTPROP
-#undef DTT_COLORPROP
-#undef DTT_STATEID
-#undef DTT_CALCRECT
-#undef DTT_APPLYOVERLAY
-#undef DTT_GLOWSIZE
-#undef DTT_CALLBACK
-#undef DTT_COMPOSITED
-#undef DTT_VALIDBITS
-#undef DTT_CALLBACK_PROC
-#undef WINDOWTHEMEATTRIBUTETYPE
-#undef _DTTOPTS
-#undef DTTOPTS
-#undef PDTTOPTS
-
 type HTHEME as HANDLE
 
 const DTT_TEXTCOLOR = culng(1u shl 0)

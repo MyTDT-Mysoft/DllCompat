@@ -3,12 +3,10 @@
 #include "windows.bi"
 #include "win\winbase.bi"
 #include "win\iphlpapi.bi"
-'#include "win\netioapi.bi" 'needed NETIO_STATUS definition not available to pre-v6 winNT. Jerks.
 #include "win\ifdef.bi"
+#include "includes\win\netioapi_fix.bi"
 #include "includes\win\ifdef_fix.bi"
 #include "shared\helper.bas"
-
-type NETIO_STATUS as DWORD
 
 extern "windows-ms"
   UndefAllParams()

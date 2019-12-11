@@ -85,7 +85,7 @@ static shared kcMap(...) as kcmItemInit = {_
   (@FOLDERID_PublicVideos,           BIND CSIDL_COMMON_VIDEO),_
   (@FOLDERID_QuickLaunch,                 NOWHERE),_
   (@FOLDERID_Recent,                      CSIDL_RECENT),_
-  (@FOLDERID_RecordedTV,                  NOWHERE),_
+  _'(@FOLDERID_RecordedTV,                  NOWHERE),_
   (@FOLDERID_RecordedTVLibrary,           NOWHERE),_
   (@FOLDERID_RecycleBinFolder,       BIND CSIDL_BITBUCKET),_
   (@FOLDERID_ResourceDir,                 CSIDL_RESOURCES),_
