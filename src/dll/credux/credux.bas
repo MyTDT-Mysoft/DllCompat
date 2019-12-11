@@ -4,7 +4,6 @@
 #include "windows.bi"
 #include "win\Objbase.bi"
 
-#include "includes\win\credui.bi"
 #include "includes\win\wincred.bi"
 #include "shared\helper.bas"
 

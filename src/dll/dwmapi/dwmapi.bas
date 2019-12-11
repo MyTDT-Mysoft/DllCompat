@@ -3,7 +3,6 @@
 #include "windows.bi"
 #include "win\uxtheme.bi"
 #include "includes\win\fix_dwmapi.bi"
-#include "includes\win\extraerrs.bi"
 #include "shared\helper.bas"
 
 extern "windows-ms"
