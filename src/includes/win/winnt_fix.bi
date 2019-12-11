@@ -1,3 +1,5 @@
+#pragma once
+
 #undef _OSVERSIONINFOEXA
 #undef OSVERSIONINFOEXA
 #undef POSVERSIONINFOEXA

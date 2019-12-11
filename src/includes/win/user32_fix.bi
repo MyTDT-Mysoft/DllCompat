@@ -1,3 +1,5 @@
+#pragma once
+
 #include "windows.bi"
 
 #undef MOD_NOREPEAT

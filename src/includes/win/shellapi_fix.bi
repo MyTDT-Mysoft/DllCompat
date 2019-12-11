@@ -1,3 +1,5 @@
+#pragma once
+
 #include "win/shtypes.bi"
 
 #undef SHSTOCKICONINFO

@@ -1,3 +1,5 @@
+#pragma once
+
 const CREATE_MUTEX_INITIAL_OWNER = &h1
 const CREATE_EVENT_MANUAL_RESET = &h1
 const CREATE_EVENT_INITIAL_SET = &h2

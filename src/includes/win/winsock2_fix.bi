@@ -1,3 +1,5 @@
+#pragma once
+
 #undef pollfd
 #undef WSAPOLLFD
 #undef PWSAPOLLFD

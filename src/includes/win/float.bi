@@ -1,3 +1,5 @@
+#pragma once
+
 #include once "crt.bi"
 
 '/* Control word masks for unMask */
