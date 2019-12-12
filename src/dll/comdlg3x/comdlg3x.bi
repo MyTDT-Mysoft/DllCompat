@@ -11,8 +11,6 @@
 extern "windows-ms"
 
 '-------------------------------------------------------------------------------------------
-  type FileDialogImpl as FileDialogImpl_
-  
   'FileDialog
   declare function FileDialog_Show                       (_self as IFileDialog ptr, hwndOwner as HWND) as HRESULT
   declare function FileDialog_SetFileTypes               (_self as IFileDialog ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
@@ -63,9 +61,9 @@ type PrivEventHandler
 end type
 
 'FileDialog
-#define MAX_FILEPATH 2048
+#define MAX_FILEPATH 65536
 #define MAX_HANDLERS 128
-type FileDialogImpl_
+type FileDialogImpl
   union
     baseObj as COMGenerObj
     fd_lpvtbl  as const IFileDialogVtbl ptr

@@ -9,16 +9,10 @@
 #include "includes\win\fix_shobjidl.bi"
 #include "includes\win\fix_shellapi.bi"
 #include "includes\win\dll_shell3x.bi"
+
 #include "comdlg3x.bi"
 
-'static shared AsGuid(IID_IFileOperationProgressSink, 04B0F1A7,9490,44BC,96E1,4296A31252E2)
-'static shared AsGuid(IID_IFileDialogEvents,          973510DB,7D7F,452B,8975,74A85828D354)
-'static shared AsGuid(IID_IFileDialog,                42F85136,DB7E,439C,85F1,E4075D135FC8)
-'static shared AsGuid(IID_IFileOpenDialog,            D57C7288,D4AD,4768,BE02,9D969532D960)
-'static shared AsGuid(IID_IFileSaveDialog,            84BCCD23,5FDE,4CDB,AEA4,AF64B83D78AB)
-'static shared AsGuid(CLSID_FileOpenDialog,           DC1C5A9C,E88A,4DDE,A5A1,60F82A20AEF7)
-'static shared AsGuid(CLSID_FileSaveDialog,           C0B4E2F3,BA21,4773,8DBA,335EC946EB8B)
-
+'configuration
 static shared vt_FileDialog as IFileDialogVtbl = type( _
   @cbase_UnkQueryInterface, _
   @cbase_UnkAddRef, _
@@ -120,22 +114,23 @@ static shared vt_FileSaveDialog as IFileSaveDialogVtbl = type( _
   @FileSaveDialog_GetProperties, _
   @FileSaveDialog_ApplyProperties _
 )
-'configuration
+
 static shared iidOpenDialog(...) as REFIID = { @IID_IFileOpenDialog, @IID_IFileDialog, @IID_IUnknown }
 static shared confOpenDialog as COMDesc = type( _
-    @CLSID_FileOpenDialog, @iidOpenDialog(0), COUNTOF(iidOpenDialog), _
-    @vt_FileOpenDialog, sizeof(FileDialogImpl), _
-    @FileDialogConstructor, @FileDialogDestructor, _
-    @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Open Dialog(DLLCompat)" _
+  @CLSID_FileOpenDialog, @iidOpenDialog(0), COUNTOF(iidOpenDialog), _
+  @vt_FileOpenDialog, sizeof(FileDialogImpl), _
+  @FileDialogConstructor, @FileDialogDestructor, _
+  @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Open Dialog(DLLCompat)" _
 )
-static shared iidSaveDialog(...) as REFIID = { @IID_IFileSaveDialog, @IID_IFileDialog, @IID_IUnknown }
 
+static shared iidSaveDialog(...) as REFIID = { @IID_IFileSaveDialog, @IID_IFileDialog, @IID_IUnknown }
 static shared confSaveDialog as COMDesc = type( _
-    @CLSID_FileSaveDialog, @iidSaveDialog(0), COUNTOF(iidSaveDialog), _
-    @vt_FileSaveDialog, sizeof(FileDialogImpl), _
-    @FileDialogConstructor, @FileDialogDestructor, _
-    @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Save Dialog(DLLCompat)" _
+  @CLSID_FileSaveDialog, @iidSaveDialog(0), COUNTOF(iidSaveDialog), _
+  @vt_FileSaveDialog, sizeof(FileDialogImpl), _
+  @FileDialogConstructor, @FileDialogDestructor, _
+  @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Save Dialog(DLLCompat)" _
 )
+
 static shared serverConfig(...) as COMDesc ptr = {@confOpenDialog, @confSaveDialog}
 
 
@@ -187,22 +182,6 @@ function getDialogFromHwnd(hwnd as HWND) as FileDialogImpl ptr
 end function
 
 #define IF_HFREE(x) if x <> NULL then HeapFree(GetProcessHeap(), 0, cast(LPVOID, x)) : x = NULL
-function lazyHeapAlloc(pOut as LPVOID ptr, flags as DWORD, size as SIZE_T) as LPVOID
-  dim hand as HANDLE = GetProcessHeap()
-  dim mem as LPVOID
-  
-  if *pOut=NULL orelse HeapSize(hand, 0, *pOut) < size then
-    mem = HeapAlloc(hand, flags, size)
-    if mem <> NULL then
-      HeapFree(hand, 0, *pOut)
-      *pOut = mem
-    end if
-  else
-    mem = *pOut
-  end if
-  
-  return mem
-end function
 
 #define SELF cast(FileDialogImpl ptr, _self)
 extern "windows-ms"
@@ -217,7 +196,7 @@ extern "windows-ms"
         DEBUG_MsgTrace("WM_INITDIALOG")
         
         bindHwnd2Dialog(hwnd, pdlg)
-      case WM_DESTROY
+      case WM_CLOSE
         DEBUG_MsgTrace("WM_DESTROY")
         unbindHwndAndDialog(hwnd)
       case WM_NOTIFY
@@ -256,6 +235,7 @@ extern "windows-ms"
   end function
   
   function FileDialog_SetFileTypes               (_self as IFileDialog ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
+    dim hand as HANDLE = GetProcessHeap()
     dim size as DWORD = 1 'list is double-NULL terminated
     dim strArr as LPCWSTR ptr = cast(LPCWSTR ptr, rgFilterSpec)
     dim dat as BYTE ptr
@@ -264,7 +244,12 @@ extern "windows-ms"
       size += lstrlenW(strArr[i]) * 2 + 2
     next
     
-    if lazyHeapAlloc(cast(LPVOID, @SELF->ofnw.lpstrFilter), 0, size)=NULL then return E_OUTOFMEMORY
+    if SELF->ofnw.lpstrFilter=NULL then
+      SELF->ofnw.lpstrFilter = HeapAlloc(hand, 0, size)
+    elseif HeapSize(hand, 0, SELF->ofnw.lpstrFilter) < size then
+      SELF->ofnw.lpstrFilter = HeapReAlloc(hand, 0, cast(any ptr, SELF->ofnw.lpstrFilter), size)
+    end if
+    if SELF->ofnw.lpstrFilter=NULL then return E_OUTOFMEMORY
     
     dat = cast(BYTE ptr, SELF->ofnw.lpstrFilter)
     
@@ -291,6 +276,7 @@ extern "windows-ms"
   end function
   
   function FileDialog_Advise                     (_self as IFileDialog ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
+    dim hand as HANDLE = GetProcessHeap()
     'Before enabling, we must at least respond to open/save and cancel buttons
     if pfde=NULL orelse pdwCookie=NULL then return E_INVALIDARG
     
@@ -298,7 +284,7 @@ extern "windows-ms"
       dim hdlr as PrivEventHandler ptr = SELF->handlerArr(i)
       
       if hdlr=NULL then
-        hdlr = HeapAlloc(GetProcessHeap(), 0, sizeof(PrivEventHandler))
+        hdlr = HeapAlloc(hand, 0, sizeof(PrivEventHandler))
         if hdlr=NULL then exit for
         SELF->handlerArr(i) = hdlr
         
@@ -317,6 +303,7 @@ extern "windows-ms"
   end function
   
   function FileDialog_Unadvise                   (_self as IFileDialog ptr, dwCookie as DWORD) as HRESULT
+    dim hand as HANDLE = GetProcessHeap()
     'Before enabling, we must at least respond to open/save and cancel buttons
     
     for i as integer = 0 to SELF->usedArrSlots
@@ -324,7 +311,7 @@ extern "windows-ms"
       
       if hdlr<>NULL andalso hdlr->cookie=dwCookie then 
         hdlr->pfde->lpVtbl->Release(hdlr->pfde)
-        HeapFree(GetProcessHeap(), 0, hdlr)
+        HeapFree(hand, 0, hdlr)
         return S_OK
       end if
     next
@@ -464,23 +451,39 @@ extern "windows-ms"
 'FileOpenDialog
   
   function FileOpenDialog_GetResults             (_self as IFileOpenDialog ptr, ppenum as IShellItemArray ptr ptr) as HRESULT
+    dim hr as HRESULT = S_OK
+    dim hand as HANDLE = GetProcessHeap()
+    dim fileCount as int = 0
+    dim pStr as WCHAR ptr
+    dim pidlArr as PIDLIST_ABSOLUTE ptr
     
+    if ppenum=NULL then return E_INVALIDARG
     
+    *ppenum = NULL
+    pStr = SELF->ofnw.lpstrFile
+    while 1
+      if pStr[0]<>0 then fileCount += 1
+      pStr += lstrlenW(pStr) + 1
+      if pStr[0]=0 then exit while
+    wend
     
+    pidlArr = HeapAlloc(hand, HEAP_ZERO_MEMORY, sizeof(any ptr) * fileCount)
+    if pidlArr=NULL then return E_OUTOFMEMORY
     
+    pStr = SELF->ofnw.lpstrFile
+    fileCount = 0
+    while 1
+      if pStr[0]<>0 andalso SUCCEEDED(SHParseDisplayName(pStr, NULL, @(pidlArr[fileCount]), 0, NULL)) then fileCount+=1
+      pStr += lstrlenW(pStr) + 1
+      if pStr[0]=0 then exit while
+    wend
+    hr = SHCreateShellItemArrayFromIDLists(fileCount, pidlArr, ppenum)
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
+    for i as int = 0 to fileCount-1
+      ILFree(pidlArr[i])
+    next
+    HeapFree(hand, 0, pidlArr)
+    return hr
   end function
   
   function FileOpenDialog_GetSelectedItems       (_self as IFileOpenDialog ptr, ppsai as IShellItemArray ptr ptr) as HRESULT
