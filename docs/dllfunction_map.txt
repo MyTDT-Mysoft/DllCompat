@@ -125,6 +125,7 @@ powrprox
 shell3x
     SHCreateItemFromIDList                          new         partial
     SHCreateItemFromParsingName                     new         full
+    SHCreateShellItemArrayFromIDLists               new         full
     Shell_NotifyIconGetRect                         new         dummy
     SHGetKnownFolderIDList                          new         dummy       fixme
     SHGetKnownFolderPath                            new         partial     fixme
