@@ -13,8 +13,11 @@
 #include "includes\win\fix_shlobj.bi"
 #include "includes\win\fix_shobjidl.bi"
 #include "includes\win\fix_knownfolders.bi"
+#include "includes\win\dll_shell3x.bi"
 
+#include "shell3x.bi"
 #include "shellpath.bas"
+#include "shellcom.bas"
 
 extern "windows-ms"
   UndefAllParams()
@@ -23,6 +26,27 @@ extern "windows-ms"
   function Shell_NotifyIconGetRect(P1, P2) as HRESULT export
     DEBUG_MsgNotImpl()
     return E_NOTIMPL
+  end function
+  
+  UndefAllParams()
+  #define P1 cidl          as UINT
+  #define P2 rgpidl        as PCIDLIST_ABSOLUTE_ARRAY
+  #define P3 ppsiItemArray as IShellItemArray ptr ptr
+  function SHCreateShellItemArrayFromIDLists(P1, P2, P3) as HRESULT export
+    dim psia as ShellItemArrayImpl ptr
+    if ppsiItemArray=NULL then return E_INVALIDARG
+    *ppsiItemArray = NULL
+    if cidl=0 then return E_INVALIDARG
+    
+    psia = create_ShellItemArray(cidl)
+    if psia=NULL then return E_OUTOFMEMORY
+    
+    for i as int = 0 to cidl-1
+      SHCreateItemFromIDList(rgpidl[i], @IID_IShellItem, @(psia->ptrArr[i]))
+    next
+    
+    *ppsiItemArray = psia
+    return S_OK
   end function
   
   UndefAllParams()
@@ -142,11 +166,21 @@ extern "windows-ms"
   end function
 end extern
 
+'-------------------------------------------------------------------------------------------
+
+#define CUSTOM_MAIN
 #include "shared\defaultmain.bas"
 
-/'
-SHGetKnownFolderPath
-https://msdn.microsoft.com/pt-br/library/windows/desktop/bb775966(v=vs.85).aspx
-#	Time of Day	Thread	Module	API	Return Value	Return Address	Error	Duration
-85622	7:19:23.041 AM	1	mGBA.exe	CoCreateInstance ( {dc1c5a9c-e88a-4dde-a5a1-60f82a20aef7}, NULL, CLSCTX_INPROC_SERVER, IFileOpenDialog, 0x0498c954 )	REGDB_E_CLASSNOTREG	0x005d47a5	0x80040154 = Classe não registrada 	0.0005038
-'/
+extern "windows-ms"
+  function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as BOOL
+    select case uReason
+      case DLL_PROCESS_ATTACH
+        cbase_init(handle, NULL, 0)
+      case DLL_PROCESS_DETACH
+        cbase_destroy()
+      case DLL_THREAD_ATTACH
+      case DLL_THREAD_DETACH
+    end select
+    return DLLMAIN_DEFAULT(handle, uReason, Reserved)
+  end function
+end extern

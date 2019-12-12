@@ -7,6 +7,12 @@ extern "windows-ms"
   declare function Shell_NotifyIconGetRect(P1, P2) as HRESULT
   
   UndefAllParams()
+  #define P1 cidl          as UINT
+  #define P2 rgpidl        as PCIDLIST_ABSOLUTE_ARRAY
+  #define P3 ppsiItemArray as IShellItemArray ptr ptr
+  declare function SHCreateShellItemArrayFromIDLists(P1, P2, P3) as HRESULT
+  
+  UndefAllParams()
   #define P1 pidl as _In_  PCIDLIST_ABSOLUTE
   #define P2 riid as _In_  REFIID
   #define P3 ppv  as _Out_ any ptr ptr
