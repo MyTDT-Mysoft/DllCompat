@@ -1,4 +1,5 @@
 #include "windows.bi"
+#include "crt.bi"
 #include "win\winbase.bi"
 #include "win\objbase.bi"
 #include "win\shlobj.bi"
@@ -181,7 +182,19 @@ function getDialogFromHwnd(hwnd as HWND) as FileDialogImpl ptr
   return pdlg
 end function
 
-#define IF_HFREE(x) if x <> NULL then HeapFree(GetProcessHeap(), 0, cast(LPVOID, x)) : x = NULL
+#define IF_HFREE(x) if x <> NULL then HeapFree(GetProcessHeap(), 0, cast(any ptr, x)) : x = NULL
+  function lazyHeapAlloc(pOut as any ptr ptr, flags as DWORD, size as SIZE_T) as any ptr
+    dim hand as HANDLE = GetProcessHeap()
+    dim mem as any ptr
+    
+    if *pOut=NULL then
+      mem = HeapAlloc(hand, 0, size)
+    elseif HeapSize(hand, 0, *pOut) < size then
+      mem = HeapReAlloc(hand, 0, cast(any ptr, *pOut), size)
+    end if
+    if mem<>NULL then *pOut = mem
+    return mem
+  end function
 
 #define SELF cast(FileDialogImpl ptr, _self)
 extern "windows-ms"
@@ -194,6 +207,8 @@ extern "windows-ms"
         dim pOfnw as OPENFILENAMEW ptr = cast(OPENFILENAMEW ptr, lParam)
         dim pdlg as FileDialogImpl ptr = cast(FileDialogImpl ptr, pOfnw->lCustData)
         DEBUG_MsgTrace("WM_INITDIALOG")
+        
+        'SetDlgItemText(hwnd, edt1, "abacus")
         
         bindHwnd2Dialog(hwnd, pdlg)
       case WM_CLOSE
@@ -235,7 +250,6 @@ extern "windows-ms"
   end function
   
   function FileDialog_SetFileTypes               (_self as IFileDialog ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
-    dim hand as HANDLE = GetProcessHeap()
     dim size as DWORD = 1 'list is double-NULL terminated
     dim strArr as LPCWSTR ptr = cast(LPCWSTR ptr, rgFilterSpec)
     dim dat as BYTE ptr
@@ -244,12 +258,7 @@ extern "windows-ms"
       size += lstrlenW(strArr[i]) * 2 + 2
     next
     
-    if SELF->ofnw.lpstrFilter=NULL then
-      SELF->ofnw.lpstrFilter = HeapAlloc(hand, 0, size)
-    elseif HeapSize(hand, 0, SELF->ofnw.lpstrFilter) < size then
-      SELF->ofnw.lpstrFilter = HeapReAlloc(hand, 0, cast(any ptr, SELF->ofnw.lpstrFilter), size)
-    end if
-    if SELF->ofnw.lpstrFilter=NULL then return E_OUTOFMEMORY
+    if lazyHeapAlloc(cast(any ptr, @(SELF->ofnw.lpstrFilter)), 0, size)=NULL then return E_OUTOFMEMORY
     
     dat = cast(BYTE ptr, SELF->ofnw.lpstrFilter)
     
@@ -321,23 +330,59 @@ extern "windows-ms"
   
   function FileDialog_SetOptions                 (_self as IFileDialog ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
     
+    for i as int = 0 to (sizeof(long)*8)-1
+      select case ((1 shl i) and fos) 
+        case FOS_OVERWRITEPROMPT
+          SELF->ofnw.Flags or= OFN_OVERWRITEPROMPT
+        case FOS_STRICTFILETYPES
+          '
+        case FOS_NOCHANGEDIR
+          SELF->ofnw.Flags or= OFN_NOCHANGEDIR
+        case FOS_PICKFOLDERS
+          'TODO
+          DEBUG_MsgTrace("!! Folder browser wanted.")
+        case FOS_FORCEFILESYSTEM
+          '
+        case FOS_ALLNONSTORAGEITEMS
+          '
+        case FOS_NOVALIDATE
+          SELF->ofnw.Flags or= OFN_NOVALIDATE
+        case FOS_ALLOWMULTISELECT
+          SELF->ofnw.Flags or= OFN_ALLOWMULTISELECT
+        case FOS_PATHMUSTEXIST
+          SELF->ofnw.Flags or= OFN_PATHMUSTEXIST
+        case FOS_FILEMUSTEXIST
+          SELF->ofnw.Flags or= OFN_FILEMUSTEXIST
+        case FOS_CREATEPROMPT
+          SELF->ofnw.Flags or= OFN_CREATEPROMPT
+        case FOS_SHAREAWARE
+          SELF->ofnw.Flags or= OFN_SHAREAWARE
+        case FOS_NOREADONLYRETURN
+          SELF->ofnw.Flags or= OFN_NOREADONLYRETURN
+        case FOS_NOTESTFILECREATE
+          SELF->ofnw.Flags or= OFN_NOTESTFILECREATE
+        'case FOS_HIDEMRUPLACES
+          'unsupported in win7+
+        case FOS_HIDEPINNEDPLACES
+          '
+        case FOS_NODEREFERENCELINKS
+          SELF->ofnw.Flags or= OFN_NODEREFERENCELINKS
+        'case FOS_OKBUTTONNEEDSINTERACTION
+          '
+        case FOS_DONTADDTORECENT
+          SELF->ofnw.Flags or= OFN_DONTADDTORECENT
+        case FOS_FORCESHOWHIDDEN
+          SELF->ofnw.Flags or= OFN_FORCESHOWHIDDEN
+        case FOS_DEFAULTNOMINIMODE
+          ' unsupported in win7+
+        case FOS_FORCEPREVIEWPANEON
+          '
+        'case FOS_SUPPORTSTREAMABLEITEMS
+          '
+      end select
+    next
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
+    return S_OK
   end function
   
   function FileDialog_GetOptions                 (_self as IFileDialog ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
@@ -366,17 +411,10 @@ extern "windows-ms"
   end function
   
   function FileDialog_SetFileName                (_self as IFileDialog ptr, pszName as LPCWSTR) as HRESULT
+    if pszName=NULL then return E_INVALIDARG
+    memcpy(cast(any ptr, SELF->ofnw.lpstrFile), pszName, (lstrlenW(pszName)+1) * 2)
     
-    
-    
-    
-    
-    
-    
-    
-    
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
+    return S_OK
   end function
   
   function FileDialog_GetFileName                (_self as IFileDialog ptr, pszName as LPWSTR ptr) as HRESULT
@@ -385,21 +423,14 @@ extern "windows-ms"
   end function
   
   function FileDialog_SetTitle                   (_self as IFileDialog ptr, pszTitle as LPCWSTR) as HRESULT
+    dim length as int
     
-    'this->ofnw.lpstrFileTitle
+    if pszTitle=NULL then return E_INVALIDARG
+    length = (lstrlenW(pszTitle)+1) * 2
+    if lazyHeapAlloc(cast(any ptr, @(SELF->ofnw.lpstrTitle)), 0, length)=NULL then return E_OUTOFMEMORY
+    memcpy(cast(any ptr, SELF->ofnw.lpstrTitle), pszTitle, length)
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
+    return S_OK
   end function
   
   function FileDialog_SetOkButtonLabel           (_self as IFileDialog ptr, pszText as LPCWSTR) as HRESULT
@@ -458,7 +489,6 @@ extern "windows-ms"
     dim pidlArr as PIDLIST_ABSOLUTE ptr
     
     if ppenum=NULL then return E_INVALIDARG
-    
     *ppenum = NULL
     pStr = SELF->ofnw.lpstrFile
     while 1
@@ -523,19 +553,22 @@ end extern
 extern "C"
   function FileDialogDestructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
     IF_HFREE(SELF->ofnw.lpstrFilter)
+    IF_HFREE(SELF->ofnw.lpstrTitle)
     
     return S_OK
   end function
   
   function FileDialogConstructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
-    SELF->ofnw.lStructSize = sizeof(OPENFILENAMEW)
-    SELF->ofnw.nFilterIndex = 1
-    SELF->ofnw.lpstrFile = @SELF->filePath
-    SELF->ofnw.nMaxFile = MAX_FILEPATH
-    SELF->ofnw.lCustData = SELF
-    SELF->ofnw.lpfnHook = @dialogEventCB
+    SELF->ofnw.lStructSize      = sizeof(OPENFILENAMEW)
+    SELF->ofnw.nFilterIndex     = 1
+    SELF->ofnw.lpstrFile        = @SELF->filePath
+    SELF->ofnw.nMaxFile         = MAX_FILEPATH
+    SELF->ofnw.lpstrFileTitle   = @SELF->fileName
+    SELF->ofnw.nMaxFileTitle    = MAX_FILENAME
+    SELF->ofnw.lCustData        = SELF
+    SELF->ofnw.lpfnHook         = @dialogEventCB
     'SELF->ofnw.hInstance = GetModuleHandle(NULL)
-    SELF->ofnw.Flags = OFN_ENABLEHOOK or OFN_HIDEREADONLY or OFN_LONGNAMES or OFN_EXPLORER
+    SELF->ofnw.Flags = OFN_EXPLORER or OFN_ENABLEHOOK or OFN_HIDEREADONLY
     
     if IsEqualGUID(rclsid, @CLSID_FileOpenDialog) then
       SELF->isSaveDialog = FALSE

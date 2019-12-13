@@ -62,6 +62,7 @@ end type
 
 'FileDialog
 #define MAX_FILEPATH 65536
+#define MAX_FILENAME 256
 #define MAX_HANDLERS 128
 type FileDialogImpl
   union
@@ -71,6 +72,7 @@ type FileDialogImpl
     fsd_lpvtbl as const IFileSaveDialogVtbl ptr
   end union
   filePath as WSTRING*MAX_FILEPATH
+  fileName as WSTRING*MAX_FILENAME
   ofnw as OPENFILENAMEW
   
   isSaveDialog as BOOL
