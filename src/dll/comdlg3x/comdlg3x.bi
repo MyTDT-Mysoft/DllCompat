@@ -71,11 +71,13 @@ type FileDialogImpl
     fod_lpvtbl as const IFileOpenDialogVtbl ptr
     fsd_lpvtbl as const IFileSaveDialogVtbl ptr
   end union
+  ofnw as OPENFILENAMEW
+  fos as FILEOPENDIALOGOPTIONS
+  
   filePath as WSTRING*MAX_FILEPATH
   fileName as WSTRING*MAX_FILENAME
-  ofnw as OPENFILENAMEW
-  
   isSaveDialog as BOOL
+  isFolderDialog as BOOL
   
   dialogHwnd as HWND
   nextCookie as DWORD

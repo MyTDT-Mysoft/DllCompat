@@ -147,6 +147,7 @@ sub bindHwnd2Dialog(hwnd as HWND, pdlg as FileDialogImpl ptr)
     if dialogArr(i)=NULL then
       pdlg->dialogHwnd = hwnd
       dialogArr(i) = pdlg
+      exit for
     end if
   next
   LeaveCriticalSection(@csWhnd)
@@ -216,12 +217,17 @@ extern "windows-ms"
         select case ofn->hdr.code
           case CDN_FILEOK
             dim pdlg as FileDialogImpl ptr = getDialogFromHwnd(hwnd)
-            dim evIface as IFileDialogEvents ptr
             
-            for i as integer = 0 to pdlg->usedArrSlots
-              evIface = iif(pdlg->handlerArr(i)<>NULL, pdlg->handlerArr(i)->pfde, NULL)
-              if evIface<>NULL then evIface->lpVtbl->OnFileOk(evIface, pdlg)
-            next
+            if pdlg=NULL then
+              DEBUG_MsgTrace("bindHwnd2Dialog ran out of space")
+            else
+              dim evIface as IFileDialogEvents ptr
+              
+              for i as integer = 0 to pdlg->usedArrSlots
+                evIface = iif(pdlg->handlerArr(i)<>NULL, pdlg->handlerArr(i)->pfde, NULL)
+                if evIface<>NULL then evIface->lpVtbl->OnFileOk(evIface, pdlg)
+              next
+            end if
           case IDCANCEL
             'dim pdlg as FileDialogImpl ptr = getDialogFromHwnd(hwnd)
         end select
@@ -236,7 +242,6 @@ extern "windows-ms"
     dim ret as BOOL
     
     SELF->ofnw.hwndOwner = hwndOwner
-    
     if SELF->dialogHwnd<>NULL then return E_FAIL 'TODO: check how windows likes this
     ret = iif(SELF->isSaveDialog, GetSaveFileNameW(@SELF->ofnw), GetOpenFileNameW(@SELF->ofnw))
     
@@ -288,7 +293,7 @@ extern "windows-ms"
       dim hdlr as PrivEventHandler ptr = SELF->handlerArr(i)
       
       if hdlr=NULL then
-        hdlr = HeapAlloc(hand, 0, sizeof(PrivEventHandler))
+        hdlr = HeapAlloc(hand, HEAP_ZERO_MEMORY, sizeof(PrivEventHandler))
         if hdlr=NULL then exit for
         SELF->handlerArr(i) = hdlr
         
@@ -377,6 +382,9 @@ extern "windows-ms"
       end select
     next
     
+    SELF->isFolderDialog = iif(fos and FOS_PICKFOLDERS, TRUE, FALSE)
+    SELF->fos = fos
+    
     return S_OK
   end function
   
@@ -463,6 +471,18 @@ extern "windows-ms"
   end function
   
   function FileDialog_SetDefaultExtension        (_self as IFileDialog ptr, pszDefaultExtension as LPCWSTR) as HRESULT
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     DEBUG_MsgNotImpl()
     return E_NOTIMPL
   end function
