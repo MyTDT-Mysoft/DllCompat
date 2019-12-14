@@ -42,7 +42,7 @@ function create_ShellItemArray(itemCount as UINT) as ShellItemArrayImpl ptr
   dim hr as HRESULT
   
   if SUCCEEDED(cbase_createInstance(@confShellItemArray, @psia, FALSE)) then
-    psia->ptrArr = HeapAlloc(GetProcessHeap(), 0, sizeof(any ptr)*itemCount)
+    psia->ptrArr = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(any ptr)*itemCount)
     if psia->ptrArr=NULL then 
       psia->lpvtbl->Release(psia)
       return E_OUTOFMEMORY

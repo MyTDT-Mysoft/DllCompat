@@ -34,6 +34,7 @@ extern "windows-ms"
   #define P3 ppsiItemArray as IShellItemArray ptr ptr
   function SHCreateShellItemArrayFromIDLists(P1, P2, P3) as HRESULT export
     dim psia as ShellItemArrayImpl ptr
+    
     if ppsiItemArray=NULL then return E_INVALIDARG
     *ppsiItemArray = NULL
     if cidl=0 then return E_INVALIDARG
@@ -42,7 +43,11 @@ extern "windows-ms"
     if psia=NULL then return E_OUTOFMEMORY
     
     for i as int = 0 to cidl-1
-      SHCreateItemFromIDList(rgpidl[i], @IID_IShellItem, @(psia->ptrArr[i]))
+      dim outOffset as int = cidl - psia->itemCount
+      
+      if not SUCCEEDED(SHCreateItemFromIDList(rgpidl[i], @IID_IShellItem, @(psia->ptrArr[i - outOffset]))) then
+        psia->itemCount-=1
+      end if
     next
     
     *ppsiItemArray = psia
@@ -56,8 +61,13 @@ extern "windows-ms"
   function SHCreateItemFromIDList(P1, P2, P3) as HRESULT export
     if IsEqualGUID(riid, @IID_IShellItem) then
       dim psi as IShellItem ptr
+      dim hr as HRESULT
       
-      return SHCreateShellItem(NULL, NULL, pidl, @psi)
+      *ppv = NULL
+      hr = SHCreateShellItem(NULL, NULL, pidl, @psi)
+      if SUCCEEDED(hr) then *ppv = psi
+      
+      return hr
     else
       dim guidstr as zstring*(GUIDSTR_SIZE+1)
       

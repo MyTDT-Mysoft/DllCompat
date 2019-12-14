@@ -206,20 +206,15 @@ extern "windows-ms"
       case WM_INITDIALOG
         dim pOfnw as OPENFILENAMEW ptr = cast(OPENFILENAMEW ptr, lParam)
         dim pdlg as FileDialogImpl ptr = cast(FileDialogImpl ptr, pOfnw->lCustData)
-        DEBUG_MsgTrace("WM_INITDIALOG")
-        
-        'SetDlgItemText(hwnd, edt1, "abacus")
         
         bindHwnd2Dialog(hwnd, pdlg)
       case WM_CLOSE
-        DEBUG_MsgTrace("WM_DESTROY")
         unbindHwndAndDialog(hwnd)
       case WM_NOTIFY
         dim ofn as OFNOTIFYW ptr = cast(OFNOTIFYW ptr, lparam)
         
         select case ofn->hdr.code
           case CDN_FILEOK
-            DEBUG_MsgTrace("CDN_FILEOK")
             dim pdlg as FileDialogImpl ptr = getDialogFromHwnd(hwnd)
             dim evIface as IFileDialogEvents ptr
             
@@ -232,7 +227,7 @@ extern "windows-ms"
         end select
     end select
     
-    return 0
+    return FALSE
   end function
   
   
@@ -396,6 +391,21 @@ extern "windows-ms"
   end function
   
   function FileDialog_SetFolder                  (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     DEBUG_MsgNotImpl()
     return E_NOTIMPL
   end function
