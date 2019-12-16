@@ -42,7 +42,7 @@ echo ' > dummy.bas
 fbc dummy.bas
 if exist extraparams.txt (set /p exprm=<extraparams.txt) else (set exprm=)
 ::set gengcc=-gen gcc -O 3 -asm intel
-fbc -dll %1.bas %gengcc% -d _WIN32_WINNT=^&h0501 -Wl "%1.dll.def --entry _DLLMAIN  -L ..\..\..\%libpath%" %exprm% -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla > %complog%
+fbc -dll %1.bas %gengcc% -d _WIN32_WINNT=^&h0501 -Wl "%1.dll.def --entry _DLLMAIN -L ..\..\..\%binpath% -L ..\..\..\%libpath%" %exprm% -x ..\..\..\%binpath%\%1.dll -i ..\..\..\src -m blabla > %complog%
 set err=%errorlevel%
 del dummy.bas
 del dummy.exe

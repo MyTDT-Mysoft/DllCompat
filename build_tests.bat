@@ -36,7 +36,7 @@ set complog=..\..\%logpath%\test_%1.log
 
 IF EXIST res\%1.rc set res=-s gui res\%1.rc
 IF NOT EXIST res\%1.rc set res=
-fbc %1.bas -x ..\..\%binpath%\%1.exe %res% -i ..\..\src -d _WIN32_WINNT=^&h0601 -Wl "-L ..\..\%libpath%" -i ..\..\src > %complog%
+fbc %1.bas %res% -i ..\..\src -d _WIN32_WINNT=^&h0601 -Wl "-L ..\..\%libpath%" -x ..\..\%binpath%\%1.exe -i ..\..\src > %complog%
 set err=%errorlevel%
 for %%R in (%complog%) do if %%~zR lss 1 del %complog%
 popd

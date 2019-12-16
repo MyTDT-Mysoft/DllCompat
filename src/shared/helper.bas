@@ -51,6 +51,7 @@ enum STR_TYPE
   T_ANSI, T_WIDE
 end enum
 
+const FOREVER = ((cuint(-1) shr 1))
 #define COUNTOF(X) (sizeof(X) \ sizeof(X(0)))
 
 #define DLLC_COM_MARK "DLLCompat"
