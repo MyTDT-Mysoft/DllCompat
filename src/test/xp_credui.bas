@@ -2,7 +2,6 @@
 #include "includes\win\wincred.bi"
 
 dim as CREDUI_INFOW tCredUi
-
 with tCredUi
   .cbSize         = sizeof(tCredUi)
   .hwndParent     = GetConsoleWindow()

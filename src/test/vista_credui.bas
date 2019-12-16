@@ -1,12 +1,13 @@
+#inclib "ole32"
+#inclib "credui"
+
 #include "windows.bi"
 #include "win\combaseapi.bi"
 #include "win\winerror.bi"
 
 #include "shared\helper.bas"
 #include "includes\win\wincred.bi"
-#include "includes\win\credui.bi"
-
-#inclib "ole32"
+#include "includes\win\dll_credui.bi"
 
 dim as CREDUI_INFOW credui
 with credui

@@ -3,12 +3,12 @@
 
 '#include "inc\win\ddk\winddk.bi"
 
-dim GetFinalPathNameByHandle as function (hFile as HANDLE, lpszFilePath as LPTSTR, cchFilePath as DWORD,dwFlags as DWORD) as dword
+dim fnGetFinalPathNameByHandle as function (hFile as HANDLE, lpszFilePath as LPTSTR, cchFilePath as DWORD,dwFlags as DWORD) as dword
 
 #if 0
 var hKernel = GetModuleHandle("kernel32.dll")
-GetFinalPathNameByHandle = cast( any ptr, GetProcAddress( hKernel , "GetFinalPathNameByHandleA" ) )
-if GetFinalPathNameByHandle = 0 then
+fnGetFinalPathNameByHandle = cast( any ptr, GetProcAddress( hKernel , "GetFinalPathNameByHandleA" ) )
+if fnGetFinalPathNameByHandle = 0 then
   print "failed to locate GetFinalPathNameByHandle function"
   sleep: system
 end if
@@ -54,22 +54,22 @@ print tFileInfo.FileName
 print *cast(wstring ptr,tObjInf.usName.Buffer)
 
 #if 0
-  GetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_NORMALIZED)
+  fnGetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_NORMALIZED)
   print !"Normalized/DOS  \r\n["+zBuff+"]"
-  GetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_NORMALIZED or VOLUME_NAME_GUID)
+  fnGetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_NORMALIZED or VOLUME_NAME_GUID)
   print !"Normalized/GUID \r\n["+zBuff+"]"
-  GetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_NORMALIZED or VOLUME_NAME_NONE)
+  fnGetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_NORMALIZED or VOLUME_NAME_NONE)
   print !"Normalized/NONE \r\n["+zBuff+"]"
-  GetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_NORMALIZED or VOLUME_NAME_NT)
+  fnGetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_NORMALIZED or VOLUME_NAME_NT)
   print !"Normalized/NT   \r\n["+zBuff+"]"
   
-  GetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_OPENED)
+  fnGetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_OPENED)
   print !"Opened/DOS  \r\n["+zBuff+"]"
-  GetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_OPENED or VOLUME_NAME_GUID)
+  fnGetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_OPENED or VOLUME_NAME_GUID)
   print !"Opened/GUID \r\n["+zBuff+"]"
-  GetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_OPENED or VOLUME_NAME_NONE)
+  fnGetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_OPENED or VOLUME_NAME_NONE)
   print !"Opened/NONE \r\n["+zBuff+"]"
-  GetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_OPENED or VOLUME_NAME_NT)
+  fnGetFinalPathNameByHandle( hTemp , zBuff , MAX_PATH-1 , FILE_NAME_OPENED or VOLUME_NAME_NT)
   print !"Opened/NT   \r\n["+zBuff+"]"
   
   sleep

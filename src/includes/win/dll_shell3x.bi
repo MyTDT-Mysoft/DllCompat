@@ -1,6 +1,6 @@
 #pragma once
 
-extern "windows-ms"
+extern "windows"
   UndefAllParams()
   #define P1 identifier   as _In_  const NOTIFYICONIDENTIFIER ptr
   #define P2 iconLocation as _Out_ RECT ptr

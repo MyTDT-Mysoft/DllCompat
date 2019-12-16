@@ -1,6 +1,6 @@
 #pragma once
 
-extern "windows-ms"
+extern "windows"
   UndefAllParams()
   #define P1 pUiInfo as PCREDUI_INFOA
   #define P2 dwAuthError as DWORD
