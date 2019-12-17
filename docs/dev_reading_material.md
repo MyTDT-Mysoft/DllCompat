@@ -18,9 +18,13 @@ Shim engine
 Threading
 * http://joeduffyblog.com/2006/11/28/windows-keyed-events-critical-sections-and-new-vista-synchronization-features/
 * https://docs.microsoft.com/en-us/archive/msdn-magazine/2012/november/windows-with-c-the-evolution-of-synchronization-in-windows-and-c
+* https://web.archive.org/web/20150419055323/https://msdn.microsoft.com/en-us/magazine/cc164040.aspx Critical Section innards
 
 WinAPI listings
 * https://www.geoffchappell.com/studies/windows/win32/ntdll/api/index.htm
+
+Raymond Chen
+* https://devblogs.microsoft.com/oldnewthing/?p=4463 Creating a simple pidl: For the times you care enough to send the very fake.
 
 A small, x64-hosted hypervisor driver by Alex Ionescu. Possible study material for implementing x86-64 virtualization of applications.
 * https://ionescu007.github.io/SimpleVisor/
