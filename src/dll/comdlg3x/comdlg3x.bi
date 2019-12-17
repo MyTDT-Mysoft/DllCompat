@@ -45,11 +45,15 @@ extern "windows-ms"
   declare function FileSaveDialog_SetCollectedProperties (_self as IFileSaveDialog ptr, pList as IPropertyDescriptionList ptr, fAppendDefault as WINBOOL) as HRESULT
   declare function FileSaveDialog_GetProperties          (_self as IFileSaveDialog ptr, ppStore as IPropertyStore ptr ptr) as HRESULT
   declare function FileSaveDialog_ApplyProperties        (_self as IFileSaveDialog ptr, psi as IShellItem ptr, pStore as IPropertyStore ptr, hwnd as HWND, pSink as IFileOperationProgressSink ptr) as HRESULT
+
+  'FileSystemBindData
+  declare function FileSystemBindData_SetFindData(_self as IFileSystemBindData ptr, pfd as const WIN32_FIND_DATAW ptr) as HRESULT
+  declare function FileSystemBindData_GetFindData(_self as IFileSystemBindData ptr, pfd as WIN32_FIND_DATAW ptr) as HRESULT
 end extern
 
 extern "C"
-  declare function FileDialogDestructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
-  declare function FileDialogConstructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+  declare function FileDialogDestructor(_self as any ptr, rclsid as REFCLSID) as HRESULT
+  declare function FileDialogConstructor(_self as any ptr, rclsid as REFCLSID) as HRESULT
 end extern
 
 '-------------------------------------------------------------------------------------------
@@ -83,4 +87,12 @@ type FileDialogImpl
   nextCookie as DWORD
   usedArrSlots as int 'inclusive
   handlerArr(MAX_HANDLERS) as PrivEventHandler ptr
+end type
+
+type FileSystemBindDataImpl
+  union
+    baseObj as COMGenerObj
+    lpvtbl  as const IFileSystemBindDataVtbl ptr
+  end union
+  w32fdw as WIN32_FIND_DATAW
 end type

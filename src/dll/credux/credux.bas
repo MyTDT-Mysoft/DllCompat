@@ -3,9 +3,10 @@
 #include "crt.bi"
 #include "windows.bi"
 #include "win\Objbase.bi"
+#include "shared\helper.bas"
 
 #include "includes\win\wincred.bi"
-#include "shared\helper.bas"
+#include "includes\win\dll_credui.bi"
 
 
 
