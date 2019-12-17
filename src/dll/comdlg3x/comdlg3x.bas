@@ -213,63 +213,20 @@ end function
     return mem
   end function
 
-'Based on Raymond Chen's example
-' https://devblogs.microsoft.com/oldnewthing/?p=4463
-function createSimpleCtx(ppv as LPBC ptr) as HRESULT
-  dim hr as HRESULT
-  dim bindctx as IBindCtx ptr
-  dim fsbd as FileSystemBindDataImpl ptr
-  
-  *ppv = NULL
-  hr = CreateBindCtx(0, @bindctx)
-  if not SUCCEEDED(hr) then goto FAIL
-  hr = cbase_createInstance(@confFSBind, @fsbd, FALSE)
-  if not SUCCEEDED(hr) then goto FAIL
-  hr = bindctx->lpvtbl->RegisterObjectParam(bindctx, STR_FILE_SYS_BIND_DATA, fsbd)
-  if SUCCEEDED(hr) then
-    dim w32fdw as WIN32_FIND_DATAW
-    dim bo as BIND_OPTS = type(sizeof(BIND_OPTS), 0, STGM_CREATE, 0)
-    
-    w32fdw.dwFileAttributes = FILE_ATTRIBUTE_NORMAL
-    hr = bindctx->lpvtbl->SetBindOptions(bindctx, @bo)
-    if not SUCCEEDED(hr) then goto FAIL
-    
-    FileSystemBindData_SetFindData(fsbd, @w32fdw)
-    *ppv = bindctx
-    return S_OK
-  end if
-  
-  FAIL:
-  if fsbd<>NULL then IUnknown_Release(fsbd)
-  if bindctx<>NULL then IUnknown_Release(bindctx)
-  
-  return hr
-end function
-
-
-
-
 '-------------------------------------------------------------------------------------------
 extern "windows-ms"
-  'FileSystemBindData
-  #define SELF cast(FileSystemBindDataImpl ptr, _self)
-  function FileSystemBindData_SetFindData(_self as IFileSystemBindData ptr, pfd as const WIN32_FIND_DATAW ptr) as HRESULT
-    SELF->w32fdw = *pfd
-    return S_OK
-  end function
-  
-  function FileSystemBindData_GetFindData(_self as IFileSystemBindData ptr, pfd as WIN32_FIND_DATAW ptr) as HRESULT
-    *pfd = SELF->w32fdw
-    return S_OK
-  end function
-  #undef SELF
-  
-  #define SELF cast(FileDialogImpl ptr, _self)
-  
-  
-  
-  'FileDialog
   function dialogEventCB(hwnd as HANDLE, uiMsg as UINT, WPARAM as wParam, lParam as LPARAM) as UINT_PTR
+    #macro NOTIFY_FDE(_PDLG, _FUNC, _PARAMS...)
+      if _PDLG<>NULL then
+        dim evIface as IFileDialogEvents ptr
+        
+        for i as integer = 0 to _PDLG->usedArrSlots
+          evIface = iif(_PDLG->handlerArr(i)<>NULL, _PDLG->handlerArr(i)->pfde, NULL)
+          if evIface<>NULL then evIface->lpVtbl->_FUNC(evIface, _PARAMS)
+        next
+      end if
+    #endmacro
+    
     select case uiMsg
       case WM_INITDIALOG
         dim pOfnw as OPENFILENAMEW ptr = cast(OPENFILENAMEW ptr, lParam)
@@ -285,18 +242,11 @@ extern "windows-ms"
           case CDN_FILEOK
             dim pdlg as FileDialogImpl ptr = getDialogFromHwnd(hwnd)
             
-            if pdlg=NULL then
-              DEBUG_MsgTrace("bindHwnd2Dialog ran out of space")
-            else
-              dim evIface as IFileDialogEvents ptr
-              
-              for i as integer = 0 to pdlg->usedArrSlots
-                evIface = iif(pdlg->handlerArr(i)<>NULL, pdlg->handlerArr(i)->pfde, NULL)
-                if evIface<>NULL then evIface->lpVtbl->OnFileOk(evIface, pdlg)
-              next
-            end if
-          case IDCANCEL
-            'dim pdlg as FileDialogImpl ptr = getDialogFromHwnd(hwnd)
+            NOTIFY_FDE(pdlg, OnFileOk, pdlg)
+          case CDN_TYPECHANGE
+            dim pdlg as FileDialogImpl ptr = getDialogFromHwnd(hwnd)
+            
+            NOTIFY_FDE(pdlg, OnTypeChange, pdlg)
         end select
     end select
     
@@ -304,7 +254,22 @@ extern "windows-ms"
   end function
   
   
+  'FileSystemBindData
+  #define SELF cast(FileSystemBindDataImpl ptr, _self)
+  function FileSystemBindData_SetFindData(_self as IFileSystemBindData ptr, pfd as const WIN32_FIND_DATAW ptr) as HRESULT
+    SELF->w32fdw = *pfd
+    return S_OK
+  end function
   
+  function FileSystemBindData_GetFindData(_self as IFileSystemBindData ptr, pfd as WIN32_FIND_DATAW ptr) as HRESULT
+    *pfd = SELF->w32fdw
+    return S_OK
+  end function
+  #undef SELF
+  
+  
+  'FileDialog
+  #define SELF cast(FileDialogImpl ptr, _self)
   function FileDialog_Show                       (_self as IFileDialog ptr, hwndOwner as HWND) as HRESULT
     dim ret as BOOL
     
@@ -342,19 +307,23 @@ extern "windows-ms"
   end function
   
   function FileDialog_SetFileTypeIndex           (_self as IFileDialog ptr, iFileType as UINT) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
+    SELF->ofnw.nFilterIndex = iFileType
+    
+    return S_OK
   end function
   
   function FileDialog_GetFileTypeIndex           (_self as IFileDialog ptr, piFileType as UINT ptr) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
+    if piFileType=NULL then return E_POINTER
+    *piFileType = SELF->ofnw.nFilterIndex
+    
+    return S_OK
   end function
   
   function FileDialog_Advise                     (_self as IFileDialog ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
     dim hand as HANDLE = GetProcessHeap()
     'Before enabling, we must at least respond to open/save and cancel buttons
-    if pfde=NULL orelse pdwCookie=NULL then return E_INVALIDARG
+    if pfde=NULL then return E_INVALIDARG
+    if pdwCookie=NULL then return E_POINTER
     
     for i as integer = 0 to MAX_HANDLERS-1
       dim hdlr as PrivEventHandler ptr = SELF->handlerArr(i)
@@ -396,7 +365,6 @@ extern "windows-ms"
   end function
   
   function FileDialog_SetOptions                 (_self as IFileDialog ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
-    
     for i as int = 0 to (sizeof(long)*8)-1
       select case ((1 shl i) and fos) 
         case FOS_OVERWRITEPROMPT
@@ -456,8 +424,10 @@ extern "windows-ms"
   end function
   
   function FileDialog_GetOptions                 (_self as IFileDialog ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
+    if pfos=NULL then return E_POINTER
+    *pfos = SELF->fos
+    
+    return S_OK
   end function
   
   function FileDialog_SetDefaultFolder           (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
@@ -466,7 +436,6 @@ extern "windows-ms"
   end function
   
   function FileDialog_SetFolder                  (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
-    
     
     
     
@@ -530,12 +499,14 @@ extern "windows-ms"
   
   function FileDialog_GetResult                  (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
     dim hr as HRESULT
-    dim bindctx as LPBC
+    dim pidl as PIDLIST_ABSOLUTE
     
-    hr = createSimpleCtx(@bindctx)
+    if ppsi=NULL then return E_POINTER
+    hr = SHParseDisplayName(SELF->ofnw.lpstrFile, SELF->bindctx, @pidl, 0, NULL)
+    
     if SUCCEEDED(hr) then
-      hr = SHCreateItemFromParsingName(SELF->ofnw.lpstrFile, bindctx, @IID_IShellItem, ppsi)
-      IUnknown_Release(bindctx)
+      hr = SHCreateShellItem(NULL, NULL, pidl, ppsi)
+      ILFree(pidl)
     end if
     
     return hr
@@ -586,7 +557,6 @@ extern "windows-ms"
   
 '-------------------------------------------------------------------------------------------
 'FileOpenDialog
-  
   function FileOpenDialog_GetResults             (_self as IFileOpenDialog ptr, ppenum as IShellItemArray ptr ptr) as HRESULT
     dim hr as HRESULT = S_OK
     dim hand as HANDLE = GetProcessHeap()
@@ -594,7 +564,7 @@ extern "windows-ms"
     dim pStr as WCHAR ptr
     dim pidlArr as PIDLIST_ABSOLUTE ptr
     
-    if ppenum=NULL then return E_INVALIDARG
+    if ppenum=NULL then return E_POINTER
     *ppenum = NULL
     pStr = SELF->ofnw.lpstrFile
     while 1
@@ -609,12 +579,9 @@ extern "windows-ms"
     pStr = SELF->ofnw.lpstrFile
     fileCount = 0
     while 1
-      dim bindctx as LPBC = createSimpleCtx(@bindctx)
       
-      if pStr[0]<>0 andalso bindctx<>NULL andalso SUCCEEDED(SHParseDisplayName(pStr, bindctx, @(pidlArr[fileCount]), 0, NULL)) then
-        fileCount+=1
-      end if
-      if bindctx<>NULL then IUnknown_Release(bindctx)
+      hr = SHParseDisplayName(pStr, SELF->bindctx, @(pidlArr[fileCount]), 0, NULL)
+      if pStr[0]<>0 andalso SUCCEEDED(hr) then fileCount+=1
       
       pStr += lstrlenW(pStr) + 1
       if pStr[0]=0 then exit while
@@ -667,10 +634,17 @@ extern "C"
     IF_HFREE(SELF->ofnw.lpstrFilter)
     IF_HFREE(SELF->ofnw.lpstrTitle)
     
+    if SELF->bindctx<>NULL then
+      SELF->bindctx->lpVtbl->RevokeObjectParam(SELF->bindctx, STR_FILE_SYS_BIND_DATA)
+      IUnknown_Release(SELF->bindctx)
+    end if
+    
     return S_OK
   end function
   
   function FileDialogConstructor(_self as any ptr, rclsid as REFCLSID) as HRESULT
+    dim hr as HRESULT = S_OK
+    
     SELF->ofnw.lStructSize      = sizeof(OPENFILENAMEW)
     SELF->ofnw.nFilterIndex     = 1
     SELF->ofnw.lpstrFile        = @SELF->filePath
@@ -690,7 +664,37 @@ extern "C"
       return E_FAIL
     end if
     
-    return S_OK
+    
+    'Based on Raymond Chen's example
+    ' https://devblogs.microsoft.com/oldnewthing/?p=4463
+    scope
+      dim bindctx as IBindCtx ptr
+      dim fsbd as FileSystemBindDataImpl ptr
+      
+      hr = CreateBindCtx(0, @bindctx)
+      if not SUCCEEDED(hr) then goto FAIL
+      hr = cbase_createInstance(@confFSBind, @fsbd, FALSE)
+      if not SUCCEEDED(hr) then goto FAIL
+      hr = bindctx->lpVtbl->RegisterObjectParam(bindctx, STR_FILE_SYS_BIND_DATA, fsbd)
+      if SUCCEEDED(hr) then
+        dim w32fdw as WIN32_FIND_DATAW
+        dim bo as BIND_OPTS = type(sizeof(BIND_OPTS), 0, STGM_CREATE, 0)
+        
+        w32fdw.dwFileAttributes = FILE_ATTRIBUTE_NORMAL
+        FileSystemBindData_SetFindData(fsbd, @w32fdw)
+        hr = bindctx->lpVtbl->SetBindOptions(bindctx, @bo)
+        if not SUCCEEDED(hr) then goto FAIL
+        
+        SELF->bindctx = bindctx
+        IUnknown_AddRef(bindctx)
+      end if
+      
+      FAIL:
+      if fsbd<>NULL then IUnknown_Release(fsbd)
+      if bindctx<>NULL then IUnknown_Release(bindctx)
+    end scope
+    
+    return hr
   end function
 end extern
 #undef SELF
