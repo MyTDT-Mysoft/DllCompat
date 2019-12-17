@@ -208,6 +208,8 @@ end function
       mem = HeapAlloc(hand, 0, size)
     elseif HeapSize(hand, 0, *pOut) < size then
       mem = HeapReAlloc(hand, 0, cast(any ptr, *pOut), size)
+    else
+      mem = *pOut
     end if
     if mem<>NULL then *pOut = mem
     return mem
