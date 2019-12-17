@@ -19,7 +19,7 @@ end extern
 type ShellItemArrayImpl
   union
     baseObj as COMGenerObj
-    lpvtbl  as const IShellItemArrayVtbl ptr
+    lpVtbl  as const IShellItemArrayVtbl ptr
   end union
   itemCount as integer
   ptrArr as IShellItemArray ptr ptr

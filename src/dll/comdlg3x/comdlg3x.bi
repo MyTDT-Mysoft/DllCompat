@@ -71,12 +71,13 @@ end type
 type FileDialogImpl
   union
     baseObj as COMGenerObj
-    fd_lpvtbl  as const IFileDialogVtbl ptr
-    fod_lpvtbl as const IFileOpenDialogVtbl ptr
-    fsd_lpvtbl as const IFileSaveDialogVtbl ptr
+    fd_lpVtbl  as const IFileDialogVtbl ptr
+    fod_lpVtbl as const IFileOpenDialogVtbl ptr
+    fsd_lpVtbl as const IFileSaveDialogVtbl ptr
   end union
   ofnw as OPENFILENAMEW
   fos as FILEOPENDIALOGOPTIONS
+  bindctx as IBindCtx ptr
   
   filePath as WSTRING*MAX_FILEPATH
   fileName as WSTRING*MAX_FILENAME
@@ -92,7 +93,7 @@ end type
 type FileSystemBindDataImpl
   union
     baseObj as COMGenerObj
-    lpvtbl  as const IFileSystemBindDataVtbl ptr
+    lpVtbl  as const IFileSystemBindDataVtbl ptr
   end union
   w32fdw as WIN32_FIND_DATAW
 end type

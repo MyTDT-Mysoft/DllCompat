@@ -115,6 +115,19 @@ end sub
   #endif
 #endmacro
 
+#macro DEBUG_MsgPrintHR(_HR)
+  #ifdef GlobalDebugEnabled
+    scope
+      dim lpMsgBuf as LPSTR
+      
+      FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER or FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_IGNORE_INSERTS, _
+          NULL, _HR, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), @lpMsgBuf, 0, NULL)
+      DEBUG_MsgTrace("%s", lpMsgBuf)
+      LocalFree(lpMsgBuf)
+    end scope
+  #endif
+#endmacro
+
 #macro DEBUG_TripDebugger()
   #ifdef GlobalDebugEnabled
     if IsDebuggerPresent() then
