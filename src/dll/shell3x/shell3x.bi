@@ -12,8 +12,8 @@ extern "windows-ms"
 end extern
 
 extern "C"
-  declare function IShellItemArrayDestructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
-  declare function IShellItemArrayConstructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+  declare function IShellItemArrayDestructor(_self as any ptr, rclsid as REFCLSID) as HRESULT
+  declare function IShellItemArrayConstructor(_self as any ptr, rclsid as REFCLSID) as HRESULT
 end extern
 
 type ShellItemArrayImpl

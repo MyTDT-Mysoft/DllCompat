@@ -34,8 +34,8 @@ BOOL chelp_registerCOM(LPCSTR ownershipMark, REFCLSID pGuid, LPCSTR pszDllPath, 
 //-------------------------------------------------------------
 //COM base helper API
 
-//Cbase callback. Last parameter is for any data you may wish pass to the Instance, when using cbase_createInstance
-typedef HRESULT (*CbaseCB)(void* self, REFCLSID rclsid, void* extraData);
+//Cbase callback.
+typedef HRESULT (*CbaseCB)(void* self, REFCLSID rclsid);
 
 //COM Descriptor, a config struct
 typedef struct COMDesc COMDesc;
@@ -112,7 +112,7 @@ extern "C"
   declare function chelp_unregisterCOM(ownershipMark as LPCSTR, pGuid as REFCLSID) as BOOL
   declare function chelp_registerCOM(ownershipMark as LPCSTR, pGuid as REFCLSID, pszDllPath as LPCSTR, isExpandable as BOOL, pszThreadModel as LPCSTR, pszDescription as LPCSTR) as BOOL
   
-  type CbaseCB as function(self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+  type CbaseCB as function(self as any ptr, rclsid as REFCLSID) as HRESULT
 end extern
 
 

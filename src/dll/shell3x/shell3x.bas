@@ -23,7 +23,7 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 identifier   as _In_  const NOTIFYICONIDENTIFIER ptr
   #define P2 iconLocation as _Out_ RECT ptr
-  function Shell_NotifyIconGetRect(P1, P2) as HRESULT export
+  function fnShell_NotifyIconGetRect alias "Shell_NotifyIconGetRect"(P1, P2) as HRESULT export
     DEBUG_MsgNotImpl()
     return E_NOTIMPL
   end function
@@ -32,7 +32,7 @@ extern "windows-ms"
   #define P1 cidl          as UINT
   #define P2 rgpidl        as PCIDLIST_ABSOLUTE_ARRAY
   #define P3 ppsiItemArray as IShellItemArray ptr ptr
-  function SHCreateShellItemArrayFromIDLists(P1, P2, P3) as HRESULT export
+  function fnSHCreateShellItemArrayFromIDLists alias "SHCreateShellItemArrayFromIDLists"(P1, P2, P3) as HRESULT export
     dim psia as ShellItemArrayImpl ptr
     
     if ppsiItemArray=NULL then return E_INVALIDARG
@@ -50,15 +50,20 @@ extern "windows-ms"
       end if
     next
     
-    *ppsiItemArray = psia
-    return S_OK
+    if psia->itemCount > 0 then
+      *ppsiItemArray = psia
+      return S_OK
+    else
+      IUnknown_Release(psia)
+      return E_FAIL
+    end if
   end function
   
   UndefAllParams()
   #define P1 pidl as _In_  PCIDLIST_ABSOLUTE
   #define P2 riid as _In_  REFIID
   #define P3 ppv  as _Out_ any ptr ptr
-  function SHCreateItemFromIDList(P1, P2, P3) as HRESULT export
+  function fnSHCreateItemFromIDList alias "SHCreateItemFromIDList"(P1, P2, P3) as HRESULT export
     if IsEqualGUID(riid, @IID_IShellItem) then
       dim psi as IShellItem ptr
       dim hr as HRESULT
@@ -82,9 +87,11 @@ extern "windows-ms"
   #define P2 pbc     as _In_opt_ IBindCtx ptr
   #define P3 riid    as _In_     REFIID
   #define P4 ppv     as _Out_    any ptr ptr
-  function SHCreateItemFromParsingName(P1, P2, P3, P4) as HRESULT export
+  function fnSHCreateItemFromParsingName alias "SHCreateItemFromParsingName"(P1, P2, P3, P4) as HRESULT export
     dim pidl as PIDLIST_ABSOLUTE
-    dim hr as HRESULT = SHParseDisplayName(pszPath, pbc, @pidl, 0, NULL)
+    dim hr as HRESULT
+    
+    hr = SHParseDisplayName(pszPath, pbc, @pidl, 0, NULL)
     
     if SUCCEEDED(hr) then
       hr = SHCreateItemFromIDList(pidl, riid, ppv)
@@ -99,7 +106,7 @@ extern "windows-ms"
   #define P2 dwFlags as _In_  DWORD
   #define P3 hToken  as _In_  HANDLE
   #define P4 ppidl   as _Out_ PIDLIST_ABSOLUTE ptr
-  function SHGetKnownFolderIDList(P1, P2, P3, P4) as HRESULT export
+  function fnSHGetKnownFolderIDList alias "SHGetKnownFolderIDList"(P1, P2, P3, P4) as HRESULT export
     DEBUG_MsgNotImpl()
     return E_INVALIDARG
   end function
@@ -109,7 +116,7 @@ extern "windows-ms"
   #define P2 dwFlags  as _In_     DWORD
   #define P3 hToken   as _In_opt_ HANDLE
   #define P4 ppszPath as _Out_    PWSTR ptr
-  function SHGetKnownFolderPath(P1, P2, P3, P4) as HRESULT export
+  function fnSHGetKnownFolderPath alias "SHGetKnownFolderPath"(P1, P2, P3, P4) as HRESULT export
     dim wtpath as wstring*1024 = any
     dim hret as HRESULT
     dim csid as int
@@ -170,7 +177,7 @@ extern "windows-ms"
   #define P1 siid   as         SHSTOCKICONID
   #define P2 uFlags as         UINT
   #define P3 psii   as _Inout_ SHSTOCKICONINFO ptr
-  function SHGetStockIconInfo(P1, P2, P3) as HRESULT export
+  function fnSHGetStockIconInfo alias "SHGetStockIconInfo"(P1, P2, P3) as HRESULT export
     DEBUG_MsgNotImpl()
     return E_INVALIDARG
   end function

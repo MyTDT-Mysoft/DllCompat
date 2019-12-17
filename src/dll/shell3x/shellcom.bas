@@ -22,17 +22,17 @@ static shared confShellItemArray as COMDesc = type( _
 
 #define SELF cast(ShellItemArrayImpl ptr, _self)
 extern "C"
-  function IShellItemArrayDestructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+  function IShellItemArrayDestructor(_self as any ptr, rclsid as REFCLSID) as HRESULT
     for i as int = 0 to SELF->itemCount-1
       dim item as IShellItem ptr = SELF->ptrArr[i]
       
-      if item<>NULL then item->lpvtbl->Release(item)
+      if item<>NULL then IUnknown_Release(item)
     next
     HeapFree(GetProcessHeap(), 0, SELF->ptrArr)
     return S_OK
   end function
   
-  function IShellItemArrayConstructor(_self as any ptr, rclsid as REFCLSID, extraData as any ptr) as HRESULT
+  function IShellItemArrayConstructor(_self as any ptr, rclsid as REFCLSID) as HRESULT
     return S_OK
   end function
 end extern
@@ -44,7 +44,7 @@ function create_ShellItemArray(itemCount as UINT) as ShellItemArrayImpl ptr
   if SUCCEEDED(cbase_createInstance(@confShellItemArray, @psia, FALSE)) then
     psia->ptrArr = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(any ptr)*itemCount)
     if psia->ptrArr=NULL then 
-      psia->lpvtbl->Release(psia)
+      IUnknown_Release(psia)
       return E_OUTOFMEMORY
     end if
     psia->itemCount = itemCount
@@ -111,7 +111,7 @@ extern "windows-ms"
     if dwIndex >= SELF->itemCount then return E_FAIL
     
     psi = SELF->ptrArr[dwIndex]
-    psi->lpvtbl->AddRef(psi)
+    IUnknown_AddRef(psi)
     *ppsi = psi
     
     return S_OK
