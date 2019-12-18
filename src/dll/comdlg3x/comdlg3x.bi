@@ -65,8 +65,10 @@ type PrivEventHandler
 end type
 
 'FileDialog
+#define FFLAGS_DEFAULT OFN_EXPLORER or OFN_ENABLEHOOK or OFN_HIDEREADONLY
 #define MAX_FILEPATH 65536
 #define MAX_FILENAME 256
+#define MAX_FILEEXT  16
 #define MAX_HANDLERS 128
 type FileDialogImpl
   union
@@ -77,10 +79,13 @@ type FileDialogImpl
   end union
   ofnw as OPENFILENAMEW
   fos as FILEOPENDIALOGOPTIONS
-  bindctx as IBindCtx ptr
+  defaultFolder as IShellItem ptr
+  overrideFolder as IShellItem ptr
+  currentFolder as IShellItem ptr
   
   filePath as WSTRING*MAX_FILEPATH
   fileName as WSTRING*MAX_FILENAME
+  defltExt as WSTRING*MAX_FILEEXT
   isSaveDialog as BOOL
   isFolderDialog as BOOL
   
