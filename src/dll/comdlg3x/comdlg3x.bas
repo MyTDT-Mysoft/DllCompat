@@ -19,30 +19,30 @@ static shared vt_FileDialog as IFileDialogVtbl = type( _
   @cbase_UnkAddRef, _
   @cbase_UnkRelease, _
   _
-  @FileDialog_Show, _
-  @FileDialog_SetFileTypes, _
-  @FileDialog_SetFileTypeIndex, _
-  @FileDialog_GetFileTypeIndex, _
-  @FileDialog_Advise, _
-  @FileDialog_Unadvise, _
-  @FileDialog_SetOptions, _
-  @FileDialog_GetOptions, _
-  @FileDialog_SetDefaultFolder, _
-  @FileDialog_SetFolder, _
-  @FileDialog_GetFolder, _
-  @FileDialog_GetCurrentSelection, _
-  @FileDialog_SetFileName, _
-  @FileDialog_GetFileName, _
-  @FileDialog_SetTitle, _
-  @FileDialog_SetOkButtonLabel, _
-  @FileDialog_SetFileNameLabel, _
-  @FileDialog_GetResult, _
-  @FileDialog_AddPlace, _
-  @FileDialog_SetDefaultExtension, _
-  @FileDialog_Close, _
-  @FileDialog_SetClientGuid, _
-  @FileDialog_ClearClientData, _
-  @FileDialog_SetFilter _
+  @fnIFileDialog_Show, _
+  @fnIFileDialog_SetFileTypes, _
+  @fnIFileDialog_SetFileTypeIndex, _
+  @fnIFileDialog_GetFileTypeIndex, _
+  @fnIFileDialog_Advise, _
+  @fnIFileDialog_Unadvise, _
+  @fnIFileDialog_SetOptions, _
+  @fnIFileDialog_GetOptions, _
+  @fnIFileDialog_SetDefaultFolder, _
+  @fnIFileDialog_SetFolder, _
+  @fnIFileDialog_GetFolder, _
+  @fnIFileDialog_GetCurrentSelection, _
+  @fnIFileDialog_SetFileName, _
+  @fnIFileDialog_GetFileName, _
+  @fnIFileDialog_SetTitle, _
+  @fnIFileDialog_SetOkButtonLabel, _
+  @fnIFileDialog_SetFileNameLabel, _
+  @fnIFileDialog_GetResult, _
+  @fnIFileDialog_AddPlace, _
+  @fnIFileDialog_SetDefaultExtension, _
+  @fnIFileDialog_Close, _
+  @fnIFileDialog_SetClientGuid, _
+  @fnIFileDialog_ClearClientData, _
+  @fnIFileDialog_SetFilter _
 )
 
 static shared vt_FileOpenDialog as IFileOpenDialogVtbl = type( _
@@ -50,33 +50,33 @@ static shared vt_FileOpenDialog as IFileOpenDialogVtbl = type( _
   @cbase_UnkAddRef, _
   @cbase_UnkRelease, _
   _
-  @FileDialog_Show, _
-  @FileDialog_SetFileTypes, _
-  @FileDialog_SetFileTypeIndex, _
-  @FileDialog_GetFileTypeIndex, _
-  @FileDialog_Advise, _
-  @FileDialog_Unadvise, _
-  @FileDialog_SetOptions, _
-  @FileDialog_GetOptions, _
-  @FileDialog_SetDefaultFolder, _
-  @FileDialog_SetFolder, _
-  @FileDialog_GetFolder, _
-  @FileDialog_GetCurrentSelection, _
-  @FileDialog_SetFileName, _
-  @FileDialog_GetFileName, _
-  @FileDialog_SetTitle, _
-  @FileDialog_SetOkButtonLabel, _
-  @FileDialog_SetFileNameLabel, _
-  @FileDialog_GetResult, _
-  @FileDialog_AddPlace, _
-  @FileDialog_SetDefaultExtension, _
-  @FileDialog_Close, _
-  @FileDialog_SetClientGuid, _
-  @FileDialog_ClearClientData, _
-  @FileDialog_SetFilter, _
+  @fnIFileDialog_Show, _
+  @fnIFileDialog_SetFileTypes, _
+  @fnIFileDialog_SetFileTypeIndex, _
+  @fnIFileDialog_GetFileTypeIndex, _
+  @fnIFileDialog_Advise, _
+  @fnIFileDialog_Unadvise, _
+  @fnIFileDialog_SetOptions, _
+  @fnIFileDialog_GetOptions, _
+  @fnIFileDialog_SetDefaultFolder, _
+  @fnIFileDialog_SetFolder, _
+  @fnIFileDialog_GetFolder, _
+  @fnIFileDialog_GetCurrentSelection, _
+  @fnIFileDialog_SetFileName, _
+  @fnIFileDialog_GetFileName, _
+  @fnIFileDialog_SetTitle, _
+  @fnIFileDialog_SetOkButtonLabel, _
+  @fnIFileDialog_SetFileNameLabel, _
+  @fnIFileDialog_GetResult, _
+  @fnIFileDialog_AddPlace, _
+  @fnIFileDialog_SetDefaultExtension, _
+  @fnIFileDialog_Close, _
+  @fnIFileDialog_SetClientGuid, _
+  @fnIFileDialog_ClearClientData, _
+  @fnIFileDialog_SetFilter, _
   _
-  @FileOpenDialog_GetResults, _
-  @FileOpenDialog_GetSelectedItems _
+  @fnIFileOpenDialog_GetResults, _
+  @fnIFileOpenDialog_GetSelectedItems _
 )
 
 static shared vt_FileSaveDialog as IFileSaveDialogVtbl = type( _
@@ -84,36 +84,36 @@ static shared vt_FileSaveDialog as IFileSaveDialogVtbl = type( _
   @cbase_UnkAddRef, _
   @cbase_UnkRelease, _
   _
-  @FileDialog_Show, _
-  @FileDialog_SetFileTypes, _
-  @FileDialog_SetFileTypeIndex, _
-  @FileDialog_GetFileTypeIndex, _
-  @FileDialog_Advise, _
-  @FileDialog_Unadvise, _
-  @FileDialog_SetOptions, _
-  @FileDialog_GetOptions, _
-  @FileDialog_SetDefaultFolder, _
-  @FileDialog_SetFolder, _
-  @FileDialog_GetFolder, _
-  @FileDialog_GetCurrentSelection, _
-  @FileDialog_SetFileName, _
-  @FileDialog_GetFileName, _
-  @FileDialog_SetTitle, _
-  @FileDialog_SetOkButtonLabel, _
-  @FileDialog_SetFileNameLabel, _
-  @FileDialog_GetResult, _
-  @FileDialog_AddPlace, _
-  @FileDialog_SetDefaultExtension, _
-  @FileDialog_Close, _
-  @FileDialog_SetClientGuid, _
-  @FileDialog_ClearClientData, _
-  @FileDialog_SetFilter, _
+  @fnIFileDialog_Show, _
+  @fnIFileDialog_SetFileTypes, _
+  @fnIFileDialog_SetFileTypeIndex, _
+  @fnIFileDialog_GetFileTypeIndex, _
+  @fnIFileDialog_Advise, _
+  @fnIFileDialog_Unadvise, _
+  @fnIFileDialog_SetOptions, _
+  @fnIFileDialog_GetOptions, _
+  @fnIFileDialog_SetDefaultFolder, _
+  @fnIFileDialog_SetFolder, _
+  @fnIFileDialog_GetFolder, _
+  @fnIFileDialog_GetCurrentSelection, _
+  @fnIFileDialog_SetFileName, _
+  @fnIFileDialog_GetFileName, _
+  @fnIFileDialog_SetTitle, _
+  @fnIFileDialog_SetOkButtonLabel, _
+  @fnIFileDialog_SetFileNameLabel, _
+  @fnIFileDialog_GetResult, _
+  @fnIFileDialog_AddPlace, _
+  @fnIFileDialog_SetDefaultExtension, _
+  @fnIFileDialog_Close, _
+  @fnIFileDialog_SetClientGuid, _
+  @fnIFileDialog_ClearClientData, _
+  @fnIFileDialog_SetFilter, _
   _
-  @FileSaveDialog_SetSaveAsItem, _
-  @FileSaveDialog_SetProperties, _
-  @FileSaveDialog_SetCollectedProperties, _
-  @FileSaveDialog_GetProperties, _
-  @FileSaveDialog_ApplyProperties _
+  @fnIFileSaveDialog_SetSaveAsItem, _
+  @fnIFileSaveDialog_SetProperties, _
+  @fnIFileSaveDialog_SetCollectedProperties, _
+  @fnIFileSaveDialog_GetProperties, _
+  @fnIFileSaveDialog_ApplyProperties _
 )
 
 static shared vt_fsbd as IFileSystemBindDataVtbl = type( _
@@ -121,14 +121,14 @@ static shared vt_fsbd as IFileSystemBindDataVtbl = type( _
   @cbase_UnkAddRef, _
   @cbase_UnkRelease, _
   _
-  @FileSystemBindData_SetFindData, _
-  @FileSystemBindData_GetFindData _
+  @fnIFileSystemBindData_SetFindData, _
+  @fnIFileSystemBindData_GetFindData _
 )
 
 static shared iidOpenDialog(...) as REFIID = { @IID_IFileOpenDialog, @IID_IFileDialog, @IID_IUnknown }
 static shared confOpenDialog as COMDesc = type( _
   @CLSID_FileOpenDialog, @iidOpenDialog(0), COUNTOF(iidOpenDialog), _
-  @vt_FileOpenDialog, sizeof(FileDialogImpl), _
+  @vt_FileOpenDialog, sizeof(IFileDialogImpl), _
   @FileDialogConstructor, @FileDialogDestructor, _
   @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Open Dialog(DLLCompat)" _
 )
@@ -136,7 +136,7 @@ static shared confOpenDialog as COMDesc = type( _
 static shared iidSaveDialog(...) as REFIID = { @IID_IFileSaveDialog, @IID_IFileDialog, @IID_IUnknown }
 static shared confSaveDialog as COMDesc = type( _
   @CLSID_FileSaveDialog, @iidSaveDialog(0), COUNTOF(iidSaveDialog), _
-  @vt_FileSaveDialog, sizeof(FileDialogImpl), _
+  @vt_FileSaveDialog, sizeof(IFileDialogImpl), _
   @FileDialogConstructor, @FileDialogDestructor, _
   @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Save Dialog(DLLCompat)" _
 )
@@ -144,7 +144,7 @@ static shared confSaveDialog as COMDesc = type( _
 static shared iidFSBind(...) as REFIID = { @IID_IFileSystemBindData, @IID_IUnknown }
 static shared confFSBind as COMDesc = type( _
   NULL, @iidFSBind(0), COUNTOF(iidFSBind), _
-  @vt_fsbd, sizeof(FileSystemBindDataImpl), _
+  @vt_fsbd, sizeof(IFileSystemBindDataImpl), _
   NULL, NULL, _
   NULL, NULL, NULL _
 )
@@ -155,11 +155,11 @@ static shared serverConfig(...) as COMDesc ptr = {@confOpenDialog, @confSaveDial
 
 #define MAX_DIALOGS 32
 static shared csWhnd as CRITICAL_SECTION
-static shared dialogArr(MAX_DIALOGS) as FileDialogImpl ptr
+static shared dialogArr(MAX_DIALOGS) as IFileDialogImpl ptr
 static shared bindctx as IBindCtx ptr
 static shared mal as IMalloc ptr
 
-sub bindHwnd2Dialog(hwnd as HWND, pdlg as FileDialogImpl ptr)
+sub bindHwnd2Dialog(hwnd as HWND, pdlg as IFileDialogImpl ptr)
   EnterCriticalSection(@csWhnd)
   for i as integer = 0 to MAX_DIALOGS
     if dialogArr(i)=NULL then
@@ -171,8 +171,8 @@ sub bindHwnd2Dialog(hwnd as HWND, pdlg as FileDialogImpl ptr)
   LeaveCriticalSection(@csWhnd)
 end sub
 
-function unbindHwndAndDialog(hwnd as HWND) as FileDialogImpl ptr
-  dim pdlg as FileDialogImpl ptr = NULL
+function unbindHwndAndDialog(hwnd as HWND) as IFileDialogImpl ptr
+  dim pdlg as IFileDialogImpl ptr = NULL
   
   EnterCriticalSection(@csWhnd)
   for i as integer = 0 to MAX_DIALOGS
@@ -187,8 +187,8 @@ function unbindHwndAndDialog(hwnd as HWND) as FileDialogImpl ptr
   return pdlg
 end function
 
-function getDialogFromHwnd(hwnd as HWND) as FileDialogImpl ptr
-  dim pdlg as FileDialogImpl ptr = NULL
+function getDialogFromHwnd(hwnd as HWND) as IFileDialogImpl ptr
+  dim pdlg as IFileDialogImpl ptr = NULL
   
   EnterCriticalSection(@csWhnd)
   for i as integer = 0 to MAX_DIALOGS
@@ -230,7 +230,7 @@ function lazyCoAlloc(pOut as any ptr ptr, flags as DWORD, newSize as int) as any
   return mem
 end function
 
-function getBestcaseFolder(fdlg as FileDialogImpl ptr) as IShellItem ptr
+function getBestcaseFolder(fdlg as IFileDialogImpl ptr) as IShellItem ptr
   if      fdlg->currentFolder<>NULL then 
     return fdlg->currentFolder
   elseif fdlg->overrideFolder<>NULL then
@@ -258,7 +258,7 @@ extern "windows-ms"
         
         for i as integer = 0 to _PDLG->usedArrSlots
           evIface = iif(_PDLG->handlerArr(i)<>NULL, _PDLG->handlerArr(i)->pfde, NULL)
-          if evIface<>NULL then evIface->lpVtbl->_FUNC(evIface, _PARAMS)
+          if evIface<>NULL then IFileDialogEvents_##_FUNC(evIface, _PARAMS)
         next
       end if
     #endmacro
@@ -266,14 +266,14 @@ extern "windows-ms"
     select case uiMsg
       case WM_INITDIALOG
         dim pOfnw as OPENFILENAMEW ptr = cast(OPENFILENAMEW ptr, lParam)
-        dim pdlg as FileDialogImpl ptr = cast(FileDialogImpl ptr, pOfnw->lCustData)
+        dim pdlg as IFileDialogImpl ptr = cast(IFileDialogImpl ptr, pOfnw->lCustData)
         
         bindHwnd2Dialog(hwnd, pdlg)
       case WM_CLOSE
         unbindHwndAndDialog(hwnd)
       case WM_NOTIFY
         dim ofn as OFNOTIFYW ptr = cast(OFNOTIFYW ptr, lparam)
-        dim pdlg as FileDialogImpl ptr = getDialogFromHwnd(hwnd)
+        dim pdlg as IFileDialogImpl ptr = getDialogFromHwnd(hwnd)
         
         select case ofn->hdr.code
           case CDN_FILEOK
@@ -294,13 +294,13 @@ extern "windows-ms"
   end function
   
   'FileSystemBindData
-  #define SELF cast(FileSystemBindDataImpl ptr, _self)
-  function FileSystemBindData_SetFindData(_self as IFileSystemBindData ptr, pfd as const WIN32_FIND_DATAW ptr) as HRESULT
+  #define SELF cast(IFileSystemBindDataImpl ptr, _self)
+  function fnIFileSystemBindData_SetFindData(_self as IFileSystemBindData ptr, pfd as const WIN32_FIND_DATAW ptr) as HRESULT
     SELF->w32fdw = *pfd
     return S_OK
   end function
   
-  function FileSystemBindData_GetFindData(_self as IFileSystemBindData ptr, pfd as WIN32_FIND_DATAW ptr) as HRESULT
+  function fnIFileSystemBindData_GetFindData(_self as IFileSystemBindData ptr, pfd as WIN32_FIND_DATAW ptr) as HRESULT
     *pfd = SELF->w32fdw
     return S_OK
   end function
@@ -308,8 +308,8 @@ extern "windows-ms"
   
   
   'FileDialog
-  #define SELF cast(FileDialogImpl ptr, _self)
-  function FileDialog_Show                       (_self as IFileDialog ptr, hwndOwner as HWND) as HRESULT
+  #define SELF cast(IFileDialogImpl ptr, _self)
+  function fnIFileDialog_Show                       (_self as IFileDialog ptr, hwndOwner as HWND) as HRESULT
     dim ret as BOOL
     dim strtFldr as IShellItem ptr
     
@@ -321,7 +321,7 @@ extern "windows-ms"
     end if
     
     strtFldr = getBestcaseFolder(SELF)
-    strtFldr->lpVtbl->GetDisplayName(strtFldr, SIGDN_FILESYSPATH, cast(any ptr, @SELF->ofnw.lpstrInitialDir))
+    IShellItem_GetDisplayName(strtFldr, SIGDN_FILESYSPATH, cast(any ptr, @SELF->ofnw.lpstrInitialDir))
     
     ret = iif(SELF->isSaveDialog, GetSaveFileNameW(@SELF->ofnw), GetOpenFileNameW(@SELF->ofnw))
     if ret then
@@ -339,7 +339,7 @@ extern "windows-ms"
     return iif(ret, S_OK, HRESULT_FROM_WIN32(ERROR_CANCELLED))
   end function
   
-  function FileDialog_SetFileTypes               (_self as IFileDialog ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
+  function fnIFileDialog_SetFileTypes               (_self as IFileDialog ptr, cFileTypes as UINT, rgFilterSpec as COMDLG_FILTERSPEC ptr) as HRESULT
     dim size as DWORD = 1 'list is double-NULL terminated
     dim strArr as LPCWSTR ptr = cast(LPCWSTR ptr, rgFilterSpec)
     dim dat as BYTE ptr
@@ -364,20 +364,20 @@ extern "windows-ms"
     return S_OK
   end function
   
-  function FileDialog_SetFileTypeIndex           (_self as IFileDialog ptr, iFileType as UINT) as HRESULT
+  function fnIFileDialog_SetFileTypeIndex           (_self as IFileDialog ptr, iFileType as UINT) as HRESULT
     SELF->ofnw.nFilterIndex = iFileType
     
     return S_OK
   end function
   
-  function FileDialog_GetFileTypeIndex           (_self as IFileDialog ptr, piFileType as UINT ptr) as HRESULT
+  function fnIFileDialog_GetFileTypeIndex           (_self as IFileDialog ptr, piFileType as UINT ptr) as HRESULT
     if piFileType=NULL then return E_INVALIDARG
     *piFileType = SELF->ofnw.nFilterIndex
     
     return S_OK
   end function
   
-  function FileDialog_Advise                     (_self as IFileDialog ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
+  function fnIFileDialog_Advise                     (_self as IFileDialog ptr, pfde as IFileDialogEvents ptr, pdwCookie as DWORD ptr) as HRESULT
     if pfde=NULL orelse pdwCookie=NULL then return E_INVALIDARG
     
     for i as integer = 0 to MAX_HANDLERS-1
@@ -393,7 +393,7 @@ extern "windows-ms"
         
         SELF->nextCookie += 1
         if SELF->usedArrSlots < i then SELF->usedArrSlots = i
-        IUnknown_AddRef(pfde)
+        IFileDialogEvents_AddRef(pfde)
         return S_OK
       end if
     next
@@ -401,14 +401,14 @@ extern "windows-ms"
     return E_OUTOFMEMORY
   end function
   
-  function FileDialog_Unadvise                   (_self as IFileDialog ptr, dwCookie as DWORD) as HRESULT
+  function fnIFileDialog_Unadvise                   (_self as IFileDialog ptr, dwCookie as DWORD) as HRESULT
     'Before enabling, we must at least respond to open/save and cancel buttons
     
     for i as integer = 0 to SELF->usedArrSlots
       dim hdlr as PrivEventHandler ptr = SELF->handlerArr(i)
       
       if hdlr<>NULL andalso hdlr->cookie=dwCookie then 
-        IUnknown_Release(hdlr->pfde)
+        IFileDialogEvents_Release(hdlr->pfde)
         IMalloc_Free(mal, hdlr)
         return S_OK
       end if
@@ -417,7 +417,7 @@ extern "windows-ms"
     return E_INVALIDARG
   end function
   
-  function FileDialog_SetOptions                 (_self as IFileDialog ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
+  function fnIFileDialog_SetOptions                 (_self as IFileDialog ptr, fos as FILEOPENDIALOGOPTIONS) as HRESULT
     static flgMap(...) as DWORD = { _
       FOS_OVERWRITEPROMPT,               OFN_OVERWRITEPROMPT, _
       FOS_STRICTFILETYPES,               0, _
@@ -457,20 +457,20 @@ extern "windows-ms"
     return S_OK
   end function
   
-  function FileDialog_GetOptions                 (_self as IFileDialog ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
+  function fnIFileDialog_GetOptions                 (_self as IFileDialog ptr, pfos as FILEOPENDIALOGOPTIONS ptr) as HRESULT
     if pfos=NULL then return E_INVALIDARG
     *pfos = SELF->fos
     
     return S_OK
   end function
   
-  function FileDialog_SetDefaultFolder           (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
+  function fnIFileDialog_SetDefaultFolder           (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
     dim hr as HRESULT = S_OK
     dim sfgao as SFGAOF
     dim newpsi as IShellItem ptr
     
     if psi<>NULL then
-      hr = psi->lpVtbl->GetAttributes(psi, SFGAO_FOLDER, @sfgao)
+      hr = IShellItem_GetAttributes(psi, SFGAO_FOLDER, @sfgao)
       if SUCCEEDED(hr) then
         if sfgao=0 then return E_INVALIDARG
         newpsi = psi
@@ -479,20 +479,20 @@ extern "windows-ms"
       newpsi = NULL
     end if
     
-    if SELF->defaultFolder<>NULL then IUnknown_Release(SELF->defaultFolder)
+    if SELF->defaultFolder<>NULL then IShellItem_Release(SELF->defaultFolder)
     SELF->defaultFolder = newpsi
-    if SELF->defaultFolder<>NULL then IUnknown_AddRef(SELF->defaultFolder)
+    if SELF->defaultFolder<>NULL then IShellItem_AddRef(SELF->defaultFolder)
     
     return hr
   end function
   
-  function FileDialog_SetFolder                  (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
+  function fnIFileDialog_SetFolder                  (_self as IFileDialog ptr, psi as IShellItem ptr) as HRESULT
     dim hr as HRESULT = S_OK
     dim sfgao as SFGAOF
     dim newpsi as IShellItem ptr
     
     if psi<>NULL then
-      hr = psi->lpVtbl->GetAttributes(psi, SFGAO_FOLDER, @sfgao)
+      hr = IShellItem_GetAttributes(psi, SFGAO_FOLDER, @sfgao)
       if SUCCEEDED(hr) then
         if sfgao=0 then return E_INVALIDARG
         newpsi = psi
@@ -501,24 +501,24 @@ extern "windows-ms"
       newpsi = NULL
     end if
     
-    if SELF->overrideFolder<>NULL then IUnknown_Release(SELF->overrideFolder)
+    if SELF->overrideFolder<>NULL then IShellItem_Release(SELF->overrideFolder)
     SELF->overrideFolder = newpsi
-    if SELF->overrideFolder<>NULL then IUnknown_AddRef(SELF->overrideFolder)
+    if SELF->overrideFolder<>NULL then IShellItem_AddRef(SELF->overrideFolder)
     
     return hr
   end function
   
-  function FileDialog_GetFolder                  (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
+  function fnIFileDialog_GetFolder                  (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
     if ppsi=NULL then return E_INVALIDARG
     
     *ppsi = getBestcaseFolder(SELF)
     if *ppsi=NULL then return E_FAIL
-    IUnknown_AddRef(*ppsi)
+    IShellItem_AddRef(*ppsi)
     
     return S_OK
   end function
   
-  function FileDialog_GetCurrentSelection        (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
+  function fnIFileDialog_GetCurrentSelection        (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
     
     
     
@@ -535,14 +535,14 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
   
-  function FileDialog_SetFileName                (_self as IFileDialog ptr, pszName as LPCWSTR) as HRESULT
+  function fnIFileDialog_SetFileName                (_self as IFileDialog ptr, pszName as LPCWSTR) as HRESULT
     if pszName=NULL then return E_INVALIDARG
     memcpy(cast(any ptr, SELF->ofnw.lpstrFile), pszName, (lstrlenW(pszName)+1) * 2)
     
     return S_OK
   end function
   
-  function FileDialog_GetFileName                (_self as IFileDialog ptr, pszName as LPWSTR ptr) as HRESULT
+  function fnIFileDialog_GetFileName                (_self as IFileDialog ptr, pszName as LPWSTR ptr) as HRESULT
     dim fnSize as int
     
     if pszName<>NULL then return E_INVALIDARG
@@ -555,7 +555,7 @@ extern "windows-ms"
     return S_OK
   end function
   
-  function FileDialog_SetTitle                   (_self as IFileDialog ptr, pszTitle as LPCWSTR) as HRESULT
+  function fnIFileDialog_SetTitle                   (_self as IFileDialog ptr, pszTitle as LPCWSTR) as HRESULT
     dim length as int
     
     if pszTitle=NULL then return E_INVALIDARG
@@ -566,7 +566,7 @@ extern "windows-ms"
     return S_OK
   end function
   
-  function FileDialog_SetOkButtonLabel           (_self as IFileDialog ptr, pszText as LPCWSTR) as HRESULT
+  function fnIFileDialog_SetOkButtonLabel           (_self as IFileDialog ptr, pszText as LPCWSTR) as HRESULT
     
     
     
@@ -583,7 +583,7 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
   
-  function FileDialog_SetFileNameLabel           (_self as IFileDialog ptr, pszLabel as LPCWSTR) as HRESULT
+  function fnIFileDialog_SetFileNameLabel           (_self as IFileDialog ptr, pszLabel as LPCWSTR) as HRESULT
     
     
     
@@ -600,7 +600,7 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
   
-  function FileDialog_GetResult                  (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
+  function fnIFileDialog_GetResult                  (_self as IFileDialog ptr, ppsi as IShellItem ptr ptr) as HRESULT
     dim hr as HRESULT
     dim pidl as PIDLIST_ABSOLUTE
     
@@ -615,7 +615,7 @@ extern "windows-ms"
     return hr
   end function
   
-  function FileDialog_AddPlace                   (_self as IFileDialog ptr, psi as IShellItem ptr, fdap as FDAP) as HRESULT
+  function fnIFileDialog_AddPlace                   (_self as IFileDialog ptr, psi as IShellItem ptr, fdap as FDAP) as HRESULT
     
     
     
@@ -632,7 +632,7 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
   
-  function FileDialog_SetDefaultExtension        (_self as IFileDialog ptr, pszDefaultExtension as LPCWSTR) as HRESULT
+  function fnIFileDialog_SetDefaultExtension        (_self as IFileDialog ptr, pszDefaultExtension as LPCWSTR) as HRESULT
     dim extLen as int = iif(pszDefaultExtension=NULL, 0, lstrlenW(pszDefaultExtension))
     
     if extLen>(MAX_FILEEXT - 1) then extLen = MAX_FILEEXT - 1
@@ -646,12 +646,12 @@ extern "windows-ms"
     return S_OK
   end function
   
-  function FileDialog_Close                      (_self as IFileDialog ptr, hr as HRESULT) as HRESULT
+  function fnIFileDialog_Close                      (_self as IFileDialog ptr, hr as HRESULT) as HRESULT
     if SELF->dialogHwnd<>NULL then PostMessageA(SELF->dialogHwnd, WM_CLOSE , 0, 0)
     return S_OK
   end function
   
-  function FileDialog_SetClientGuid              (_self as IFileDialog ptr, guid as GUID ptr) as HRESULT
+  function fnIFileDialog_SetClientGuid              (_self as IFileDialog ptr, guid as GUID ptr) as HRESULT
     
     
     
@@ -668,7 +668,7 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
   
-  function FileDialog_ClearClientData            (_self as IFileDialog ptr) as HRESULT
+  function fnIFileDialog_ClearClientData            (_self as IFileDialog ptr) as HRESULT
     
     
     
@@ -685,7 +685,7 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
   
-  function FileDialog_SetFilter                  (_self as IFileDialog ptr, pFilter as IShellItemFilter ptr) as HRESULT
+  function fnIFileDialog_SetFilter                  (_self as IFileDialog ptr, pFilter as IShellItemFilter ptr) as HRESULT
     
     
     
@@ -704,7 +704,7 @@ extern "windows-ms"
   
 '-------------------------------------------------------------------------------------------
 'FileOpenDialog
-  function FileOpenDialog_GetResults             (_self as IFileOpenDialog ptr, ppenum as IShellItemArray ptr ptr) as HRESULT
+  function fnIFileOpenDialog_GetResults             (_self as IFileOpenDialog ptr, ppenum as IShellItemArray ptr ptr) as HRESULT
     dim hr as HRESULT = S_OK
     dim fileCount as int = 0
     dim pStr as WCHAR ptr
@@ -740,7 +740,7 @@ extern "windows-ms"
     return hr
   end function
   
-  function FileOpenDialog_GetSelectedItems       (_self as IFileOpenDialog ptr, ppsai as IShellItemArray ptr ptr) as HRESULT
+  function fnIFileOpenDialog_GetSelectedItems       (_self as IFileOpenDialog ptr, ppsai as IShellItemArray ptr ptr) as HRESULT
     
     
     
@@ -760,7 +760,7 @@ extern "windows-ms"
 '-------------------------------------------------------------------------------------------
 'FileSaveDialog
   
-  function FileSaveDialog_SetSaveAsItem          (_self as IFileSaveDialog ptr, psi as IShellItem ptr) as HRESULT
+  function fnIFileSaveDialog_SetSaveAsItem          (_self as IFileSaveDialog ptr, psi as IShellItem ptr) as HRESULT
     
     
     
@@ -777,7 +777,7 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
   
-  function FileSaveDialog_SetProperties          (_self as IFileSaveDialog ptr, pStore as IPropertyStore ptr) as HRESULT
+  function fnIFileSaveDialog_SetProperties          (_self as IFileSaveDialog ptr, pStore as IPropertyStore ptr) as HRESULT
     
     
     
@@ -794,7 +794,7 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
   
-  function FileSaveDialog_SetCollectedProperties (_self as IFileSaveDialog ptr, pList as IPropertyDescriptionList ptr, fAppendDefault as WINBOOL) as HRESULT
+  function fnIFileSaveDialog_SetCollectedProperties (_self as IFileSaveDialog ptr, pList as IPropertyDescriptionList ptr, fAppendDefault as WINBOOL) as HRESULT
     
     
     
@@ -811,7 +811,7 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
   
-  function FileSaveDialog_GetProperties          (_self as IFileSaveDialog ptr, ppStore as IPropertyStore ptr ptr) as HRESULT
+  function fnIFileSaveDialog_GetProperties          (_self as IFileSaveDialog ptr, ppStore as IPropertyStore ptr ptr) as HRESULT
     
     
     
@@ -828,7 +828,7 @@ extern "windows-ms"
     return E_NOTIMPL
   end function
   
-  function FileSaveDialog_ApplyProperties        (_self as IFileSaveDialog ptr, psi as IShellItem ptr, pStore as IPropertyStore ptr, hwnd as HWND, pSink as IFileOperationProgressSink ptr) as HRESULT
+  function fnIFileSaveDialog_ApplyProperties        (_self as IFileSaveDialog ptr, psi as IShellItem ptr, pStore as IPropertyStore ptr, hwnd as HWND, pSink as IFileOperationProgressSink ptr) as HRESULT
     
     
     
@@ -853,8 +853,8 @@ extern "C"
     IF_COFREE(SELF->ofnw.lpstrInitialDir)
     
     if bindctx<>NULL then
-      bindctx->lpVtbl->RevokeObjectParam(bindctx, STR_FILE_SYS_BIND_DATA)
-      IUnknown_Release(bindctx)
+      IBindCtx_RevokeObjectParam(bindctx, STR_FILE_SYS_BIND_DATA)
+      IBindCtx_Release(bindctx)
     end if
     
     return S_OK
@@ -885,29 +885,29 @@ extern "C"
     'Based on Raymond Chen's example: https://devblogs.microsoft.com/oldnewthing/?p=4463
     scope
       dim ctx as IBindCtx ptr
-      dim fsbd as FileSystemBindDataImpl ptr
+      dim fsbd as IFileSystemBindDataImpl ptr
       
       hr = CreateBindCtx(0, @ctx)
       if not SUCCEEDED(hr) then goto FAIL
       hr = cbase_createInstance(@confFSBind, @fsbd, FALSE)
       if not SUCCEEDED(hr) then goto FAIL
-      hr = ctx->lpVtbl->RegisterObjectParam(ctx, STR_FILE_SYS_BIND_DATA, fsbd)
+      hr = IBindCtx_RegisterObjectParam(ctx, STR_FILE_SYS_BIND_DATA, fsbd)
       if SUCCEEDED(hr) then
         dim w32fdw as WIN32_FIND_DATAW
         dim bo as BIND_OPTS = type(sizeof(BIND_OPTS), 0, STGM_CREATE, 0)
         
         w32fdw.dwFileAttributes = FILE_ATTRIBUTE_NORMAL
-        FileSystemBindData_SetFindData(fsbd, @w32fdw)
-        hr = ctx->lpVtbl->SetBindOptions(ctx, @bo)
+        IFileSystemBindData_SetFindData(fsbd, @w32fdw)
+        hr = IBindCtx_SetBindOptions(ctx, @bo)
         if not SUCCEEDED(hr) then goto FAIL
         
         bindctx = ctx
-        IUnknown_AddRef(ctx)
+        IBindCtx_AddRef(ctx)
       end if
       
       FAIL:
-      if fsbd<>NULL then IUnknown_Release(fsbd)
-      if ctx<>NULL then IUnknown_Release(ctx)
+      if fsbd<>NULL then IFileSystemBindData_Release(fsbd)
+      if ctx<>NULL  then IBindCtx_Release(ctx)
     end scope
     
     if SUCCEEDED(hr) then

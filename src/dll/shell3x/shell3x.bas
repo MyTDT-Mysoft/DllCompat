@@ -33,7 +33,7 @@ extern "windows-ms"
   #define P2 rgpidl        as PCIDLIST_ABSOLUTE_ARRAY
   #define P3 ppsiItemArray as IShellItemArray ptr ptr
   function fnSHCreateShellItemArrayFromIDLists alias "SHCreateShellItemArrayFromIDLists"(P1, P2, P3) as HRESULT export
-    dim psia as ShellItemArrayImpl ptr
+    dim psia as IShellItemArrayImpl ptr
     
     if ppsiItemArray=NULL then return E_INVALIDARG
     *ppsiItemArray = NULL
