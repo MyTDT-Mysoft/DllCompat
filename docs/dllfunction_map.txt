@@ -1,6 +1,6 @@
 States:
     Completeness: full, partial, dummy, TODO
-    Type: new, reimpl
+    Type: new, reimpl, redir
     Notes: testme, fixme
 
 advapi3x
@@ -63,6 +63,10 @@ iphlpapx
     ConvertInterfaceNameToLuidA                     new         dummy       fixme
     ConvertInterfaceNameToLuidW                     new         dummy       fixme
 kernel3x
+    
+    
+    AcquireSRWLockExclusive                         redir       ntdlx.RtlAcquireSRWLockExclusive
+    AcquireSRWLockShared                            redir       ntdlx.RtlAcquireSRWLockShared
     CancelIoEx                                      new         dummy       fixme
     CompareStringEx                                 new         partial     fixme
     CreateEventExA                                  new         full
@@ -72,37 +76,73 @@ kernel3x
     FlsGetValue                                     new         dummy       fixme
     FlsSetValue                                     new         dummy       fixme
     GetConsoleScreenBufferInfoEx                    new         partial     testme
+    GetCurrentProcessorNumber                       new         dummy
+    GetErrorMode                                    new         full        fixme
     GetFileInformationByHandleEx                    new         partial     testme
     GetFinalPathNameByHandleW                       new
     GetLocaleInfoEx                                 new         dummy       fixme
     GetLogicalProcessorInformation                  reimpl      partial
     GetNumaNodeProcessorMaskEx                      new         dummy
+    GetProductInfo                                  redir       ntdlx.RtlGetProductInfo
     GetSystemDefaultLocaleName                      new         testme
-    GetUserDefaultLocaleName                        new         testme
-    GetUserPreferredUILanguages                     new         dummy
     GetThreadId                                     new
     GetTickCount64                                  new         testme
+    GetUserDefaultLocaleName                        new         testme
     GetUserPreferredUILanguages                     new         dummy
-    GetVersionExW                                   reimpl
-    GetVersionExA                                   reimpl
+    GetVersionExW                                   reimpl      dummy
+    GetVersionExA                                   reimpl      dummy
+    IdnToAscii                                      redir       normaliz.IdnToAscii
+    IdnToNameprepUnicode                            redir       normaliz.IdnToNameprepUnicode
+    IdnToUnicode                                    redir       normaliz.IdnToUnicode
     InitializeConditionVariable                     new
     InitializeCriticalSectionEx                     new
+    InitializeSRWLock                               redir       ntdlx.RtlInitializeSRWLock
     InitOnceExecuteOnce                             new
     InterlockedCompareExchange64                    new
+    IsNormalizedString                              redir       normaliz.IsNormalizedString
     IsValidLocaleName                               new         dummy       fixme
+    K32EmptyWorkingSet                              redir       psapi.EmptyWorkingSet
+    K32EnumDeviceDrivers                            redir       psapi.EnumDeviceDrivers
+    K32EnumPageFilesA                               redir       psapi.EnumPageFilesA
+    K32EnumPageFilesW                               redir       psapi.EnumPageFilesW
+    K32EnumProcesses                                redir       psapi.EnumProcesses
+    K32EnumProcessModules                           redir       psapi.EnumProcessModules
+    K32GetDeviceDriverBaseNameA                     redir       psapi.GetDeviceDriverBaseNameA
+    K32GetDeviceDriverBaseNameW                     redir       psapi.GetDeviceDriverBaseNameW
+    K32GetDeviceDriverFileNameA                     redir       psapi.GetDeviceDriverFileNameA
+    K32GetDeviceDriverFileNameW                     redir       psapi.GetDeviceDriverFileNameW
+    K32GetMappedFileNameA                           redir       psapi.GetMappedFileNameA
+    K32GetMappedFileNameW                           redir       psapi.GetMappedFileNameW
+    K32GetModuleBaseNameA                           redir       psapi.GetModuleBaseNameA
+    K32GetModuleBaseNameW                           redir       psapi.GetModuleBaseNameW
+    K32GetModuleFileNameExA                         redir       psapi.GetModuleFileNameExA
+    K32GetModuleFileNameExW                         redir       psapi.GetModuleFileNameExW
+    K32GetModuleInformation                         redir       psapi.GetModuleInformation
+    K32GetPerformanceInfo                           redir       psapi.GetPerformanceInfo
+    K32GetProcessImageFileNameA                     redir       psapi.GetProcessImageFileNameA
+    K32GetProcessImageFileNameW                     redir       psapi.GetProcessImageFileNameW
+    K32GetProcessMemoryInfo                         redir       psapi.GetProcessMemoryInfo
+    K32GetWsChanges                                 redir       psapi.GetWsChanges
+    K32InitializeProcessForWsWatch                  redir       psapi.InitializeProcessForWsWatch
+    K32QueryWorkingSet                              redir       psapi.QueryWorkingSet
     LCIDToLocaleName                                new         dummy       fixme
     LCMapStringEx                                   new         dummy
     LocaleNameToLCID                                new         dummy       fixme
+    NormalizeString                                 redir       normaliz.NormalizeString
     OpenProcess                                     reimpl      full
     QueryFullProcessImageNameA                      new
     QueryFullProcessImageNameW                      TODO
     RaiseFailFastException                          new         dummy
+    ReleaseSRWLockExclusive                         redir       ntdlx.RtlReleaseSRWLockExclusive
+    ReleaseSRWLockShared                            redir       ntdlx.RtlReleaseSRWLockShared
     SetConsoleScreenBufferInfoEx                    new         partial     testme
     SetFileInformationByHandle                      new         dummy
     SetThreadGroupAffinity                          new         dummy
     SetThreadStackGuarantee                         new         dummy
     SetUnhandledExceptionFilter                     reimpl
     SleepConditionVariableCS                        new
+    TryAcquireSRWLockExclusive                      redir       ntdlx.RtlTryAcquireSRWLockExclusive
+    TryAcquireSRWLockShared                         redir       ntdlx.RtlTryAcquireSRWLockShared
     VerifyVersionInfoW                              reimpl
     VerifyVersionInfoA                              reimpl
     WakeAllConditionVariable                        new
@@ -116,6 +156,15 @@ kernel3x
 ;;    ;time                                            reimpl
 ntdlx
     RtlIsCriticalSectionLockedByThread              new         full
+    RtlGetProductInfo                               new         dummy
+    
+;;    AcquireSRWLockExclusive                         new
+;;    AcquireSRWLockShared                            new
+;;    InitializeSRWLock                               new
+;;    ReleaseSRWLockExclusive                         new
+;;    ReleaseSRWLockShared                            new
+;;    TryAcquireSRWLockExclusive                      new
+;;    TryAcquireSRWLockShared                         new
 opengl3x
     glGetString                                     reimpl
     wglGetProcAddress                               reimpl

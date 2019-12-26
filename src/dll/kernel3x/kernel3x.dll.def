@@ -943,8 +943,6 @@ lstrlen = kernel32.lstrlen @952
 lstrlenA = kernel32.lstrlenA @953
 lstrlenW = kernel32.lstrlenW @954
 
-OpenProcess @632
-
 K32EmptyWorkingSet             = psapi.EmptyWorkingSet
 K32EnumDeviceDrivers           = psapi.EnumDeviceDrivers
 K32EnumPageFilesA              = psapi.EnumPageFilesA
@@ -979,15 +977,25 @@ IdnToUnicode         = normaliz.IdnToUnicode
 IsNormalizedString   = normaliz.IsNormalizedString
 NormalizeString      = normaliz.NormalizeString
 
+AcquireSRWLockExclusive    = ntdlx.RtlAcquireSRWLockExclusive
+AcquireSRWLockShared       = ntdlx.RtlAcquireSRWLockShared
+GetProductInfo             = ntdlx.RtlGetProductInfo
+InitializeSRWLock          = ntdlx.RtlInitializeSRWLock
+ReleaseSRWLockExclusive    = ntdlx.RtlReleaseSRWLockExclusive
+ReleaseSRWLockShared       = ntdlx.RtlReleaseSRWLockShared
+TryAcquireSRWLockExclusive = ntdlx.RtlTryAcquireSRWLockExclusive
+TryAcquireSRWLockShared    = ntdlx.RtlTryAcquireSRWLockShared
+
 FreeLibrary @241
 FreeLibraryAndExitThread @242
+GetLogicalProcessorInformation @369
 GetModuleHandleA @375
 GetModuleHandleW @378
 GetModuleHandleExA @376
 GetModuleHandleExW @377
+GetProcAddress @409
 LoadLibraryA @581
 LoadLibraryW @584
 LoadLibraryExA @582
 LoadLibraryExW @583
-GetProcAddress @409
-GetLogicalProcessorInformation @369
+OpenProcess @632

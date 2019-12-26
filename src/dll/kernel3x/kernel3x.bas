@@ -76,7 +76,7 @@ extern "windows-ms"
   #define P1 dwDesiredAccess as DWORD
   #define P2 bInheritHandle  as BOOL
   #define P3 dwProcessId     as DWORD
-  function _OpenProcess alias "OpenProcess"(P1, P2, P3) as HANDLE
+  function fnOpenProcess alias "OpenProcess"(P1, P2, P3) as HANDLE
     'PROCESS_QUERY_LIMITED_INFORMATION flag is invalid in XP
     'so we turn it to closest valid flag
     if (dwDesiredAccess and PROCESS_QUERY_LIMITED_INFORMATION) then
@@ -274,8 +274,8 @@ extern "windows-ms"
   end function  
   'SYSTEM_LOGICAL_PROCESSOR_INFORMATION
   #if 0
-  function _GetLogicalProcessorInformation alias "GetLogicalProcessorInformation" (pBuffer as any ptr,ReturnLength as DWORD ptr) as bool export
-    SetLastError(1): return 0
+  function fnGetLogicalProcessorInformation alias "GetLogicalProcessorInformation" (pBuffer as any ptr,ReturnLength as DWORD ptr) as BOOL export
+    SetLastError(1): return FALSE
   end function
   #endif
   
@@ -284,7 +284,7 @@ extern "windows-ms"
   #define P2 dwTypeMask       as _In_ DWORD
   #define P3 dwlConditionMask as _In_ DWORDLONG
   function fnVerifyVersionInfoW alias "VerifyVersionInfoW"(P1, P2, P3) as BOOL export
-    return true 'hehe
+    return TRUE 'hehe
   end function
   
   UndefAllParams()
@@ -292,7 +292,7 @@ extern "windows-ms"
   #define P2 dwTypeMask       as _In_ DWORD
   #define P3 dwlConditionMask as _In_ DWORDLONG
   function fnVerifyVersionInfoA alias "VerifyVersionInfoA"(P1, P2, P3) as BOOL export
-    return true 'hehe
+    return TRUE 'hehe
   end function  
 
   UndefAllParams()
@@ -461,6 +461,11 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
+  function fnGetCurrentProcessorNumber alias "GetCurrentProcessorNumber"() as DWORD export
+    return 0
+  end function
+  
+  UndefAllParams()
   #define P1 Node          as _In_  USHORT
   #define P2 ProcessorMask as _Out_ PGROUP_AFFINITY
   function GetNumaNodeProcessorMaskEx(P1, P2) as BOOL export
@@ -601,16 +606,23 @@ extern "windows-ms"
     dim isSignaled as byte    = iif(dwFlags and CREATE_EVENT_INITIAL_SET, TRUE, FALSE)
     return CreateEventW(lpEventAttributes, isManualReset, isSignaled, lpName)
   end function
-  
 
   UndefAllParams()
   #define P1 pExceptionRecord   as _In_opt_ LPSECURITY_ATTRIBUTES
   #define P2 pContextRecord     as _In_opt_ PCONTEXT
   #define P3 dwFlags            as _In_     DWORD
-  sub _RaiseFailFastException alias "RaiseFailFastException"(P1,P2,P3) export
+  sub fnRaiseFailFastException alias "RaiseFailFastException"(P1,P2,P3) export
     ExitProcess(1)
   end sub
-
+  
+  UndefAllParams()
+  function GetErrorMode() as UINT export
+    dim mode as UINT = SetErrorMode(0)
+    'WARN: possible threading issues
+    SetErrorMode(mode)
+    
+    return mode
+  end function
   
   #ifdef DebugDisableExceptions
   'experimental... the other exception functions need to be added...
