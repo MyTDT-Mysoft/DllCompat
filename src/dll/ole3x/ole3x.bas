@@ -9,14 +9,17 @@
 #include "includes\win\fix_shobjidl.bi"
 
 #macro checkCLSID(_RCLSID, _RIID, _HR)
-  dim guidStr as zstring*(GUIDSTR_SIZE-1)
-  if _HR = REGDB_E_CLASSNOTREG then
-    chelp_GUID2strA(guidStr, _RCLSID)
-    DEBUG_MsgTrace("COM fail: Class not registered %ls", @guidStr)
-  elseif _HR = REGDB_E_IIDNOTREG then
-    chelp_GUID2strA(guidStr, _RIID)
-    DEBUG_MsgTrace("COM fail: Interface not registered %ls", @guidStr)
-  end if
+  scope
+    dim guidStr as zstring*(GUIDSTR_SIZE+1)
+    
+    if _HR = REGDB_E_CLASSNOTREG then
+      chelp_GUID2strA(guidStr, _RCLSID)
+      DEBUG_MsgTrace("COM fail: Class not registered %s", guidStr)
+    elseif _HR = REGDB_E_IIDNOTREG then
+      chelp_GUID2strA(guidStr, _RIID)
+      DEBUG_MsgTrace("COM fail: Interface not registered %s", guidStr)
+    end if
+  end scope
 #endmacro
 
 extern "windows-ms"
@@ -26,7 +29,7 @@ extern "windows-ms"
   #define P3 dwClsContext as DWORD
   #define P4 riid         as REFIID
   #define P5 ppv          as LPVOID ptr
-  function _CoCreateInstance alias "CoCreateInstance"(P1, P2, P3, P4, P5) as HRESULT export
+  function fnCoCreateInstance alias "CoCreateInstance"(P1, P2, P3, P4, P5) as HRESULT export
     DEBUG_WhoCalledInit()
     dim hr as HRESULT
     
@@ -42,7 +45,7 @@ extern "windows-ms"
   #define P4 pServerInfo as COSERVERINFO ptr
   #define P5 dwCount     as DWORD
   #define P6 pResults    as MULTI_QI ptr
-  function _CoCreateInstanceEx alias "CoCreateInstanceEx"(P1, P2, P3, P4, P5, P6) as HRESULT export
+  function fnCoCreateInstanceEx alias "CoCreateInstanceEx"(P1, P2, P3, P4, P5, P6) as HRESULT export
     DEBUG_WhoCalledInit()
     dim hr as HRESULT
     
@@ -57,7 +60,7 @@ extern "windows-ms"
   #define P3 pvReserved   as LPVOID
   #define P4 riid         as REFIID
   #define P5 ppv          as LPVOID ptr
-  function _CoGetClassObject alias "CoGetClassObject"(P1, P2, P3, P4, P5) as HRESULT export
+  function fnCoGetClassObject alias "CoGetClassObject"(P1, P2, P3, P4, P5) as HRESULT export
     DEBUG_WhoCalledInit()
     dim hr as HRESULT
     
