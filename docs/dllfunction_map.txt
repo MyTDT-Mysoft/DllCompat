@@ -186,6 +186,8 @@ user3x
     RegisterTouchWindow                             new         dummy
     UnregisterTouchWindow                           new         dummy
     SetProcessDPIAware                              new         dummy
+    ShutdownBlockReasonCreate                       new         dummy
+    ShutdownBlockReasonDestroy                      new         dummy
     UpdateLayeredWindowIndirect                     new         partial     fixme
 uxthemx
     DrawThemeTextEx                                 new         partial     testme

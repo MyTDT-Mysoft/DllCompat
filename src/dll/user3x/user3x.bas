@@ -96,7 +96,6 @@ extern "windows-ms"
   end function
 
   
-  #undef UpdateLayeredWindowIndirect
   UndefAllParams()
   #define P1 hwnd     as _In_ HWND
   #define P2 pULWInfo as _In_ const UPDATELAYEREDWINDOWINFO ptr
@@ -139,6 +138,22 @@ extern "windows-ms"
     SetLastError(0)
     return FALSE
   end function
+  
+  #undef ShutdownBlockReasonCreate 'WINBOOL return
+  UndefAllParams()
+  #define P1 hWnd       as HWND
+  #define P2 pwszReason as LPCWSTR
+  function ShutdownBlockReasonCreate(P1, P2) as BOOL export
+    return TRUE
+  end function
+  
+  #undef ShutdownBlockReasonDestroy 'WINBOOL return
+  UndefAllParams()
+  #define P1 hWnd       as HWND
+  function ShutdownBlockReasonDestroy(P1) as BOOL export
+    return TRUE
+  end function
+  
 end extern
 
 #include "shared\defaultmain.bas"
