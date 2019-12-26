@@ -210,7 +210,10 @@ extern "windows-ms"
   #define P2 dwSpinCount       as _In_  DWORD
   #define P3 Flags             as _In_  DWORD
   function InitializeCriticalSectionEx(P1, P2, P3) as BOOL export
-    return InitializeCriticalSectionAndSpinCount(lpCriticalSection,dwSpinCount)    
+    for i as int = 0 to 4096
+    if InitializeCriticalSectionAndSpinCount(lpCriticalSection, dwSpinCount) then return TRUE
+    next
+    return FALSE    
   end function
   
   UndefAllParams()
