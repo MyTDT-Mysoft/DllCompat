@@ -154,6 +154,14 @@ extern "windows-ms"
     return TRUE
   end function
   
+  #undef ShutdownBlockReasonQuery 'WINBOOL return
+  UndefAllParams()
+  #define P1 hWnd       as HWND
+  #define P2 pwszBuff   as LPWSTR
+  #define P3 pcchBuff   as DWORD ptr
+  function ShutdownBlockReasonQuery(P1, P2, P3) as BOOL export
+    return FALSE
+  end function
 end extern
 
 #include "shared\defaultmain.bas"

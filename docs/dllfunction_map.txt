@@ -63,8 +63,6 @@ iphlpapx
     ConvertInterfaceNameToLuidA                     new         dummy       fixme
     ConvertInterfaceNameToLuidW                     new         dummy       fixme
 kernel3x
-    
-    
     AcquireSRWLockExclusive                         redir       ntdlx.RtlAcquireSRWLockExclusive
     AcquireSRWLockShared                            redir       ntdlx.RtlAcquireSRWLockShared
     CancelIoEx                                      new         dummy       fixme
@@ -157,7 +155,6 @@ kernel3x
 ntdlx
     RtlIsCriticalSectionLockedByThread              new         full
     RtlGetProductInfo                               new         dummy
-    
 ;;    AcquireSRWLockExclusive                         new
 ;;    AcquireSRWLockShared                            new
 ;;    InitializeSRWLock                               new
@@ -188,6 +185,7 @@ user3x
     SetProcessDPIAware                              new         dummy
     ShutdownBlockReasonCreate                       new         dummy
     ShutdownBlockReasonDestroy                      new         dummy
+    ShutdownBlockReasonQuery                        new         dummy
     UpdateLayeredWindowIndirect                     new         partial     fixme
 uxthemx
     DrawThemeTextEx                                 new         partial     testme
