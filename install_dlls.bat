@@ -12,4 +12,6 @@ if not exist %WINDIR%\system32\propsys.dll (
   xcopy bin\guest_dll\propsys.dll %install_path% /c /Y
   regsvr32 /s %install_path%\propsys.dll
 )
+if not exist %WINDIR%\system32\mfplat.dll xcopy bin\guest_dll\mfplat.dll %install_path% /c /Y
+
 pause
