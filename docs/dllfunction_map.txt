@@ -4,6 +4,8 @@ States:
     Notes: testme, fixme
 
 advapi3x
+    RegDeleteKeyExA                                 new         partial
+    RegDeleteKeyExW                                 new         partial
     RegGetValueA                                    new
     RegGetValueW                                    new
     RegLoadMUIStringW                               new         dummy       fixme

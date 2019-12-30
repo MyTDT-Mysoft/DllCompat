@@ -41,7 +41,7 @@ extern "windows-ms"
   #define P6 pvData   as _Out_opt_   PVOID
   #define P7 pcbData  as _Inout_opt_ LPDWORD  
   #undef RegGetValueW 
-  function RegGetValueW( P1 , P2 , P3 , P4 , P5 , P6 , P7 ) as LONG export
+  function RegGetValueW(P1 , P2 , P3 , P4 , P5 , P6 , P7) as LONG export
     DebugBox("Yay!")
     dim as HKEY hSubKey = null
     if lpSubKey andalso lpSubKey[0]<>null then 'want subkey so opening it...
@@ -109,7 +109,30 @@ extern "windows-ms"
     end if
     
     return iResu
-    
+  end function
+  
+  UndefAllParams()
+  #define P1 hKey       as HKEY
+  #define P2 lpSubKey   as LPCSTR
+  #define P3 samDesired as REGSAM
+  #define P4 Reserved   as DWORD
+  function fnRegDeleteKeyExA alias "RegDeleteKeyExA"(P1, P2, P3, P4) as LSTATUS export
+    if samDesired and KEY_WOW64_32KEY then
+      return RegDeleteKeyA(hKey, lpSubKey)
+    end if
+    return ERROR_OUT_OF_PAPER
+  end function
+  
+  UndefAllParams()
+  #define P1 hKey       as HKEY
+  #define P2 lpSubKey   as LPCWSTR
+  #define P3 samDesired as REGSAM
+  #define P4 Reserved   as DWORD
+  function fnRegDeleteKeyExW alias "RegDeleteKeyExW"(P1, P2, P3, P4) as LSTATUS export
+    if samDesired and KEY_WOW64_32KEY then
+      return RegDeleteKeyW(hKey, lpSubKey)
+    end if
+    return ERROR_OUT_OF_PAPER
   end function
   
   UndefAllParams()
