@@ -4,6 +4,10 @@
 #include "shared\helper.bas"
 #include "includes\win\fix_user32.bi"
 
+static shared u3x_dllHandle as HINSTANCE
+
+#include "clipboard.bas"
+
 extern "windows-ms"
   UndefAllParams()
   #define P1 hWnd        as _In_opt_ HWND
@@ -164,4 +168,21 @@ extern "windows-ms"
   end function
 end extern
 
+
+
+#define CUSTOM_MAIN
 #include "shared\defaultmain.bas"
+
+extern "windows-ms"
+  function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as BOOL
+    select case uReason
+      case DLL_PROCESS_ATTACH
+        u3x_dllHandle = handle
+      case DLL_PROCESS_DETACH
+        clip_destroyService()
+      case DLL_THREAD_ATTACH
+      case DLL_THREAD_DETACH
+    end select
+    return DLLMAIN_DEFAULT(handle, uReason, Reserved)
+  end function
+end extern

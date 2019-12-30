@@ -179,11 +179,13 @@ shell3x
     SHGetKnownFolderPath                            new         partial     fixme
     SHGetStockIconInfo                              new         dummy       fixme
 user3x
+    AddClipboardFormatListener                      new         full        testme
     CloseTouchInputHandle                           new         dummy
     GetTouchInputInfo                               new         dummy
     IsTouchWindow                                   new         dummy
     RegisterTouchWindow                             new         dummy
     UnregisterTouchWindow                           new         dummy
+    RemoveClipboardFormatListener                   new         full        testme
     SetProcessDPIAware                              new         dummy
     ShutdownBlockReasonCreate                       new         dummy
     ShutdownBlockReasonDestroy                      new         dummy
