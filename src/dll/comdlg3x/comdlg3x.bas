@@ -162,6 +162,9 @@ static shared mal as IMalloc ptr
 sub bindHwnd2Dialog(hwnd as HWND, pdlg as IFileDialogImpl ptr)
   EnterCriticalSection(@csWhnd)
   for i as integer = 0 to MAX_DIALOGS
+    if dialogArr(i)<>NULL andalso pdlg->dialogHwnd=hwnd then return
+  next
+  for i as integer = 0 to MAX_DIALOGS
     if dialogArr(i)=NULL then
       pdlg->dialogHwnd = hwnd
       dialogArr(i) = pdlg
