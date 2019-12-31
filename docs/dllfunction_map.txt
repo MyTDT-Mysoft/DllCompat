@@ -3,6 +3,8 @@ States:
     Type: new, reimpl, redir
     Notes: testme, fixme
 
+EAT winAPI
+
 advapi3x
     RegDeleteKeyExA                                 new         partial
     RegDeleteKeyExW                                 new         partial
@@ -180,16 +182,21 @@ shell3x
     SHGetStockIconInfo                              new         dummy       fixme
 user3x
     AddClipboardFormatListener                      new         full        testme
+    ChangeWindowMessageFilter                       new         dummy
+    ChangeWindowMessageFilterEx                     new         dummy
+    CloseGestureInfoHandle                          new         dummy
     CloseTouchInputHandle                           new         dummy
+    GetGestureInfo                                  new         dummy
     GetTouchInputInfo                               new         dummy
     IsTouchWindow                                   new         dummy
+    RegisterHotKey                                  reimpl      partial
     RegisterTouchWindow                             new         dummy
-    UnregisterTouchWindow                           new         dummy
     RemoveClipboardFormatListener                   new         full        testme
     SetProcessDPIAware                              new         dummy
     ShutdownBlockReasonCreate                       new         dummy
     ShutdownBlockReasonDestroy                      new         dummy
     ShutdownBlockReasonQuery                        new         dummy
+    UnregisterTouchWindow                           new         dummy
     UpdateLayeredWindowIndirect                     new         partial     fixme
 uxthemx
     DrawThemeTextEx                                 new         partial     testme
@@ -201,6 +208,52 @@ ws2_3x
     inet_pton                                       new         full        testme
     InetPtonW                                       new         full        testme
     WSAPoll                                         new         dummy       fixme
-
-
 ;vcruntime140
+
+
+COM winAPI
+
+
+comdlg3x->IFileDialog
+    Show                                            new         partial
+    SetFileTypes                                    new         full
+    SetFileTypeIndex                                new         full
+    GetFileTypeIndex                                new         full
+    Advise                                          new         partial
+    Unadvise                                        new         full
+    SetOptions                                      new         partial
+    GetOptions                                      new         full
+    SetDefaultFolder                                new         full
+    SetFolder                                       new         full
+    GetFolder                                       new         full
+    GetCurrentSelection                             new         dummy
+    SetFileName                                     new         full
+    GetFileName                                     new         full
+    SetTitle                                        new         full
+    SetOkButtonLabel                                new         dummy
+    SetFileNameLabel                                new         dummy
+    GetResult                                       new         full
+    AddPlace                                        new         dummy
+    SetDefaultExtension                             new         full
+    Close                                           new         full
+    SetClientGuid                                   new         dummy
+    ClearClientData                                 new         dummy
+    SetFilter                                       new         dummy
+comdlg3x->IFileDialog+IFileOpenDialog 
+    GetResults                                      new         full
+    GetSelectedItems                                new         dummy
+comdlg3x->IFileDialog+IFileSaveDialog 
+    SetSaveAsItem                                   new         dummy
+    SetProperties                                   new         dummy
+    SetCollectedProperties                          new         dummy
+    GetProperties                                   new         dummy
+    ApplyProperties                                 new         dummy
+    
+shell3x->IShellItemArray
+    BindToHandler                                   new         dummy
+    GetPropertyStore                                new         dummy
+    GetPropertyDescriptionList                      new         dummy
+    GetAttributes                                   new         dummy
+    GetCount                                        new         full
+    GetItemAt                                       new         full
+    EnumItems                                       new         dummy

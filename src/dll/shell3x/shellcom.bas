@@ -61,21 +61,6 @@ end function
 
 
 extern "windows-ms"
-  function fnIShellItemArray_QueryInterface(_self as IShellItemArray ptr, riid as const IID const ptr, ppvObject as any ptr ptr) as HRESULT
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
-  end function
-  
-  function fnIShellItemArray_AddRef(_self as IShellItemArray ptr) as ULONG
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
-  end function
-  
-  function fnIShellItemArray_Release(_self as IShellItemArray ptr) as ULONG
-    DEBUG_MsgNotImpl()
-    return E_NOTIMPL
-  end function
-  
   function fnIShellItemArray_BindToHandler(_self as IShellItemArray ptr, pbc as IBindCtx ptr, bhid as const GUID const ptr, riid as const IID const ptr, ppvOut as any ptr ptr) as HRESULT
     DEBUG_MsgNotImpl()
     return E_NOTIMPL
