@@ -2,11 +2,8 @@
 '"c:\windows\kernel3x.dll"'
 'G:\downloads\app\kernel3x.dll
 
-#define DebugFailedCalls
 #define DebugDisableExceptions
 
-#define DebugBox(_MSG) Messagebox(null,_MSG,__FUNCTION__ ":" & __LINE__,MB_SYSTEMMODAL or MB_ICONERROR)
-#define NotifyBox(_MSG) Messagebox(null,_MSG,__FUNCTION__ ":" & __LINE__,MB_SYSTEMMODAL or MB_ICONWARNING)
 #include "windows.bi"
 #include "win\winnls.bi"
 #include "shared\detour.bas"
@@ -92,11 +89,11 @@ extern "windows-ms"
   #define P4 Context   as _Out_opt_   LPVOID ptr
   function InitOnceExecuteOnce(InitOnce as any ptr ptr, InitFn as any ptr, Parameter as any ptr, Context as any ptr) as bool export    
     if InitOnce=0 or InitFn=0 then 
-      messagebox(null,"Bad Parameters","InitOnceExecuteOnce",MB_SYSTEMMODAL)
+      DEBUG_MsgTrace("Bad Parameters")
       return false
     end if
     if Context then
-      messagebox(null,"Using context???","InitOnceExecuteOnce",MB_SYSTEMMODAL)
+      DEBUG_MsgTrace("Using context???")
     end if
     WaitForSingleObject(pInitMutex,INFINITE)
     if InitOnce[0]=0 then
@@ -125,7 +122,7 @@ extern "windows-ms"
       var hMutex = InitOnce[0]
       InitOnce[0]=0:SetEvent(hMutex)      
       ReleaseMutex(pInitMutex)
-      messagebox(null,"Initialization failed","InitOnceExecuteOnce",MB_SYSTEMMODAL)
+      DEBUG_MsgTrace("Initialization failed")
       return False
     end if
   end function
@@ -133,8 +130,8 @@ extern "windows-ms"
   UndefAllParams()
   #define P1 ConditionVariable as _Out_ PCONDITION_VARIABLE
   sub InitializeConditionVariable(ConditionVariable as any ptr ptr) export
-    if ConditionVariable=0 then 
-      messagebox(null,"InitializeConditionVariable","InitializeConditionVariable",MB_SYSTEMMODAL)
+    if ConditionVariable=NULL then 
+      DEBUG_MsgTrace("Bad parameters")
       exit sub
     end if
     *ConditionVariable = CreateEvent(NULL,FALSE,FALSE,NULL)
@@ -146,7 +143,7 @@ extern "windows-ms"
   #define P3 dwMilliseconds    as _In_    DWORD
   function SleepConditionVariableCS(ConditionVariable as any ptr ptr, CriticalSection as any ptr, dwMilliseconds as dword) as BOOL export        
     if ConditionVariable=0 orelse *ConditionVariable=0 orelse CriticalSection=0 then 
-      messagebox(null,"SleepConditionVariableCS","SleepConditionVariableCS",MB_SYSTEMMODAL)
+      DEBUG_MsgTrace("Bad parameters")
       return false
     end if        
     if dwMilliseconds then LeaveCriticalSection(CriticalSection)    
@@ -161,7 +158,7 @@ extern "windows-ms"
   #define P1 ConditionVariable as _Inout_ PCONDITION_VARIABLE
   sub WakeAllConditionVariable(ConditionVariable as any ptr ptr) export
     if ConditionVariable=0 orelse *ConditionVariable=0 then 
-      messagebox(null,"WakeAllConditionVariable","WakeAllConditionVariable",MB_SYSTEMMODAL)
+      DEBUG_MsgTrace("Bad parameters")
       exit sub
     end if
     'PulseEvent(*ConditionVariable)    
@@ -175,7 +172,7 @@ extern "windows-ms"
   #define P1 ConditionVariable as _Inout_ PCONDITION_VARIABLE
   sub WakeConditionVariable(ConditionVariable as any ptr ptr) export              
     if ConditionVariable=0 orelse *ConditionVariable=0 then 
-      messagebox(null,"WakeConditionVariable","WakeConditionVariable",MB_SYSTEMMODAL)
+      DEBUG_MsgTrace("Bad parameters")
       exit sub
     end if    
     SetEvent(*ConditionVariable)
@@ -303,7 +300,7 @@ extern "windows-ms"
     dim as DWORD dwResu = any
     if GetExitCodeThread(Thread,@dwResu)=0 then 
       var iErr = GetLastError()
-      messagebox(null,"GetThreadId ERROR = " & hex(iErr),null,MB_SYSTEMMODAL or MB_ICONERROR)
+      DEBUG_MsgTrace("GetThreadId ERROR = " & hex(iErr))
       return 0    
     end if
     
@@ -314,10 +311,10 @@ extern "windows-ms"
     ThreadBasicInformation , @tInfo , sizeof(tInfo), null )
     
     if ntResu then 
-      messagebox(null,"GetThreadId NTSTATUS = " & hex(ntResu),null,MB_SYSTEMMODAL or MB_ICONERROR)
+      DEBUG_MsgTrace("GetThreadId NTSTATUS = " & hex(ntResu))
       return 0 'NTSTATUS with error
     else
-      messagebox(null,"GetThreadId TID = " & tInfo.ClientId.UniqueThread,null,MB_SYSTEMMODAL or MB_ICONERROR)
+      DEBUG_MsgTrace("GetThreadId TID = " & tInfo.ClientId.UniqueThread)
     end if
     return cast(DWORD, tInfo.ClientId.UniqueThread)
   end function
@@ -328,7 +325,6 @@ extern "windows-ms"
   #define P3 cchFilePath  as _In_  DWORD
   #define P4 dwFlags      as _In_  DWORD
   function GetFinalPathNameByHandleW(P1,P2,P3,P4) as DWORD export
-    DebugBox("Yay!")
     'cchFilePath is in TCHARS (i.e. wchars for this one)... and doesnt include the space for NULL
     var iFilePathSz = (cchFilePath+1)*sizeof(wstring*1)
     
@@ -336,15 +332,13 @@ extern "windows-ms"
     const cAllVolumeOptions =  VOLUME_NAME_GUID or VOLUME_NAME_NT or VOLUME_NAME_NONE
     var iBadFlags = (dwFlags and (not (FILE_NAME_OPENED or cAllVolumeOptions)))
     if hFile=null orelse lpszFilePath=null orelse iBadFlags then
-      #ifdef DebugFailedCalls
-        if iBadFlags then
-          DebugBox("Bad flags were used... 0x" & iBadFlags)
-        elseif lpszFilePath=null then
-          DebugBox("null lpszFilePath")
-        elseif hFile=null then
-          DebugBox("null hFile")
-        end if
-      #endif
+      if iBadFlags then
+        DEBUG_MsgTrace("FAIL: Bad flags were used... 0x" & iBadFlags)
+      elseif lpszFilePath=null then
+        DEBUG_MsgTrace("FAIL: null lpszFilePath")
+      elseif hFile=null then
+        DEBUG_MsgTrace("FAIL: null hFile")
+      end if
       SetLastError( ERROR_INVALID_PARAMETER )
       return 0
     end if
@@ -352,17 +346,15 @@ extern "windows-ms"
     'basic handle check
     var iType = GetFileType( hFile )
     if iType = 0 then 
-      #ifdef DebugFailedCalls
-        var iTempErr = GetLastError()
-        DebugBox("bad file type? (not a file?)")
-        SetLastError(iTempErr)
-      #endif
+      var iTempErr = GetLastError()
+      DEBUG_MsgTrace("FAIL: bad file type? (not a file?)")
+      SetLastError(iTempErr)
       return 0 
     end if
     
     'this may not be implemented correctly... so warning when used
     if (dwFlags and FILE_NAME_OPENED) then
-      NotifyBox("flag FILE_NAME_OPENED used...")
+      DEBUG_MsgTrace("flag FILE_NAME_OPENED used...")
     end if
     
     'expecting a DOS volume? [\\?\Drive:\Path\File.Ext]
@@ -371,18 +363,16 @@ extern "windows-ms"
       dim as DWORD dwFileSizeHi = 0
       dim as DWORD dwFileSizeLo = GetFileSize(hFile, @dwFileSizeHi)
       if dwFileSizeLo = 0 andalso dwFileSizeHi = 0 then
-        #ifdef DebugFailedCalls
-          DebugBox("Filesize=0 so can't map to get name...")
-        #endif
+        DEBUG_MsgTrace("FAIL: Filesize=0 so can't map to get name...")
         SetLastError( ERROR_FILE_NOT_FOUND )
         return 0
       end if
-      NotifyBox("flag VOLUME_NAME_DOS used...")
+      DEBUG_MsgTrace("flag VOLUME_NAME_DOS used...")
     end if
     
     'expecting a GUID volume? [\\?\Volume{GUID}\Path\File.Ext]
     if (dwFlags and VOLUME_NAME_GUID) then
-      NotifyBox("flag VOLUME_NAME_GUID used...")
+      DEBUG_MsgTrace("flag VOLUME_NAME_GUID used...")
       return 0
     end if
     
@@ -392,22 +382,18 @@ extern "windows-ms"
       var pTemp = cptr(POBJECT_NAME_INFORMATION, allocate(iTempSz))      
       
       if pTemp = 0 then
-        #ifdef DebugFailedCalls
-          DebugBox("out of memory allocating buffer...")
-        #endif
+        DEBUG_MsgTrace("FAIL: out of memory allocating buffer...")
         SetLastError( ERROR_NOT_ENOUGH_MEMORY )
         return 0
       end if      
       
       var iResu = NtQueryObject(hFile, ObjectNameInformation, pTemp , iTempSz , @iTempSz )
       if iResu <> STATUS_SUCCESS then
-        #ifdef DebugFailedCalls
-          DebugBox("NtQueryInformationFile Error 0x" & hex(iResu))
-        #endif
+        DEBUG_MsgTrace("FAIL: NtQueryInformationFile Error 0x" & hex(iResu))
         SetLastError(ERROR_PATH_NOT_FOUND) 'need better error handling?
       end if
       
-      NotifyBox("flag VOLUME_NAME_NT used")
+      DEBUG_MsgTrace("flag VOLUME_NAME_NT used")
       
     end if
     
@@ -418,18 +404,14 @@ extern "windows-ms"
       dim as IO_STATUS_BLOCK tStatBlock
       
       if pTemp = 0 then
-        #ifdef DebugFailedCalls
-          DebugBox("out of memory allocating buffer...")
-        #endif
+        DEBUG_MsgTrace("FAIL: out of memory allocating buffer...")
         SetLastError( ERROR_NOT_ENOUGH_MEMORY )
         return 0
       end if
       
       var iResu = NtQueryInformationFile( hFile , @tStatBlock ,  pTemp , iTempSz , FileNameInformation )
       if iResu <> STATUS_SUCCESS then
-        #ifdef DebugFailedCalls
-          DebugBox("NtQueryInformationFile Error 0x" & hex(iResu))
-        #endif
+        DEBUG_MsgTrace("FAIL: NtQueryInformationFile Error 0x" & hex(iResu))
         SetLastError(ERROR_PATH_NOT_FOUND) 'need better error handling?
         return 0
       end if
@@ -438,9 +420,7 @@ extern "windows-ms"
       if (iSz+sizeof(wstring*1)) > iFilePathSz then        
         memcpy( lpszFilePath , @(pTemp->FileName) , iFilePathSz ) 'copy what fits
         lpszFilePath[cchFilePath] = 0 'set the null char
-        #ifdef DebugFailedCalls
-          DebugBox("NtQueryInformationFile ERROR_INSUFFICIENT_BUFFER" & hex(iResu))
-        #endif
+        DEBUG_MsgTrace("FAIL: NtQueryInformationFile ERROR_INSUFFICIENT_BUFFER" & hex(iResu))
         SetLastError( ERROR_INSUFFICIENT_BUFFER )
         return iSz
       end if      
@@ -552,7 +532,7 @@ extern "windows-ms"
   #define P1 hFile        as _In_     HANDLE
   #define P2 lpOverlapped as _In_opt_ LPOVERLAPPED
   function CancelIoEx(P1, P2) as BOOL export
-    DEBUG_AlertNotImpl()
+    DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
   end function  
