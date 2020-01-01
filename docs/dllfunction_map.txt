@@ -3,7 +3,9 @@ States:
     Type: new, reimpl, redir
     Notes: testme, fixme
 
-EAT winAPI
+
+EAT winAPI-------------------------------------------------------------------------
+
 
 advapi3x
     RegDeleteKeyExA                                 new         partial
@@ -100,7 +102,7 @@ kernel3x
     InitializeCriticalSectionEx                     new
     InitializeSRWLock                               redir       ntdlx.RtlInitializeSRWLock
     InitOnceExecuteOnce                             new
-    InterlockedCompareExchange64                    new
+    InterlockedCompareExchange64                    redir       ntdlx.RtlInterlockedCompareExchange64
     IsNormalizedString                              redir       normaliz.IsNormalizedString
     IsValidLocaleName                               new         dummy       fixme
     K32EmptyWorkingSet                              redir       psapi.EmptyWorkingSet
@@ -157,6 +159,7 @@ kernel3x
 ;;    _ftol2_sse                                      new
 ;;    ;time                                            reimpl
 ntdlx
+    RtlInterlockedCompareExchange64                 new         full
     RtlIsCriticalSectionLockedByThread              new         full
     RtlGetProductInfo                               new         dummy
 ;;    AcquireSRWLockExclusive                         new
@@ -173,6 +176,8 @@ powrprox
     PowerGetActiveScheme                            new         dummy
     PowerSetActiveScheme                            new         dummy
 shell3x
+    SetCurrentProcessExplicitAppUserModelID         new         dummy
+    SHAddToRecentDocs                               reimpl      dummy
     SHCreateItemFromIDList                          new         partial
     SHCreateItemFromParsingName                     new         full
     SHCreateShellItemArrayFromIDLists               new         full
@@ -211,7 +216,7 @@ ws2_3x
 ;vcruntime140
 
 
-COM winAPI
+COM winAPI-------------------------------------------------------------------------
 
 
 comdlg3x->IFileDialog

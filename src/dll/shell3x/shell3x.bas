@@ -21,12 +21,39 @@
 
 extern "windows-ms"
   UndefAllParams()
+  #define P1 AppID as PCWSTR
+  function fnSetCurrentProcessExplicitAppUserModelID alias "SetCurrentProcessExplicitAppUserModelID"(P1) as HRESULT export
+    DEBUG_MsgNotImpl()
+    return S_OK
+  end function
+  
+  UndefAllParams()
   #define P1 identifier   as _In_  const NOTIFYICONIDENTIFIER ptr
   #define P2 iconLocation as _Out_ RECT ptr
   function fnShell_NotifyIconGetRect alias "Shell_NotifyIconGetRect"(P1, P2) as HRESULT export
     DEBUG_MsgNotImpl()
     return E_NOTIMPL
   end function
+  
+  UndefAllParams()
+  #define P1 uFlags as UINT
+  #define P2 pv     as LPCVOID
+  sub fnSHAddToRecentDocs alias "SHAddToRecentDocs"(P1, P2) export
+    select case uFlags
+      case SHARD_APPIDINFO
+        DEBUG_MsgTrace("Unsupported flag: SHARD_APPIDINFO")
+      case SHARD_APPIDINFOIDLIST
+        DEBUG_MsgTrace("Unsupported flag: SHARD_APPIDINFOIDLIST")
+      case SHARD_LINK
+        DEBUG_MsgTrace("Unsupported flag: SHARD_LINK")
+      case SHARD_APPIDINFOLINK
+        DEBUG_MsgTrace("Unsupported flag: SHARD_APPIDINFOLINK")
+      case SHARD_SHELLITEM
+        DEBUG_MsgTrace("Unsupported flag: SHARD_SHELLITEM")
+      case else
+        SHAddToRecentDocs(uFlags, pv)
+    end select
+  end sub
   
   UndefAllParams()
   #define P1 cidl          as UINT

@@ -89,19 +89,19 @@ sub DebugOutputCalledResult(__pCaller as any ptr, pzFunction as zstring ptr)
     sprintf(@zResult+iSz, "Unknown (0x%08X)", __pCaller)
   end if
   
-  OutputDebugString(zResult)
+  OutputDebugStringA(zResult)
 end sub
 
 #macro DEBUG_AlertNotImpl()
   #ifdef GlobalDebugEnabled
-    OutputDebugString("DLLC_ALERT:   " __FUNCTION__ !" STUB called.\r\n" )
+    OutputDebugStringA("DLLC_ALERT:   " __FUNCTION__ !" STUB called.\r\n" )
     MessageBox(null, __FUNCTION__ !" STUB called.\r\n", "DllCompat", MB_SYSTEMMODAL or MB_ICONINFORMATION)
   #endif
 #endmacro
 
 #macro DEBUG_MsgNotImpl()
   #ifdef GlobalDebugEnabled
-    OutputDebugString("DLLC_MSG:     " __FUNCTION__ !" STUB called. \r\n" )
+    OutputDebugStringA("DLLC_MSG:     " __FUNCTION__ !" STUB called. \r\n" )
   #endif
 #endmacro
 
@@ -110,7 +110,7 @@ end sub
     scope
       dim as zstring*DEBUG_MAXSTR zTemp = any
       sprintf(zTemp , "DLLC_MSG:     %s(%i)| " _STRING , __FUNCTION__  , __LINE__ , _PARAMS)  
-      OutputDebugString(zTemp)
+      OutputDebugStringA(zTemp)
     end scope
   #endif
 #endmacro
