@@ -977,14 +977,15 @@ IdnToUnicode         = normaliz.IdnToUnicode
 IsNormalizedString   = normaliz.IsNormalizedString
 NormalizeString      = normaliz.NormalizeString
 
-AcquireSRWLockExclusive    = ntdlx.RtlAcquireSRWLockExclusive
-AcquireSRWLockShared       = ntdlx.RtlAcquireSRWLockShared
-GetProductInfo             = ntdlx.RtlGetProductInfo
-InitializeSRWLock          = ntdlx.RtlInitializeSRWLock
-ReleaseSRWLockExclusive    = ntdlx.RtlReleaseSRWLockExclusive
-ReleaseSRWLockShared       = ntdlx.RtlReleaseSRWLockShared
-TryAcquireSRWLockExclusive = ntdlx.RtlTryAcquireSRWLockExclusive
-TryAcquireSRWLockShared    = ntdlx.RtlTryAcquireSRWLockShared
+AcquireSRWLockExclusive      = ntdlx.RtlAcquireSRWLockExclusive
+AcquireSRWLockShared         = ntdlx.RtlAcquireSRWLockShared
+GetProductInfo               = ntdlx.RtlGetProductInfo
+InitializeSRWLock            = ntdlx.RtlInitializeSRWLock
+InterlockedCompareExchange64 = ntdlx.RtlInterlockedCompareExchange64
+ReleaseSRWLockExclusive      = ntdlx.RtlReleaseSRWLockExclusive
+ReleaseSRWLockShared         = ntdlx.RtlReleaseSRWLockShared
+TryAcquireSRWLockExclusive   = ntdlx.RtlTryAcquireSRWLockExclusive
+TryAcquireSRWLockShared      = ntdlx.RtlTryAcquireSRWLockShared
 
 FreeLibrary @241
 FreeLibraryAndExitThread @242

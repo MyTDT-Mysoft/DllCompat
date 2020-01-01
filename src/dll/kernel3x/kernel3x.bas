@@ -179,30 +179,6 @@ extern "windows-ms"
   end sub
   
   UndefAllParams()
-  #define P1 Destination as _Inout_ LONGLONG ptr
-  #define P2 Exchange    as _In_    LONGLONG
-  #define P3 Comparand   as _In_    LONGLONG
-  #undef InterlockedCompareExchange64
-  function InterlockedCompareExchange64 naked cdecl(P1, P2, P3) as LONGLONG export
-    #define Destination_ esp+12
-    #define Exchange_ esp+16
-    #define Comparand_ esp+24
-    asm
-      push ebx
-      push ebp
-      mov ebp,[Destination_]
-      mov ebx,[Exchange_+0]
-      mov ecx,[Exchange_+4]
-      mov eax,[Comparand_+0]
-      mov edx,[Comparand_+4]
-      lock cmpxchg8b [ebp]
-      pop ebp
-      pop ebx
-      ret
-    end asm        
-  end function
-  
-  UndefAllParams()
   #define P1 lpCriticalSection as _Out_ LPCRITICAL_SECTION
   #define P2 dwSpinCount       as _In_  DWORD
   #define P3 Flags             as _In_  DWORD
