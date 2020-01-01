@@ -15,9 +15,11 @@
     if _HR = REGDB_E_CLASSNOTREG then
       chelp_GUID2strA(guidStr, _RCLSID)
       DEBUG_MsgTrace("COM fail: Class not registered %s", guidStr)
+      DEBUG_WhoCalledResult()
     elseif _HR = REGDB_E_IIDNOTREG then
       chelp_GUID2strA(guidStr, _RIID)
       DEBUG_MsgTrace("COM fail: Interface not registered %s", guidStr)
+      DEBUG_WhoCalledResult()
     end if
   end scope
 #endmacro
