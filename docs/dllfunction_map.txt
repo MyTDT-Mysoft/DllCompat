@@ -75,6 +75,8 @@ kernel3x
     CompareStringEx                                 new         partial     fixme
     CreateEventExA                                  new         full
     CreateEventExW                                  new         full
+    CreateSymbolicLinkA                             new         dummy       fixme
+    CreateSymbolicLinkW                             new         dummy       fixme
     FlsAlloc                                        new         dummy       fixme
     FlsFree                                         new         dummy       fixme
     FlsGetValue                                     new         dummy       fixme

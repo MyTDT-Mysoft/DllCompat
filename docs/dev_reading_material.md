@@ -29,3 +29,6 @@ Raymond Chen
 A small, x64-hosted hypervisor driver by Alex Ionescu. Possible study material for implementing x86-64 virtualization of applications.
 * https://ionescu007.github.io/SimpleVisor/
 * https://github.com/ionescu007/SimpleVisor
+
+Driver for providing symbolic link functionality in win2k+, by Masatoshi Kimura
+* http://emk.name/#download_symlink

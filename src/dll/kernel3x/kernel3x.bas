@@ -70,6 +70,24 @@ extern "windows-ms"
   end sub
   
   UndefAllParams()
+  #define P1 lpSymlinkFileName as LPCSTR
+  #define P2 lpTargetFileName  as LPCSTR
+  #define P3 dwFlags           as DWORD
+  function CreateSymbolicLinkA(P1, P2, P3) as BOOLEAN export
+    DEBUG_MsgNotImpl()
+    return FALSE
+  end function
+  
+  UndefAllParams()
+  #define P1 lpSymlinkFileName as LPCWSTR
+  #define P2 lpTargetFileName  as LPCWSTR
+  #define P3 dwFlags           as DWORD
+  function CreateSymbolicLinkW(P1, P2, P3) as BOOLEAN export
+    DEBUG_MsgNotImpl()
+    return FALSE
+  end function
+  
+  UndefAllParams()
   #define P1 dwDesiredAccess as DWORD
   #define P2 bInheritHandle  as BOOL
   #define P3 dwProcessId     as DWORD
