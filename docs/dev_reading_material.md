@@ -30,5 +30,8 @@ A small, x64-hosted hypervisor driver by Alex Ionescu. Possible study material f
 * https://ionescu007.github.io/SimpleVisor/
 * https://github.com/ionescu007/SimpleVisor
 
+Undocumented structure gallore
+* https://www.vergiliusproject.com/kernels/x86/Windows%20XP/SP3
+
 Driver for providing symbolic link functionality in win2k+, by Masatoshi Kimura
 * http://emk.name/#download_symlink
