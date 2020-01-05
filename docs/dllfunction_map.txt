@@ -62,12 +62,14 @@ gdi3x
     D3DKMTCreateDCFromMemory                        new
     D3DKMTDestroyDCFromMemory                       new
 iphlpapx
+    ConvertInterfaceGuidToLuid                      new         full        fixme
     ConvertInterfaceIndexToLuid                     new         full        testme
+    ConvertInterfaceLuidToGuid                      new         full        fixme
     ConvertInterfaceLuidToIndex                     new         full        testme
-    ConvertInterfaceLuidToNameA                     new         dummy       fixme
+    ConvertInterfaceLuidToNameA                     new         full        testme
     ConvertInterfaceLuidToNameW                     new         full        testme
-    ConvertInterfaceNameToLuidA                     new         dummy       fixme
-    ConvertInterfaceNameToLuidW                     new         dummy       fixme
+    ConvertInterfaceNameToLuidA                     new         full        testme
+    ConvertInterfaceNameToLuidW                     new         full        testme
 kernel3x
     AcquireSRWLockExclusive                         redir       ntdlx.RtlAcquireSRWLockExclusive
     AcquireSRWLockShared                            redir       ntdlx.RtlAcquireSRWLockShared
