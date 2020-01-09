@@ -257,7 +257,19 @@ comdlg3x->IFileDialog+IFileSaveDialog
     SetCollectedProperties                          new         dummy
     GetProperties                                   new         dummy
     ApplyProperties                                 new         dummy
-    
+
+MMDevApi->IMMDevice
+    Activate                                        new         dummy
+    OpenPropertyStore                               new         dummy
+    GetId                                           new         dummy
+    GetState                                        new         dummy
+MMDevApi->IMMDeviceEnumerator
+    EnumAudioEndpoints                              new         dummy
+    GetDefaultAudioEndpoint                         new         dummy
+    GetDevice                                       new         dummy
+    RegisterEndpointNotificationCallback            new         dummy
+    UnregisterEndpointNotificationCallback          new         dummy
+
 shell3x->IShellItemArray
     BindToHandler                                   new         dummy
     GetPropertyStore                                new         dummy

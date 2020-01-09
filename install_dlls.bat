@@ -8,6 +8,7 @@ xcopy bin\dll\*.dll %install_path% /c /Y
 xcopy bin\guest_dll\*.dll /exclude:bin\guest_dll\special.txt %install_path% /c /Y
 
 regsvr32 /s %install_path%\comdlg3x.dll
+regsvr32 /s %install_path%\MMDevApi.dll
 if not exist %WINDIR%\system32\propsys.dll (
   xcopy bin\guest_dll\propsys.dll %install_path% /c /Y
   regsvr32 /s %install_path%\propsys.dll

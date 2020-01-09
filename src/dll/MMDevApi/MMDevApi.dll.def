@@ -1,0 +1,2 @@
+LIBRARY MMDevApi.dll
+EXPORTS
