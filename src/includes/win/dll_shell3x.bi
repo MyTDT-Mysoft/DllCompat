@@ -44,4 +44,8 @@ extern "windows-ms"
   #define P2 uFlags as         UINT
   #define P3 psii   as _Inout_ SHSTOCKICONINFO ptr
   declare function SHGetStockIconInfo(P1, P2, P3) as HRESULT
+  
+  UndefAllParams()
+  #define P1 pquns  as QUERY_USER_NOTIFICATION_STATE ptr
+  declare function SHQueryUserNotificationState(P1) as HRESULT
 end extern

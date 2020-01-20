@@ -189,6 +189,7 @@ shell3x
     SHGetKnownFolderIDList                          new         dummy       fixme
     SHGetKnownFolderPath                            new         partial     fixme
     SHGetStockIconInfo                              new         dummy       fixme
+    SHQueryUserNotificationState                    new         dummy       fixme
 user3x
     AddClipboardFormatListener                      new         full        testme
     ChangeWindowMessageFilter                       new         dummy

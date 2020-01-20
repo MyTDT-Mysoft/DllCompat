@@ -208,6 +208,25 @@ extern "windows-ms"
     DEBUG_MsgNotImpl()
     return E_INVALIDARG
   end function
+  
+  UndefAllParams()
+  #define P1 pquns  as QUERY_USER_NOTIFICATION_STATE ptr
+  function fnSHQueryUserNotificationState alias "SHQueryUserNotificationState"(P1) as HRESULT export
+    if pquns=NULL then return E_INVALIDARG
+    
+    'TODO: check the following:
+    'QUNS_NOT_PRESENT
+    '  A screen saver is displayed, the machine is locked, or a nonactive Fast User Switching session is in progress.
+    'QUNS_BUSY
+    '  A full-screen application is running or Presentation Settings are applied. Presentation Settings allow a user to put their machine into a state fit for an uninterrupted presentation, such as a set of PowerPoint slides, with a single click.
+    'QUNS_RUNNING_D3D_FULL_SCREEN
+    '  A full-screen (exclusive mode) Direct3D application is running.
+    '
+    
+    
+    *pquns = QUNS_ACCEPTS_NOTIFICATIONS
+    return S_OK
+  end function
 end extern
 
 '-------------------------------------------------------------------------------------------
