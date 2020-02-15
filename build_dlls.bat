@@ -1,7 +1,8 @@
 @echo off
 setlocal
 set params=advapi3x credux comdlg3x gdi3x iphlpapx kernel3x ntdlx ole3x opengl3x powrprox shell3x user3x uxthemx ws2_3x
-set params=%params% avrt dwmapi MMDevApi
+set params=%params% avrt dwmapi
+::MMDevApi
 
 set settfile=compile.ini
 set libpath=bin\lib
