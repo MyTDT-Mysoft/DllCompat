@@ -28,7 +28,7 @@ function getRowByName(InterfaceName as const WCHAR ptr, prow as PMIB_IFROW) as D
   end if
   
   for i as int = 0 to pift->dwNumEntries-1
-    if lstrcmpW(InterfaceName, pift->table(i).wszName) then
+    if lstrcmpW(InterfaceName, pift->table(i).wszName)=0 then
       *prow = pift->table(i)
       ret = NO_ERROR
       exit for
@@ -80,7 +80,6 @@ extern "windows-ms"
     InterfaceLuid->Info.NetLuidIndex = InterfaceIndex
     InterfaceLuid->Info.IfType = row.dwType
     
-    DEBUG_MsgTrace("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     return NO_ERROR
   end function
   
@@ -146,7 +145,6 @@ extern "windows-ms"
   #define P2 InterfaceName as _Out_ PWSTR
   #define P3 Length        as _In_  SIZE_T
   function ConvertInterfaceLuidToNameW(P1, P2, P3) as NETIO_STATUS export
-  '\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     dim ret as DWORD
     dim row as MIB_IFROW
 
@@ -156,7 +154,6 @@ extern "windows-ms"
     ret = GetIfEntry(@row)
     DEBUG_MsgTrace("return %d, index %d", ret, row.dwIndex)
     if ret<>NO_ERROR then return ret
-    DEBUG_MsgTrace("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
     if Length < lstrlenW(row.wszName)+1 then return ERROR_NOT_ENOUGH_MEMORY
     lstrcpyW(InterfaceName, row.wszName)
