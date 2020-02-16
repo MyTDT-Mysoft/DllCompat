@@ -87,6 +87,7 @@ kernel3x
     GetCurrentProcessorNumber                       new         dummy
     GetErrorMode                                    new         full        fixme
     GetFileInformationByHandleEx                    new         partial     testme
+    GetFinalPathNameByHandleA                       new
     GetFinalPathNameByHandleW                       new
     GetLocaleInfoEx                                 new         dummy       fixme
     GetLogicalProcessorInformation                  reimpl      partial

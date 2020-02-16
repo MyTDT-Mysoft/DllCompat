@@ -427,6 +427,32 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
+  #define P1 hFile        as _In_  HANDLE
+  #define P2 lpszFilePath as _Out_ LPSTR
+  #define P3 cchFilePath  as _In_  DWORD
+  #define P4 dwFlags      as _In_  DWORD
+  function GetFinalPathNameByHandleA(P1,P2,P3,P4) as DWORD export
+    dim as DWORD ret
+    dim as zstring*MAX_PATH zTemp = any
+    dim as zstring ptr stringPtr = @zTemp
+    
+    if cchFilePath>MAX_PATH then
+      stringPtr = GlobalAlloc(GMEM_FIXED, cchFilePath*sizeof(CHAR))
+      if stringPtr=NULL then
+        SetLastERror(ERROR_NOT_ENOUGH_MEMORY)
+        return 0
+      end if
+    end if 
+    
+    ret = GetFinalPathNameByHandleW(hFile, stringPtr, cchFilePath, dwFlags) 'cchFilePath
+    if ret=0 orelse cchFilePath<ret then return ret
+    MultiByteToWideChar(CP_ACP, 0, stringPtr, -1, lpszFilePath, cchFilePath)
+    
+    if stringPtr<>@zTemp then GlobalFree(stringPtr)
+    return ret
+  end function
+  
+  UndefAllParams()
   function GetTickCount64() as ULONGLONG export
     dim as ulongint ulFreq = any, ulCounter = any 
     QueryPerformanceFrequency( cptr(LARGE_INTEGER ptr,@ulFreq ) )
