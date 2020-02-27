@@ -324,7 +324,9 @@ extern "windows-ms"
     end if
     
     strtFldr = getBestcaseFolder(SELF)
-    IShellItem_GetDisplayName(strtFldr, SIGDN_FILESYSPATH, cast(any ptr, @SELF->ofnw.lpstrInitialDir))
+    if strtFldr<>NULL then 
+      IShellItem_GetDisplayName(strtFldr, SIGDN_FILESYSPATH, cast(any ptr, @SELF->ofnw.lpstrInitialDir))
+    end if
     
     ret = iif(SELF->isSaveDialog, GetSaveFileNameW(@SELF->ofnw), GetOpenFileNameW(@SELF->ofnw))
     if ret then
@@ -957,6 +959,6 @@ extern "windows-ms"
   end function
 
   function DllRegisterServer() as HRESULT export
-      return cbase_DllRegisterServer()
+    return cbase_DllRegisterServer()
   end function
 end extern
