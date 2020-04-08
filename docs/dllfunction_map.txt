@@ -74,6 +74,7 @@ kernel3x
     AcquireSRWLockExclusive                         redir       ntdlx.RtlAcquireSRWLockExclusive
     AcquireSRWLockShared                            redir       ntdlx.RtlAcquireSRWLockShared
     CancelIoEx                                      new         dummy       fixme
+    CancelSynchronousIo                             new         dummy       fixme
     CompareStringEx                                 new         partial     fixme
     CreateEventExA                                  new         full
     CreateEventExW                                  new         full
