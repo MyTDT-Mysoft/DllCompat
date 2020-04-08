@@ -77,6 +77,10 @@ kernel3x
     CompareStringEx                                 new         partial     fixme
     CreateEventExA                                  new         full
     CreateEventExW                                  new         full
+    CreateMutexExA                                  new         full
+    CreateMutexExW                                  new         full
+    CreateSemaphoreExA                              new         full
+    CreateSemaphoreExW                              new         full
     CreateSymbolicLinkA                             new         dummy       fixme
     CreateSymbolicLinkW                             new         dummy       fixme
     FlsAlloc                                        new         dummy       fixme

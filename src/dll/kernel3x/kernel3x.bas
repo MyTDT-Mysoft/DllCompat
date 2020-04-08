@@ -23,8 +23,8 @@
 dim shared as any ptr pInitMutex
 dim shared as handle hKernel
 
-pInitMutex = CreateMutex(NULL,FALSE,NULL)
-hKernel = GetModuleHandle("kernel32.dll")
+pInitMutex = CreateMutexA(NULL,FALSE,NULL)
+hKernel = GetModuleHandleA("kernel32.dll")
 
 dim shared pfWow64RevertWow64FsRedirection as function( OldValue as PVOID ptr ) as bool
 pfWow64RevertWow64FsRedirection = cast(any ptr,GetProcAddress(hKernel,"Wow64RevertWow64FsRedirection"))
@@ -446,9 +446,10 @@ extern "windows-ms"
     
     ret = GetFinalPathNameByHandleW(hFile, stringPtr, cchFilePath, dwFlags) 'cchFilePath
     if ret=0 orelse cchFilePath<ret then return ret
-    MultiByteToWideChar(CP_ACP, 0, stringPtr, -1, lpszFilePath, cchFilePath)
     
+    MultiByteToWideChar(CP_ACP, 0, stringPtr, -1, lpszFilePath, cchFilePath)
     if stringPtr<>@zTemp then GlobalFree(stringPtr)
+    
     return ret
   end function
   
@@ -590,9 +591,10 @@ extern "windows-ms"
   #define P2 lpName            as LPCSTR
   #define P3 dwFlags           as DWORD
   #define P4 dwDesiredAccess   as DWORD
-  function CreateEventExA(P1,P2,P3,P4) as HANDLE export
-    dim isManualReset as byte = iif(dwFlags and CREATE_EVENT_MANUAL_RESET, TRUE, FALSE)
-    dim isSignaled as byte    = iif(dwFlags and CREATE_EVENT_INITIAL_SET, TRUE, FALSE)
+  function CreateEventExA(P1, P2, P3, P4) as HANDLE export
+    dim isManualReset as BOOL = iif(dwFlags and CREATE_EVENT_MANUAL_RESET, TRUE, FALSE)
+    dim isSignaled as BOOL    = iif(dwFlags and CREATE_EVENT_INITIAL_SET, TRUE, FALSE)
+    
     return CreateEventA(lpEventAttributes, isManualReset, isSignaled, lpName)
   end function
   
@@ -601,12 +603,57 @@ extern "windows-ms"
   #define P2 lpName            as LPCWSTR
   #define P3 dwFlags           as DWORD
   #define P4 dwDesiredAccess   as DWORD
-  function CreateEventExW(P1,P2,P3,P4) as HANDLE export
-    dim isManualReset as byte = iif(dwFlags and CREATE_EVENT_MANUAL_RESET, TRUE, FALSE)
-    dim isSignaled as byte    = iif(dwFlags and CREATE_EVENT_INITIAL_SET, TRUE, FALSE)
+  function CreateEventExW(P1, P2, P3, P4) as HANDLE export
+    dim isManualReset as BOOL = iif(dwFlags and CREATE_EVENT_MANUAL_RESET, TRUE, FALSE)
+    dim isSignaled as BOOL    = iif(dwFlags and CREATE_EVENT_INITIAL_SET, TRUE, FALSE)
+    
     return CreateEventW(lpEventAttributes, isManualReset, isSignaled, lpName)
   end function
-
+  
+  UndefAllParams()
+  #define P1 lpMutexAttributes as LPSECURITY_ATTRIBUTES
+  #define P2 lpName            as LPCSTR
+  #define P3 dwFlags           as DWORD
+  #define P4 dwDesiredAccess   as DWORD
+  function CreateMutexExA(P1, P2, P3, P4) as HANDLE export
+    dim isInitialOwner as BOOL = iif(dwFlags and CREATE_MUTEX_INITIAL_OWNER, TRUE, FALSE)
+    
+    return CreateMutexA(lpMutexAttributes, isInitialOwner, lpName)
+  end function
+  
+  UndefAllParams()
+  #define P1 lpMutexAttributes as LPSECURITY_ATTRIBUTES
+  #define P2 lpName            as LPCWSTR
+  #define P3 dwFlags           as DWORD
+  #define P4 dwDesiredAccess   as DWORD
+  function CreateMutexExW(P1, P2, P3, P4) as HANDLE export
+    dim isInitialOwner as BOOL = iif(dwFlags and CREATE_MUTEX_INITIAL_OWNER, TRUE, FALSE)
+    
+    return CreateMutexW(lpMutexAttributes, isInitialOwner, lpName)
+  end function
+  
+  UndefAllParams()
+  #define P1 lpSemaphoreAttributes as LPSECURITY_ATTRIBUTES
+  #define P2 lInitialCount         as LONG
+  #define P3 lMaximumCount         as LONG
+  #define P4 lpName                as LPCSTR
+  #define P5 dwFlags               as DWORD
+  #define P6 dwDesiredAccess       as DWORD
+  function CreateSemaphoreExA(P1, P2, P3, P4, P5, P6) as HANDLE export
+    return CreateSemaphoreA(lpSemaphoreAttributes, lInitialCount, lMaximumCount, lpName)
+  end function
+  
+  UndefAllParams()
+  #define P1 lpSemaphoreAttributes as LPSECURITY_ATTRIBUTES
+  #define P2 lInitialCount         as LONG
+  #define P3 lMaximumCount         as LONG
+  #define P4 lpName                as LPCWSTR
+  #define P5 dwFlags               as DWORD
+  #define P6 dwDesiredAccess       as DWORD
+  function CreateSemaphoreExW(P1, P2, P3, P4, P5, P6) as HANDLE export
+    return CreateSemaphoreW(lpSemaphoreAttributes, lInitialCount, lMaximumCount, lpName)
+  end function
+  
   UndefAllParams()
   #define P1 pExceptionRecord   as _In_opt_ LPSECURITY_ATTRIBUTES
   #define P2 pContextRecord     as _In_opt_ PCONTEXT
