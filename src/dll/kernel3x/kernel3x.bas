@@ -556,6 +556,14 @@ extern "windows-ms"
     DEBUG_MsgNotImpl()
     SetLastError(ERROR_OUT_OF_PAPER)
     return FALSE
+  end function
+  
+  UndefAllParams()
+  #define P1 hThread      as _In_     HANDLE
+  function CancelSynchronousIo(P1) as BOOL export
+    DEBUG_MsgNotImpl()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return FALSE
   end function  
 
   UndefAllParams()  
