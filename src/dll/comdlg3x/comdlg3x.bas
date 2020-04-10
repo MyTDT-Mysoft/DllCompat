@@ -11,198 +11,57 @@
 #include "includes\win\fix_shellapi.bi"
 #include "includes\win\dll_shell3x.bi"
 
-#include "comdlg3x.bi"
+type PrivEventHandler
+  pfde as IFileDialogEvents ptr
+  'pDialog as IFileDialogImpl ptr
+  cookie as DWORD
+end type
 
-'configuration
-static shared vt_FileDialog as IFileDialogVtbl = type( _
-  @cbase_UnkQueryInterface, _
-  @cbase_UnkAddRef, _
-  @cbase_UnkRelease, _
-  _
-  @fnIFileDialog_Show, _
-  @fnIFileDialog_SetFileTypes, _
-  @fnIFileDialog_SetFileTypeIndex, _
-  @fnIFileDialog_GetFileTypeIndex, _
-  @fnIFileDialog_Advise, _
-  @fnIFileDialog_Unadvise, _
-  @fnIFileDialog_SetOptions, _
-  @fnIFileDialog_GetOptions, _
-  @fnIFileDialog_SetDefaultFolder, _
-  @fnIFileDialog_SetFolder, _
-  @fnIFileDialog_GetFolder, _
-  @fnIFileDialog_GetCurrentSelection, _
-  @fnIFileDialog_SetFileName, _
-  @fnIFileDialog_GetFileName, _
-  @fnIFileDialog_SetTitle, _
-  @fnIFileDialog_SetOkButtonLabel, _
-  @fnIFileDialog_SetFileNameLabel, _
-  @fnIFileDialog_GetResult, _
-  @fnIFileDialog_AddPlace, _
-  @fnIFileDialog_SetDefaultExtension, _
-  @fnIFileDialog_Close, _
-  @fnIFileDialog_SetClientGuid, _
-  @fnIFileDialog_ClearClientData, _
-  @fnIFileDialog_SetFilter _
-)
+'FileDialog
+#define FFLAGS_DEFAULT OFN_EXPLORER or OFN_ENABLEHOOK or OFN_HIDEREADONLY
+#define MAX_FILEPATH 65536
+#define MAX_FILENAME 256
+#define MAX_FILEEXT  16
+#define MAX_HANDLERS 128
+type IFileDialogImpl
+  union
+    baseObj as COMGenerObj
+    fd_lpVtbl  as const IFileDialogVtbl ptr
+    fod_lpVtbl as const IFileOpenDialogVtbl ptr
+    fsd_lpVtbl as const IFileSaveDialogVtbl ptr
+  end union
+  ofnw as OPENFILENAMEW
+  fos as FILEOPENDIALOGOPTIONS
+  defaultFolder as IShellItem ptr
+  overrideFolder as IShellItem ptr
+  currentFolder as IShellItem ptr
+  
+  filePath as WSTRING*MAX_FILEPATH
+  fileName as WSTRING*MAX_FILENAME
+  defltExt as WSTRING*MAX_FILEEXT
+  isSaveDialog as BOOL
+  isFolderDialog as BOOL
+  
+  dialogHwnd as HWND
+  nextCookie as DWORD
+  usedArrSlots as int 'inclusive
+  handlerArr(MAX_HANDLERS) as PrivEventHandler ptr
+end type
 
-static shared vt_FileOpenDialog as IFileOpenDialogVtbl = type( _
-  @cbase_UnkQueryInterface, _
-  @cbase_UnkAddRef, _
-  @cbase_UnkRelease, _
-  _
-  @fnIFileDialog_Show, _
-  @fnIFileDialog_SetFileTypes, _
-  @fnIFileDialog_SetFileTypeIndex, _
-  @fnIFileDialog_GetFileTypeIndex, _
-  @fnIFileDialog_Advise, _
-  @fnIFileDialog_Unadvise, _
-  @fnIFileDialog_SetOptions, _
-  @fnIFileDialog_GetOptions, _
-  @fnIFileDialog_SetDefaultFolder, _
-  @fnIFileDialog_SetFolder, _
-  @fnIFileDialog_GetFolder, _
-  @fnIFileDialog_GetCurrentSelection, _
-  @fnIFileDialog_SetFileName, _
-  @fnIFileDialog_GetFileName, _
-  @fnIFileDialog_SetTitle, _
-  @fnIFileDialog_SetOkButtonLabel, _
-  @fnIFileDialog_SetFileNameLabel, _
-  @fnIFileDialog_GetResult, _
-  @fnIFileDialog_AddPlace, _
-  @fnIFileDialog_SetDefaultExtension, _
-  @fnIFileDialog_Close, _
-  @fnIFileDialog_SetClientGuid, _
-  @fnIFileDialog_ClearClientData, _
-  @fnIFileDialog_SetFilter, _
-  _
-  @fnIFileOpenDialog_GetResults, _
-  @fnIFileOpenDialog_GetSelectedItems _
-)
+type IFileSystemBindDataImpl
+  union
+    baseObj as COMGenerObj
+    lpVtbl  as const IFileSystemBindDataVtbl ptr
+  end union
+  w32fdw as WIN32_FIND_DATAW
+end type
 
-static shared vt_FileSaveDialog as IFileSaveDialogVtbl = type( _
-  @cbase_UnkQueryInterface, _
-  @cbase_UnkAddRef, _
-  @cbase_UnkRelease, _
-  _
-  @fnIFileDialog_Show, _
-  @fnIFileDialog_SetFileTypes, _
-  @fnIFileDialog_SetFileTypeIndex, _
-  @fnIFileDialog_GetFileTypeIndex, _
-  @fnIFileDialog_Advise, _
-  @fnIFileDialog_Unadvise, _
-  @fnIFileDialog_SetOptions, _
-  @fnIFileDialog_GetOptions, _
-  @fnIFileDialog_SetDefaultFolder, _
-  @fnIFileDialog_SetFolder, _
-  @fnIFileDialog_GetFolder, _
-  @fnIFileDialog_GetCurrentSelection, _
-  @fnIFileDialog_SetFileName, _
-  @fnIFileDialog_GetFileName, _
-  @fnIFileDialog_SetTitle, _
-  @fnIFileDialog_SetOkButtonLabel, _
-  @fnIFileDialog_SetFileNameLabel, _
-  @fnIFileDialog_GetResult, _
-  @fnIFileDialog_AddPlace, _
-  @fnIFileDialog_SetDefaultExtension, _
-  @fnIFileDialog_Close, _
-  @fnIFileDialog_SetClientGuid, _
-  @fnIFileDialog_ClearClientData, _
-  @fnIFileDialog_SetFilter, _
-  _
-  @fnIFileSaveDialog_SetSaveAsItem, _
-  @fnIFileSaveDialog_SetProperties, _
-  @fnIFileSaveDialog_SetCollectedProperties, _
-  @fnIFileSaveDialog_GetProperties, _
-  @fnIFileSaveDialog_ApplyProperties _
-)
-
-static shared vt_fsbd as IFileSystemBindDataVtbl = type( _
-  @cbase_UnkQueryInterface, _
-  @cbase_UnkAddRef, _
-  @cbase_UnkRelease, _
-  _
-  @fnIFileSystemBindData_SetFindData, _
-  @fnIFileSystemBindData_GetFindData _
-)
-
-static shared iidOpenDialog(...) as REFIID = { @IID_IFileOpenDialog, @IID_IFileDialog, @IID_IUnknown }
-static shared confOpenDialog as COMDesc = type( _
-  @CLSID_FileOpenDialog, @iidOpenDialog(0), COUNTOF(iidOpenDialog), _
-  @vt_FileOpenDialog, sizeof(IFileDialogImpl), _
-  @FileDialogConstructor, @FileDialogDestructor, _
-  @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Open Dialog(DLLCompat)" _
-)
-
-static shared iidSaveDialog(...) as REFIID = { @IID_IFileSaveDialog, @IID_IFileDialog, @IID_IUnknown }
-static shared confSaveDialog as COMDesc = type( _
-  @CLSID_FileSaveDialog, @iidSaveDialog(0), COUNTOF(iidSaveDialog), _
-  @vt_FileSaveDialog, sizeof(IFileDialogImpl), _
-  @FileDialogConstructor, @FileDialogDestructor, _
-  @DLLC_COM_MARK, @THREADMODEL_APARTMENT, @"File Save Dialog(DLLCompat)" _
-)
-
-static shared iidFSBind(...) as REFIID = { @IID_IFileSystemBindData, @IID_IUnknown }
-static shared confFSBind as COMDesc = type( _
-  NULL, @iidFSBind(0), COUNTOF(iidFSBind), _
-  @vt_fsbd, sizeof(IFileSystemBindDataImpl), _
-  NULL, NULL, _
-  NULL, NULL, NULL _
-)
-
-static shared serverConfig(...) as COMDesc ptr = {@confOpenDialog, @confSaveDialog}
+#include "comdlg_base.bas"
 
 '-------------------------------------------------------------------------------------------
 
-#define MAX_DIALOGS 32
-static shared csWhnd as CRITICAL_SECTION
-static shared dialogArr(MAX_DIALOGS) as IFileDialogImpl ptr
 static shared bindctx as IBindCtx ptr
 static shared mal as IMalloc ptr
-
-sub bindHwnd2Dialog(hwnd as HWND, pdlg as IFileDialogImpl ptr)
-  EnterCriticalSection(@csWhnd)
-  for i as integer = 0 to MAX_DIALOGS
-    if dialogArr(i)<>NULL andalso pdlg->dialogHwnd=hwnd then return
-  next
-  for i as integer = 0 to MAX_DIALOGS
-    if dialogArr(i)=NULL then
-      pdlg->dialogHwnd = hwnd
-      dialogArr(i) = pdlg
-      exit for
-    end if
-  next
-  LeaveCriticalSection(@csWhnd)
-end sub
-
-function unbindHwndAndDialog(hwnd as HWND) as IFileDialogImpl ptr
-  dim pdlg as IFileDialogImpl ptr = NULL
-  
-  EnterCriticalSection(@csWhnd)
-  for i as integer = 0 to MAX_DIALOGS
-    if dialogArr(i)<>NULL andalso dialogArr(i)->dialogHwnd=hwnd then
-      pdlg = dialogArr(i)
-      dialogArr(i)->dialogHwnd = NULL
-      dialogArr(i) = NULL
-      exit for
-    end if
-  next
-  LeaveCriticalSection(@csWhnd)
-  return pdlg
-end function
-
-function getDialogFromHwnd(hwnd as HWND) as IFileDialogImpl ptr
-  dim pdlg as IFileDialogImpl ptr = NULL
-  
-  EnterCriticalSection(@csWhnd)
-  for i as integer = 0 to MAX_DIALOGS
-    if dialogArr(i)<>NULL andalso dialogArr(i)->dialogHwnd=hwnd then
-      pdlg = dialogArr(i)
-      exit for
-    end if
-  next
-  LeaveCriticalSection(@csWhnd)
-  return pdlg
-end function
 
 #define LCA_ZEROMEMORY   1 shl 0
 #define LCA_KEEPCONTENTS 1 shl 1
@@ -271,12 +130,12 @@ extern "windows-ms"
         dim pOfnw as OPENFILENAMEW ptr = cast(OPENFILENAMEW ptr, lParam)
         dim pdlg as IFileDialogImpl ptr = cast(IFileDialogImpl ptr, pOfnw->lCustData)
         
-        bindHwnd2Dialog(hwnd, pdlg)
+        SetWindowLongA(hwnd, GWL_USERDATA, pdlg)
       case WM_CLOSE
-        unbindHwndAndDialog(hwnd)
+        SetWindowLongA(hwnd, GWL_USERDATA, NULL)
       case WM_NOTIFY
         dim ofn as OFNOTIFYW ptr = cast(OFNOTIFYW ptr, lparam)
-        dim pdlg as IFileDialogImpl ptr = getDialogFromHwnd(hwnd)
+        dim pdlg as IFileDialogImpl ptr = GetWindowLongA(hwnd, GWL_USERDATA)
         
         select case ofn->hdr.code
           case CDN_FILEOK
@@ -293,7 +152,7 @@ extern "windows-ms"
         end select
     end select
     
-    return FALSE
+    return 0
   end function
   
   'FileSystemBindData
@@ -934,10 +793,8 @@ extern "windows-ms"
   function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as BOOL
     select case uReason
       case DLL_PROCESS_ATTACH
-        InitializeCriticalSection(@csWhnd)
         cbase_init(handle, @serverConfig(0), 2)
       case DLL_PROCESS_DETACH
-        DeleteCriticalSection(@csWhnd)
         cbase_destroy()
         if mal then IMalloc_Release(mal)
       case DLL_THREAD_ATTACH
