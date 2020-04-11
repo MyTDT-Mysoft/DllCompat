@@ -21,7 +21,8 @@
 #include "console.bas"
 
 dim shared as any ptr pInitMutex
-dim shared as handle hKernel
+dim shared as HANDLE hKernel
+dim shared as LARGE_INTEGER ulFreq
 
 pInitMutex = CreateMutexA(NULL,FALSE,NULL)
 hKernel = GetModuleHandleA("kernel32.dll")
@@ -455,10 +456,14 @@ extern "windows-ms"
   
   UndefAllParams()
   function GetTickCount64() as ULONGLONG export
-    dim as ulongint ulFreq = any, ulCounter = any 
-    QueryPerformanceFrequency( cptr(LARGE_INTEGER ptr,@ulFreq ) )
-    QueryPerformanceCounter( cptr(LARGE_INTEGER ptr,@ulCounter ) )
-    return ulCounter\(ulFreq\1000)
+    dim as LARGE_INTEGER ulCounter = any
+    
+    if ulFreq.QuadPart then
+      QueryPerformanceCounter(@ulCounter)
+      return ulCounter.QuadPart \ (ulFreq.QuadPart \ 1000)
+    else 'MS says this does not happen in XP and above
+      return GetTickCount()
+    end if
   end function
   
   UndefAllParams()
@@ -700,7 +705,23 @@ extern "windows-ms"
 end extern
 
 #define ENABLE_THREADCALLS
+#define CUSTOM_MAIN
 #include "shared\defaultmain.bas"
+
+extern "windows-ms"
+  function DLLMAIN(handle as HINSTANCE, uReason as uinteger, Reserved as any ptr) as BOOL
+    select case uReason
+      case DLL_PROCESS_ATTACH
+        if QueryPerformanceFrequency(@ulFreq) = 0 then
+          ulFreq.QuadPart = 0
+        end if
+      case DLL_PROCESS_DETACH
+      case DLL_THREAD_ATTACH
+      case DLL_THREAD_DETACH
+    end select
+    return DLLMAIN_DEFAULT(handle, uReason, Reserved)
+  end function
+end extern
 
 '---------------- APP SPECIFIC INCLUDES ---------------------
 'should we add a define check? 
