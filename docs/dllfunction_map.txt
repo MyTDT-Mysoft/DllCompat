@@ -194,6 +194,7 @@ shell3x
     Shell_NotifyIconGetRect                         new         dummy
     SHGetKnownFolderIDList                          new         dummy       fixme
     SHGetKnownFolderPath                            new         partial     fixme
+    SHGetPropertyStoreForWindow                     new         dummy       fixme
     SHGetStockIconInfo                              new         dummy       fixme
     SHQueryUserNotificationState                    new         dummy       fixme
 user3x

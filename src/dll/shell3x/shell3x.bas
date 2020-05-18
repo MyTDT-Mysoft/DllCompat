@@ -201,6 +201,17 @@ extern "windows-ms"
   end function
   
   UndefAllParams()
+  #define P1 hwnd as HWND
+  #define P2 riid as REFIID
+  #define P3 ppv  as any ptr ptr
+  function fnSHGetPropertyStoreForWindow alias "SHGetPropertyStoreForWindow"(P1, P2, P3) as HRESULT export
+    DEBUG_MsgNotImpl()
+    
+    *ppv = NULL
+    return E_INVALIDARG
+  end function
+  
+  UndefAllParams()
   #define P1 siid   as         SHSTOCKICONID
   #define P2 uFlags as         UINT
   #define P3 psii   as _Inout_ SHSTOCKICONINFO ptr
