@@ -1,2 +1,28 @@
-LIBRARY DWMAPI.dll
+LIBRARY dwmapi.dll
 EXPORTS
+    DwmAttachMilContent                 @111
+    DwmDefWindowProc                    @116
+    DwmDetachMilContent                 @117
+    DwmEnableBlurBehindWindow           @122
+    DwmEnableComposition                @102
+    DwmEnableMMCSS                      @123
+    DwmExtendFrameIntoClientArea        @135
+    DwmFlush                            @136
+    DwmGetColorizationColor             @137
+    DwmGetCompositionTimingInfo         @138
+    DwmGetGraphicsStreamClient          @139
+    DwmGetGraphicsStreamTransformHint   @140
+    DwmGetTransportAttributes           @141
+    DwmGetWindowAttribute               @142
+    DwmInvalidateIconicBitmaps          @143
+    DwmIsCompositionEnabled             @144
+    DwmModifyPreviousDxFrameDuration    @145
+    DwmQueryThumbnailSourceSize         @146
+    DwmRegisterThumbnail                @147
+    DwmSetDxFrameDuration               @148
+    DwmSetIconicLivePreviewBitmap       @149
+    DwmSetIconicThumbnail               @150
+    DwmSetPresentParameters             @151
+    DwmSetWindowAttribute               @152
+    DwmUnregisterThumbnail              @153
+    DwmUpdateThumbnailProperties        @154
