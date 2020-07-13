@@ -22,3 +22,9 @@ Projects with similar goal:
   * Last updated 2019.sep.
   * https://katahiromz.web.fc2.com/vista2xp/en/
   * https://github.com/katahiromz/vista2xp
+  
+* NTOSKRNL Emu_Extender by mov AX 0xDEAD
+  * Patch-your-driver type compat.
+  * This is meant to allow newer drivers to be modified to work on XP.
+  * Recent project.
+  * https://github.com/MovAX0xDEAD/NTOSKRNL_Emu
