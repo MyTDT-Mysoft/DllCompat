@@ -1,5 +1,7 @@
 #include "dynload.bi"
 
+#define LDRP_BAD_DLL &hFFBADD11
+
 #define STRFIND_LIM 2048
 #define INSA(x) cast(ubyte,  iif(((x-65) and &hFF)>=26, 0+x, x+32))
 #define INSW(x) cast(ushort, iif(((x-65) and &hFF)>=26 or (x and &hFF00), 0+x, (x+32) and &hFF))
@@ -197,7 +199,15 @@ extern "windows-ms"
     DEBUG_WhoCalledInit()
     dim as zstring*MAX_PATH temp
     dim as FARPROC h
+    
     h = GetProcAddress(hModule, lpProcName)
+    
+    'LDRP_BAD_DLL happens when you get function such as InitializeSRWLock = ntdlx.RtlInitializeSRWLock
+    'but ntdlx does not have the function exported
+    'in newer versions of windows, NULL is properly returned instead of LDRP_BAD_DLL
+    if h = LDRP_BAD_DLL then h = NULL
+    
+    DEBUG_MsgTrace("%s: %X", lpProcName, h)
     if hModule andalso h=NULL then
       if GetModuleFileNameA(hModule, @temp, MAX_PATH)=0 then
         temp = "NONE"
