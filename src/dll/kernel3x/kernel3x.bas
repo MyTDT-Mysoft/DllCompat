@@ -599,6 +599,34 @@ extern "windows-ms"
 
   end function
   
+  UndefAllParams()  
+  #define P1 hProcess  _In_    as HANDLE
+  #define P2 dwFlags   _In_    as DWORD
+  #define P3 lpExeName _Out_   as LPWSTR
+  #define P4 lpdwSize  _Inout_ as PDWORD 
+  function QueryFullProcessImageNameW(P1,P2,P3,P4) as WINBOOL export
+    dim as DWORD iResu = 0
+    
+    if lpdwSize=0 then 
+      SetLastError(ERROR_INVALID_PARAMETER)
+      return 0
+    end if
+    
+    if (dwFlags and PROCESS_NAME_NATIVE) then
+      iResu = GetProcessImageFileNameW(hProcess,lpExeName,*lpdwSize)
+    else    
+      iResu = GetModuleFilenameExW(hProcess,null,lpExeName,*lpdwSize)
+    end if
+    
+    if iResu then 
+      DEBUG_MsgTrace("hProcess=%X dwFlags=%X lpExeName=%08X lpDwSize=%08X(%i) Resu=(%i):'%S'", hProcess , dwFlags , lpExeName , lpdwSize , iResu , lpExeName )
+      *lpdwSize = iResu: return 1
+    else
+      return 0
+    end if
+
+  end function
+  
   UndefAllParams()
   #define P1 lpEventAttributes as LPSECURITY_ATTRIBUTES
   #define P2 lpName            as LPCSTR

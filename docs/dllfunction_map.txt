@@ -145,7 +145,7 @@ kernel3x
     NormalizeString                                 redir       normaliz.NormalizeString
     OpenProcess                                     reimpl      full
     QueryFullProcessImageNameA                      new
-    QueryFullProcessImageNameW                      TODO
+    QueryFullProcessImageNameW                      new
     RaiseFailFastException                          new         dummy
     ReleaseSRWLockExclusive                         redir       ntdlx.RtlReleaseSRWLockExclusive
     ReleaseSRWLockShared                            redir       ntdlx.RtlReleaseSRWLockShared
