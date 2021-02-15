@@ -149,6 +149,7 @@ kernel3x
     RaiseFailFastException                          new         dummy
     ReleaseSRWLockExclusive                         redir       ntdlx.RtlReleaseSRWLockExclusive
     ReleaseSRWLockShared                            redir       ntdlx.RtlReleaseSRWLockShared
+    ReOpenFile                                      new         dummy
     SetConsoleScreenBufferInfoEx                    new         partial     testme
     SetFileInformationByHandle                      new         dummy
     SetThreadGroupAffinity                          new         dummy

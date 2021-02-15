@@ -213,4 +213,16 @@ extern "windows-ms"
     end if
     return TRUE
   end function
+  
+  UndefAllParams()
+  #define P1 hOriginalFile        as HANDLE
+  #define P2 dwDesiredAccess      as DWORD
+  #define P3 dwShareMode          as DWORD
+  #define P4 dwFlagsAndAttributes as DWORD
+  function fnReOpenFile alias "ReOpenFile"(P1, P2, P3, P4) as HANDLE export
+    DEBUG_MsgNotImpl()
+    SetLastError(ERROR_OUT_OF_PAPER)
+    return INVALID_HANDLE_VALUE
+  end function
+  
 end extern
