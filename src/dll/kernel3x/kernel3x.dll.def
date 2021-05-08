@@ -987,6 +987,8 @@ ReleaseSRWLockShared         = ntdlx.RtlReleaseSRWLockShared
 TryAcquireSRWLockExclusive   = ntdlx.RtlTryAcquireSRWLockExclusive
 TryAcquireSRWLockShared      = ntdlx.RtlTryAcquireSRWLockShared
 
+GetSystemTimePreciseAsFileTime = kernel32.GetSystemTimeAsFileTime
+
 FreeLibrary @241
 FreeLibraryAndExitThread @242
 GetLogicalProcessorInformation @369
