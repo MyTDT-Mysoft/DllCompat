@@ -99,6 +99,7 @@ kernel3x
     GetNumaNodeProcessorMaskEx                      new         dummy
     GetProductInfo                                  redir       ntdlx.RtlGetProductInfo
     GetSystemDefaultLocaleName                      new         testme
+    GetSystemTimePreciseAsFileTime                  redir       kernel32.GetSystemTimeAsFileTime
     GetThreadId                                     new
     GetTickCount64                                  new         testme
     GetUserDefaultLocaleName                        new         testme
