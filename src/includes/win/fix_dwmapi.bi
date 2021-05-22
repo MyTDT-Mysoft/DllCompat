@@ -38,7 +38,7 @@ type _DWM_PRESENT_PARAMETERS
     cRefreshesPerFrame as UINT
     eSampling as DWM_SOURCE_FRAME_SAMPLING
 end type
-type DWM_PRESENT_PARAMETERS as DWM_PRESENT_PARAMETERS
+type DWM_PRESENT_PARAMETERS as _DWM_PRESENT_PARAMETERS
 
 type _MilMatrix3x2D
   S_11 as double
@@ -51,46 +51,46 @@ end type
 type MilMatrix3x2D as _MilMatrix3x2D
 
 type _DWM_TIMING_INFO
-    cbSize as UINT
-    rateRefresh as UNSIGNED_RATIO
-    qpcRefreshPeriod as QPC_TIME
-    rateCompose as UNSIGNED_RATIO
-    qpcVBlank as QPC_TIME
-    cRefresh as DWM_FRAME_COUNT
-    cDXRefresh as UINT
-    qpcCompose as QPC_TIME
-    cFrame as DWM_FRAME_COUNT
-    cDXPresent as UINT
-    cRefreshFrame as DWM_FRAME_COUNT
-    cFrameSubmitted as DWM_FRAME_COUNT
-    cDXPresentSubmitted as UINT
-    cFrameConfirmed as DWM_FRAME_COUNT
-    cDXPresentConfirmed as UINT
-    cRefreshConfirmed as DWM_FRAME_COUNT
-    cDXRefreshConfirmed as UINT
-    cFramesLate as DWM_FRAME_COUNT
-    cFramesOutstanding as UINT
-    cFrameDisplayed as DWM_FRAME_COUNT
-    qpcFrameDisplayed as QPC_TIME
+    cbSize                 as UINT
+    rateRefresh            as UNSIGNED_RATIO
+    qpcRefreshPeriod       as QPC_TIME
+    rateCompose            as UNSIGNED_RATIO
+    qpcVBlank              as QPC_TIME
+    cRefresh               as DWM_FRAME_COUNT
+    cDXRefresh             as UINT
+    qpcCompose             as QPC_TIME
+    cFrame                 as DWM_FRAME_COUNT
+    cDXPresent             as UINT
+    cRefreshFrame          as DWM_FRAME_COUNT
+    cFrameSubmitted        as DWM_FRAME_COUNT
+    cDXPresentSubmitted    as UINT
+    cFrameConfirmed        as DWM_FRAME_COUNT
+    cDXPresentConfirmed    as UINT
+    cRefreshConfirmed      as DWM_FRAME_COUNT
+    cDXRefreshConfirmed    as UINT
+    cFramesLate            as DWM_FRAME_COUNT
+    cFramesOutstanding     as UINT
+    cFrameDisplayed        as DWM_FRAME_COUNT
+    qpcFrameDisplayed      as QPC_TIME
     cRefreshFrameDisplayed as DWM_FRAME_COUNT
-    cFrameComplete as DWM_FRAME_COUNT
-    qpcFrameComplete as QPC_TIME
-    cFramePending as DWM_FRAME_COUNT
-    qpcFramePending as QPC_TIME
-    cFramesDisplayed as DWM_FRAME_COUNT
-    cFramesComplete as DWM_FRAME_COUNT
-    cFramesPending as DWM_FRAME_COUNT
-    cFramesAvailable as DWM_FRAME_COUNT
-    cFramesDropped as DWM_FRAME_COUNT
-    cFramesMissed as DWM_FRAME_COUNT
-    cRefreshNextDisplayed as DWM_FRAME_COUNT
-    cRefreshNextPresented as DWM_FRAME_COUNT
-    cRefreshesDisplayed as DWM_FRAME_COUNT
-    cRefreshesPresented as DWM_FRAME_COUNT
-    cRefreshStarted as DWM_FRAME_COUNT
-    cPixelsReceived as ULONGLONG
-    cPixelsDrawn as ULONGLONG
-    cBuffersEmpty as DWM_FRAME_COUNT
+    cFrameComplete         as DWM_FRAME_COUNT
+    qpcFrameComplete       as QPC_TIME
+    cFramePending          as DWM_FRAME_COUNT
+    qpcFramePending        as QPC_TIME
+    cFramesDisplayed       as DWM_FRAME_COUNT
+    cFramesComplete        as DWM_FRAME_COUNT
+    cFramesPending         as DWM_FRAME_COUNT
+    cFramesAvailable       as DWM_FRAME_COUNT
+    cFramesDropped         as DWM_FRAME_COUNT
+    cFramesMissed          as DWM_FRAME_COUNT
+    cRefreshNextDisplayed  as DWM_FRAME_COUNT
+    cRefreshNextPresented  as DWM_FRAME_COUNT
+    cRefreshesDisplayed    as DWM_FRAME_COUNT
+    cRefreshesPresented    as DWM_FRAME_COUNT
+    cRefreshStarted        as DWM_FRAME_COUNT
+    cPixelsReceived        as ULONGLONG
+    cPixelsDrawn           as ULONGLONG
+    cBuffersEmpty          as DWM_FRAME_COUNT
 end type
 type DWM_TIMING_INFO as _DWM_TIMING_INFO
 

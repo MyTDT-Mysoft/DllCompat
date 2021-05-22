@@ -78,6 +78,52 @@ extern "windows-ms"
   #define P2 pTimingInfo as _Out_ DWM_TIMING_INFO ptr
   function DwmGetCompositionTimingInfo(P1, P2) as HRESULT export
     DEBUG_MsgNotImpl()
+    /'
+    pTimingInfo->cbSize                    = 0
+    pTimingInfo->rateRefresh.uiNumerator   = 0
+    pTimingInfo->rateRefresh.uiDenominator = 0
+    pTimingInfo->qpcRefreshPeriod          = 0
+    pTimingInfo->rateCompose.uiNumerator   = 0
+    pTimingInfo->rateCompose.uiDenominator = 0
+    pTimingInfo->qpcVBlank                 = 0
+    pTimingInfo->cRefresh                  = 0
+    pTimingInfo->cDXRefresh                = 0
+    pTimingInfo->qpcCompose                = 0
+    pTimingInfo->cFrame                    = 0
+    pTimingInfo->cDXPresent                = 0
+    pTimingInfo->cRefreshFrame             = 0
+    pTimingInfo->cFrameSubmitted           = 0
+    pTimingInfo->cDXPresentSubmitted       = 0
+    pTimingInfo->cFrameConfirmed           = 0
+    pTimingInfo->cDXPresentConfirmed       = 0
+    pTimingInfo->cRefreshConfirmed         = 0
+    pTimingInfo->cDXRefreshConfirmed       = 0
+    pTimingInfo->cFramesLate               = 0
+    pTimingInfo->cFramesOutstanding        = 0
+    pTimingInfo->cFrameDisplayed           = 0
+    pTimingInfo->qpcFrameDisplayed         = 0
+    pTimingInfo->cRefreshFrameDisplayed    = 0
+    pTimingInfo->cFrameComplete            = 0
+    pTimingInfo->qpcFrameComplete          = 0
+    pTimingInfo->cFramePending             = 0
+    pTimingInfo->qpcFramePending           = 0
+    pTimingInfo->cFramesDisplayed          = 0
+    pTimingInfo->cFramesComplete           = 0
+    pTimingInfo->cFramesPending            = 0
+    pTimingInfo->cFramesAvailable          = 0
+    pTimingInfo->cFramesDropped            = 0
+    pTimingInfo->cFramesMissed             = 0
+    pTimingInfo->cRefreshNextDisplayed     = 0
+    pTimingInfo->cRefreshNextPresented     = 0
+    pTimingInfo->cRefreshesDisplayed       = 0
+    pTimingInfo->cRefreshesPresented       = 0
+    pTimingInfo->cRefreshStarted           = 0
+    pTimingInfo->cPixelsReceived           = 0
+    pTimingInfo->cPixelsDrawn              = 0
+    pTimingInfo->cBuffersEmpty             = 0
+    return S_OK
+    '/
+    
     return E_NOTIMPL
   end function
   

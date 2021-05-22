@@ -188,7 +188,6 @@ extern "windows-ms"
   function ConvertInterfaceNameToLuidW(P1, P2) as NETIO_STATUS export
     dim ret as DWORD
     dim row as MIB_IFROW
-    dim nameLen as int
     
     if InterfaceLuid=NULL then return ERROR_INVALID_PARAMETER
     
