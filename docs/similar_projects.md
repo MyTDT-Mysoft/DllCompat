@@ -22,7 +22,7 @@ Projects with similar goal:
 
 * vista2xp by Katayama Hirofumi MZ
   * Patch-your-application type compat.
-  * Last updated 2019.sep.
+  * Updated recently.
   * https://katahiromz.web.fc2.com/vista2xp/en/
   * https://github.com/katahiromz/vista2xp
   
