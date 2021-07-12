@@ -36,3 +36,8 @@ Projects with similar goal:
   * Patch-your-application type compat.
   * Recent project.
   * https://github.com/zeroclear/xpext
+  
+* YY-Thunks by Chuyu-Team
+  * These are meant to be compiled with your application.
+  * Recently updated.
+  * https://github.com/Chuyu-Team/YY-Thunks
