@@ -276,6 +276,7 @@ extern "windows-ms"
             
     'trying to validate the thread handle and give a useful return code
     dim as DWORD dwResu = any
+    
     if GetExitCodeThread(Thread,@dwResu)=0 then 
       var iErr = GetLastError()
       DEBUG_MsgTrace("GetThreadId ERROR = " & hex(iErr))
@@ -285,16 +286,35 @@ extern "windows-ms"
     'get thread ClientID from nt function, (succeeded with GetCurrentThreadID)
     dim as THREAD_BASIC_INFO tInfo = any
     dim as NTSTATUS ntResu = any
+    
     ntResu = NtQueryInformationThread( GetCurrentThread , _
-    ThreadBasicInformation , @tInfo , sizeof(tInfo), null )
+      ThreadBasicInformation , @tInfo , sizeof(tInfo), null )
     
     if ntResu then 
       DEBUG_MsgTrace("GetThreadId NTSTATUS = " & hex(ntResu))
+      SetLastError(RtlNtStatusToDosError(ntResu))
       return 0 'NTSTATUS with error
     else
       DEBUG_MsgTrace("GetThreadId TID = " & tInfo.ClientId.UniqueThread)
     end if
     return cast(DWORD, tInfo.ClientId.UniqueThread)
+  end function
+  
+  UndefAllParams()
+  #define P1 Thread as _In_ HANDLE
+  function fnGetProcessIdOfThread alias "GetProcessIdOfThread"(P1) as DWORD export
+    dim as THREAD_BASIC_INFO ThreadBasic = any
+    dim as NTSTATUS Status
+
+    Status = NtQueryInformationThread(Thread, ThreadBasicInformation, @ThreadBasic, _
+      sizeof(THREAD_BASIC_INFO), NULL)
+      
+    if Status then
+      SetLastError(RtlNtStatusToDosError(Status))
+      return 0
+    end if
+
+    return cast(DWORD, ThreadBasic.ClientId.UniqueProcess)
   end function
   
   UndefAllParams()

@@ -97,6 +97,7 @@ kernel3x
     GetLocaleInfoEx                                 new         dummy       fixme
     GetLogicalProcessorInformation                  reimpl      partial
     GetNumaNodeProcessorMaskEx                      new         dummy
+    GetProcessIdOfThread                            new         full        testme
     GetProductInfo                                  redir       ntdlx.RtlGetProductInfo
     GetSystemDefaultLocaleName                      new         testme
     GetSystemTimePreciseAsFileTime                  redir       kernel32.GetSystemTimeAsFileTime
