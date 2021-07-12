@@ -1,5 +1,8 @@
 Projects with similar goal:
 
+* DllCompat by Mysoft
+  * This project
+
 * VAIO/AlkyForApplications by Falling Leaf Systems
   * Dead a long time ago.
   * https://web.archive.org/web/20170827155856/http://demoseen.com/blog/2009-12-27_Alky_Postmortem.html
@@ -28,3 +31,8 @@ Projects with similar goal:
   * This is meant to allow newer drivers to be modified to work on XP.
   * Recent project.
   * https://github.com/MovAX0xDEAD/NTOSKRNL_Emu
+  
+* xpext by zeroclear
+  * Patch-your-application type compat.
+  * Recent project.
+  * https://github.com/zeroclear/xpext
