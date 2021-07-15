@@ -5,14 +5,17 @@
 #define DebugDisableExceptions
 
 #include "windows.bi"
-#include "win\winnls.bi"
-#include "shared\detour.bas"
+#include "win\winnt.bi"
 #include "includes\win\wintern.bi"
 #include "includes\win\fix_winnt.bi"
 #include "includes\win\fix_winbase.bi"
-#include "shared\helper.bas"
 #include "win\psapi.bi"
 #include "win\shlwapi.bi"
+#include "win\winnls.bi"
+#define NT_SUCCESS(Status) (cast(NTSTATUS, (Status)) >= 0)
+#include "win\ddk\ddk_ntstatus.bi"
+#include "shared\helper.bas"
+#include "shared\detour.bas"
 
 
 #include "fiber.bas"
@@ -20,12 +23,11 @@
 #include "locale.bas"
 #include "console.bas"
 #include "file.bas"
+#include "synch.bas"
 
-dim shared as any ptr pInitMutex
 dim shared as HANDLE hKernel
 dim shared as LARGE_INTEGER ulFreq
 
-pInitMutex = CreateMutexA(NULL,FALSE,NULL)
 hKernel = GetModuleHandleA("kernel32.dll")
 
 dim shared pfWow64RevertWow64FsRedirection as function( OldValue as PVOID ptr ) as bool
@@ -82,51 +84,6 @@ extern "windows-ms"
       dwDesiredAccess = (dwDesiredAccess and (not PROCESS_QUERY_LIMITED_INFORMATION)) or PROCESS_QUERY_INFORMATION
     end if
     return OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId)
-  end function
-  
-  UndefAllParams()
-  #define P1 InitOnce  as _Inout_     PINIT_ONCE
-  #define P2 InitFn    as _In_        PINIT_ONCE_FN
-  #define P3 Parameter as _Inout_opt_ PVOID
-  #define P4 Context   as _Out_opt_   LPVOID ptr
-  function InitOnceExecuteOnce(InitOnce as any ptr ptr, InitFn as any ptr, Parameter as any ptr, Context as any ptr) as bool export    
-    if InitOnce=0 or InitFn=0 then 
-      DEBUG_MsgTrace("Bad Parameters")
-      return false
-    end if
-    if Context then
-      DEBUG_MsgTrace("Using context???")
-    end if
-    WaitForSingleObject(pInitMutex,INFINITE)
-    if InitOnce[0]=0 then
-      InitOnce[0] = CreateEvent(NULL,TRUE,FALSE,NULL)    
-      ReleaseMutex(pInitMutex)
-    else
-      var hEvent = InitOnce[0]
-      ReleaseMutex(pInitMutex)      
-      WaitForSingleObject(hEvent,INFINITE)      
-      WaitForSingleObject(pInitMutex,INFINITE)
-      if InitOnce[0] then 
-        ReleaseMutex(pInitMutex)
-        SetLastError(0):return true
-      end if
-      InitOnce[0]=0:CloseHandle(hEvent)            
-      ReleaseMutex(pInitMutex)
-      SetLastERror(ERROR_INVALID_PARAMETER)
-      return false
-    end if
-    
-    dim pCall as function (as any ptr,as any ptr,as any ptr) as bool = InitFn
-    if pCall(InitOnce, Parameter, Context) then      
-      SetEvent(InitOnce[0]):return True
-    else      
-      WaitForSingleObject(pInitMutex,INFINITE)
-      var hMutex = InitOnce[0]
-      InitOnce[0]=0:SetEvent(hMutex)      
-      ReleaseMutex(pInitMutex)
-      DEBUG_MsgTrace("Initialization failed")
-      return False
-    end if
   end function
   
   UndefAllParams()

@@ -1,4 +1,9 @@
-LIBRARY KERNEL3x.dll
+LIBRARY kernel3x.dll
+IMPORTS
+ntdlx.RtlRunOnceBeginInitialize
+ntdlx.RtlRunOnceComplete
+ntdlx.RtlRunOnceExecuteOnce
+
 EXPORTS
 ActivateActCtx = kernel32.ActivateActCtx @1
 AddAtomA = kernel32.AddAtomA @2
@@ -976,6 +981,8 @@ IdnToNameprepUnicode = normaliz.IdnToNameprepUnicode
 IdnToUnicode         = normaliz.IdnToUnicode
 IsNormalizedString   = normaliz.IsNormalizedString
 NormalizeString      = normaliz.NormalizeString
+
+InitOnceInitialize   = ntdll.RtlRunOnceInitialize
 
 AcquireSRWLockExclusive      = ntdlx.RtlAcquireSRWLockExclusive
 AcquireSRWLockShared         = ntdlx.RtlAcquireSRWLockShared

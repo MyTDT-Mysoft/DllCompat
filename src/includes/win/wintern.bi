@@ -50,9 +50,9 @@ end enum
 
 'type NTSTATUS as ulong
 
-enum NTSTATUS_
-  STATUS_SUCCESS = 0
-end enum
+'enum NTSTATUS_
+'  STATUS_SUCCESS = 0
+'end enum
 
 enum FILE_INFORMATION_CLASS
   FileDirectoryInformation = 1

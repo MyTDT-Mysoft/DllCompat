@@ -1,4 +1,8 @@
 LIBRARY ntdlx.dll
+IMPORTS
+ntdll.NtWaitForKeyedEvent
+ntdll.NtReleaseKeyedEvent
+    
 EXPORTS
 CsrAllocateCaptureBuffer = ntdll.CsrAllocateCaptureBuffer @8
 CsrAllocateMessagePointer = ntdll.CsrAllocateMessagePointer @9

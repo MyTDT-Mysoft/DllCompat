@@ -113,7 +113,10 @@ kernel3x
     InitializeConditionVariable                     new
     InitializeCriticalSectionEx                     new
     InitializeSRWLock                               redir       ntdlx.RtlInitializeSRWLock
-    InitOnceExecuteOnce                             new
+    InitOnceBeginInitialize                         new         full
+    InitOnceComplete                                new         full
+    InitOnceExecuteOnce                             new         full
+    InitOnceInitialize                              redir       ntdlx.RtlRunOnceInitialize
     InterlockedCompareExchange64                    redir       ntdlx.RtlInterlockedCompareExchange64
     IsNormalizedString                              redir       normaliz.IsNormalizedString
     IsValidLocaleName                               new         dummy       fixme
@@ -175,6 +178,10 @@ ntdlx
     RtlInterlockedCompareExchange64                 new         full
     RtlIsCriticalSectionLockedByThread              new         full
     RtlGetProductInfo                               new         dummy
+    RtlRunOnceBeginInitialize                       new         full
+    RtlRunOnceComplete                              new         full
+    RtlRunOnceExecuteOnce                           new         full
+    RtlRunOnceInitialize                            new         full
 ;;    AcquireSRWLockExclusive                         new
 ;;    AcquireSRWLockShared                            new
 ;;    InitializeSRWLock                               new
