@@ -43,7 +43,7 @@ Projects with similar goal:
   * https://github.com/Chuyu-Team/YY-Thunks
 
 * VxKex by vxiiduu
-  * Adds win8+ winapi to win7.
   * Comes with a loader+patcher.
+  * Adds win8+ winapi to win7.
   * Very recent project.
   * https://github.com/vxiiduu/VxKex
