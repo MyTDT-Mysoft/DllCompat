@@ -5,6 +5,8 @@
 #include "win\ddk\ddk_ntstatus.bi"
 #include "shared\helper.bas"
 
+#include "crt.bas"
+
 extern "windows-ms"
   UndefAllParams()
   #define P1 KeyedEventHandle   as _In_ HANDLE
