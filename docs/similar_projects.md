@@ -47,3 +47,9 @@ Projects with similar goal:
   * Adds win8+ winapi to win7.
   * Very recent project.
   * https://github.com/vxiiduu/VxKex
+
+
+
+
+Various:
+- https://github.com/win32ss/win32-api-reversals
