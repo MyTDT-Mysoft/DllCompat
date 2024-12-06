@@ -48,6 +48,9 @@ Projects with similar goal:
   * Very recent project.
   * https://github.com/vxiiduu/VxKex
 
+* win7lib by TheDeadFish
+  * Patch-your-application type compat.
+  * https://github.com/TheDeadFish/win7lib
 
 
 
