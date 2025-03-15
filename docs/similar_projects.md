@@ -46,7 +46,7 @@ Projects with similar goal:
   * Comes with a loader+patcher.
   * Adds win8+ winapi to win7.
   * Very recent project.
-  * https://github.com/vxiiduu/VxKex
+  * ~~github.com/vxiiduu/VxKex~~ https://github.com/i486/VxKex
 
 * win7lib by TheDeadFish
   * Patch-your-application type compat.
